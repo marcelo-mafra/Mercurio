@@ -25,6 +25,7 @@ package interfaces;
 {$IMAGEBASE $400000}
 {$DEFINE DEBUG}
 {$ENDIF IMPLICITBUILDING}
+{$DESCRIPTION 'Unidades contendo interfaces de abstração de entidades do mercúrio.'}
 {$RUNONLY}
 {$IMPLICITBUILD ON}
 
@@ -32,8 +33,9 @@ requires
   rtl;
 
 contains
-  mercurio.client.interfaces.common in '..\..\Common\mercurio.client.interfaces.common.pas',
-  mercurio.client.interfaces.service in '..\..\Common\mercurio.client.interfaces.service.pas',
-  mercurio.client.interfaces.messages in '..\..\Common\mercurio.client.interfaces.messages.pas';
+  client.interfaces.common in '..\..\Common\client.interfaces.common.pas',
+  client.interfaces.service in '..\..\Common\client.interfaces.service.pas',
+  client.interfaces.messages in '..\..\Common\client.interfaces.messages.pas',
+  client.interfaces.security in '..\..\Common\client.interfaces.security.pas';
 
 end.

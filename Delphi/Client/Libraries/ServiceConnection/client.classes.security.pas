@@ -1,9 +1,9 @@
-unit mercurio.client.classes.security;
+unit client.classes.security;
 
 interface
 
 uses
- System.SysUtils, mercurio.client.interfaces.service;
+  client.interfaces.security;
 
  type
    TSecurityService = class(TInterfacedObject, ISecurityService)
@@ -13,7 +13,7 @@ uses
        constructor Create;
        destructor Destroy; override;
 
-       //ISecurityService
+       //ISecurityService methods
        function Authenticate(const UserName, Password: string): boolean;
  end;
 

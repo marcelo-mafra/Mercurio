@@ -25,17 +25,17 @@ package svccon;
 {$IMAGEBASE $400000}
 {$DEFINE DEBUG}
 {$ENDIF IMPLICITBUILDING}
+{$DESCRIPTION 'Unidades de classes de objetos de conexão com o serviço remoto.'}
 {$RUNONLY}
 {$IMPLICITBUILD ON}
 
 requires
   rtl,
-  RESTComponents,
-  interfaces;
+  interfaces,
+  resources;
 
 contains
-  mercurio.client.classes.svccon in 'mercurio.client.classes.svccon.pas',
-  mercurio.client.svcconsts in 'mercurio.client.svcconsts.pas',
-  mercurio.client.classes.security in 'mercurio.client.classes.security.pas';
+  client.classes.svccon in 'client.classes.svccon.pas',
+  client.classes.security in 'client.classes.security.pas';
 
 end.

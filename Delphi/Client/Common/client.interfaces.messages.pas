@@ -1,10 +1,10 @@
-unit mercurio.client.interfaces.messages;
+unit client.interfaces.messages;
 
 interface
 {Contém interfaces que abstraem entidades relacionadas às mensagens de chat e
  usuários que enviaram as mensagens.}
 uses
- mercurio.client.interfaces.common;
+ client.interfaces.common;
 
 type
 

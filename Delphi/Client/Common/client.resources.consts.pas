@@ -1,4 +1,4 @@
-unit mercurio.client.resources.consts;
+unit client.resources.consts;
 
 interface
 

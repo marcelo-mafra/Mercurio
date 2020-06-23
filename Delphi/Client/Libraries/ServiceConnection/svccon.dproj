@@ -85,10 +85,11 @@
         <SanitizedProjectName>svccon</SanitizedProjectName>
         <RuntimeOnlyPackage>true</RuntimeOnlyPackage>
         <DCC_DcpOutput>$(MERCURIODIR)\DCP\$(Platform)\$(Config)</DCC_DcpOutput>
-        <DCC_UnitSearchPath>$(MERCURIODIR)\DCU;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
+        <DCC_UnitSearchPath>$(MERCURIODIR)\DCU\$(Platform)\$(Config);$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
         <DCC_BplOutput>$(MERCURIODIR)\BIN\$(Platform)\$(Config)</DCC_BplOutput>
         <VerInfo_Locale>1046</VerInfo_Locale>
         <VerInfo_Keys>CompanyName=;FileDescription=$(MSBuildProjectName);FileVersion=1.0.0.0;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProgramID=com.embarcadero.$(MSBuildProjectName);ProductName=$(MSBuildProjectName);ProductVersion=1.0.0.0;Comments=</VerInfo_Keys>
+        <DCC_Description>Unidades de classes de objetos de conexão com o serviço remoto.</DCC_Description>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Base_Android)'!=''">
         <DCC_CBuilderOutput>None</DCC_CBuilderOutput>
@@ -149,11 +150,10 @@
             <MainSource>MainSource</MainSource>
         </DelphiCompile>
         <DCCReference Include="rtl.dcp"/>
-        <DCCReference Include="RESTComponents.dcp"/>
         <DCCReference Include="interfaces.dcp"/>
-        <DCCReference Include="mercurio.client.classes.svccon.pas"/>
-        <DCCReference Include="mercurio.client.svcconsts.pas"/>
-        <DCCReference Include="mercurio.client.classes.security.pas"/>
+        <DCCReference Include="resources.dcp"/>
+        <DCCReference Include="client.classes.svccon.pas"/>
+        <DCCReference Include="client.classes.security.pas"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>
@@ -180,12 +180,6 @@
                 </Excluded_Packages>
             </Delphi.Personality>
             <Deployment Version="3">
-                <DeployFile LocalName="C:\Users\Public\Documents\Embarcadero\Studio\20.0\Bpl\svccon.bpl" Configuration="Debug" Class="ProjectOutput">
-                    <Platform Name="Win32">
-                        <RemoteName>svccon.bpl</RemoteName>
-                        <Overwrite>true</Overwrite>
-                    </Platform>
-                </DeployFile>
                 <DeployFile LocalName="$(BDS)\Redist\osx32\libcgunwind.1.0.dylib" Class="DependencyModule">
                     <Platform Name="OSX32">
                         <Overwrite>true</Overwrite>
@@ -193,6 +187,12 @@
                 </DeployFile>
                 <DeployFile LocalName="$(BDS)\Redist\iossimulator\libcgunwind.1.0.dylib" Class="DependencyModule">
                     <Platform Name="iOSSimulator">
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
+                <DeployFile LocalName="C:\Users\Public\Documents\Embarcadero\Studio\20.0\Bpl\svccon.bpl" Configuration="Debug" Class="ProjectOutput">
+                    <Platform Name="Win32">
+                        <RemoteName>svccon.bpl</RemoteName>
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>

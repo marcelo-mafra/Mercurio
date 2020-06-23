@@ -89,6 +89,7 @@
         <DCC_UnitSearchPath>$(MERCURIODIR)\DCU;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
         <VerInfo_Locale>1046</VerInfo_Locale>
         <VerInfo_Keys>CompanyName=;FileDescription=$(MSBuildProjectName);FileVersion=1.0.0.0;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProgramID=com.embarcadero.$(MSBuildProjectName);ProductName=$(MSBuildProjectName);ProductVersion=1.0.0.0;Comments=</VerInfo_Keys>
+        <DCC_Description>Unidades contendo interfaces de abstração de entidades do mercúrio.</DCC_Description>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Base_Android)'!=''">
         <DCC_CBuilderOutput>None</DCC_CBuilderOutput>
@@ -149,9 +150,10 @@
             <MainSource>MainSource</MainSource>
         </DelphiCompile>
         <DCCReference Include="rtl.dcp"/>
-        <DCCReference Include="..\..\Common\mercurio.client.interfaces.common.pas"/>
-        <DCCReference Include="..\..\Common\mercurio.client.interfaces.service.pas"/>
-        <DCCReference Include="..\..\Common\mercurio.client.interfaces.messages.pas"/>
+        <DCCReference Include="..\..\Common\client.interfaces.common.pas"/>
+        <DCCReference Include="..\..\Common\client.interfaces.service.pas"/>
+        <DCCReference Include="..\..\Common\client.interfaces.messages.pas"/>
+        <DCCReference Include="..\..\Common\client.interfaces.security.pas"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>
@@ -178,12 +180,6 @@
                 </Excluded_Packages>
             </Delphi.Personality>
             <Deployment Version="3">
-                <DeployFile LocalName="..\..\..\BIN\Win64\Debug\interfaces.bpl" Configuration="Debug" Class="ProjectOutput">
-                    <Platform Name="Win64">
-                        <RemoteName>interfaces.bpl</RemoteName>
-                        <Overwrite>true</Overwrite>
-                    </Platform>
-                </DeployFile>
                 <DeployFile LocalName="$(BDS)\Redist\osx32\libcgunwind.1.0.dylib" Class="DependencyModule">
                     <Platform Name="OSX32">
                         <Overwrite>true</Overwrite>
@@ -196,6 +192,12 @@
                 </DeployFile>
                 <DeployFile LocalName="$(BDS)\Redist\iossimulator\libpcre.dylib" Class="DependencyModule">
                     <Platform Name="iOSSimulator">
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
+                <DeployFile LocalName="..\..\..\BIN\Win64\Debug\interfaces.bpl" Configuration="Debug" Class="ProjectOutput">
+                    <Platform Name="Win64">
+                        <RemoteName>interfaces.bpl</RemoteName>
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>

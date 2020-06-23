@@ -1,4 +1,4 @@
-unit mercurio.client.interfaces.common;
+unit client.interfaces.common;
 
 interface
 
