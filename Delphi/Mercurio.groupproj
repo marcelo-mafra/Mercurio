@@ -1,0 +1,72 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    <PropertyGroup>
+        <ProjectGuid>{4C602DD4-6831-47E7-86F7-22744080BFE0}</ProjectGuid>
+    </PropertyGroup>
+    <ItemGroup>
+        <Projects Include="Client\chatclient.dproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="Client\Libraries\InterfacesLib\interfaces.dproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="Client\Libraries\ResourcesLib\resources.dproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="Client\Libraries\ServiceConnection\svccon.dproj">
+            <Dependencies>Client\Libraries\InterfacesLib\interfaces.dproj</Dependencies>
+        </Projects>
+    </ItemGroup>
+    <ProjectExtensions>
+        <Borland.Personality>Default.Personality.12</Borland.Personality>
+        <Borland.ProjectType/>
+        <BorlandProject>
+            <Default.Personality/>
+        </BorlandProject>
+    </ProjectExtensions>
+    <Target Name="chatclient">
+        <MSBuild Projects="Client\chatclient.dproj"/>
+    </Target>
+    <Target Name="chatclient:Clean">
+        <MSBuild Projects="Client\chatclient.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="chatclient:Make">
+        <MSBuild Projects="Client\chatclient.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="interfaces">
+        <MSBuild Projects="Client\Libraries\InterfacesLib\interfaces.dproj"/>
+    </Target>
+    <Target Name="interfaces:Clean">
+        <MSBuild Projects="Client\Libraries\InterfacesLib\interfaces.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="interfaces:Make">
+        <MSBuild Projects="Client\Libraries\InterfacesLib\interfaces.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="resources">
+        <MSBuild Projects="Client\Libraries\ResourcesLib\resources.dproj"/>
+    </Target>
+    <Target Name="resources:Clean">
+        <MSBuild Projects="Client\Libraries\ResourcesLib\resources.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="resources:Make">
+        <MSBuild Projects="Client\Libraries\ResourcesLib\resources.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="svccon" DependsOnTargets="interfaces">
+        <MSBuild Projects="Client\Libraries\ServiceConnection\svccon.dproj"/>
+    </Target>
+    <Target Name="svccon:Clean" DependsOnTargets="interfaces:Clean">
+        <MSBuild Projects="Client\Libraries\ServiceConnection\svccon.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="svccon:Make" DependsOnTargets="interfaces:Make">
+        <MSBuild Projects="Client\Libraries\ServiceConnection\svccon.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="Build">
+        <CallTarget Targets="chatclient;interfaces;resources;svccon"/>
+    </Target>
+    <Target Name="Clean">
+        <CallTarget Targets="chatclient:Clean;interfaces:Clean;resources:Clean;svccon:Clean"/>
+    </Target>
+    <Target Name="Make">
+        <CallTarget Targets="chatclient:Make;interfaces:Make;resources:Make;svccon:Make"/>
+    </Target>
+    <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
+</Project>
