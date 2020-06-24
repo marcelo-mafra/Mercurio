@@ -62,6 +62,18 @@ __history/
 __recovery/
 *.~*
 
+# Resources files
+*.ico
+*.bmp
+*.jpg
+*.png
+*.gif
+*.db
+
+# Office
+*.docx
+*.pptx
+
 # Castalia statistics file (since XE7 Castalia is distributed with Delphi)
 *.stat
 

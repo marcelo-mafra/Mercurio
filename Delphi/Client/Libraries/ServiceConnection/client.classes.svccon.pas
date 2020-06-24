@@ -6,7 +6,7 @@ uses
   System.SysUtils, System.Classes, System.Net.URLClient, System.Net.HttpClient,
   System.Net.HttpClientComponent, Winapi.Windows, System.NetEncoding,
   client.interfaces.security, client.interfaces.service, client.resources.svcconsts,
-  client.classes.security;
+  client.classes.security, client.resources.httpstatus;
 
  type
    {Classe que encapsula as funcionalidades de conexão com o serviço remoto.}
@@ -32,7 +32,7 @@ uses
        procedure DisconnectService;
 
        property Connected: boolean read GetConnected;
-       property SecuritySvc: ISecurityService read GetSecurityService;
+       property Security: ISecurityService read GetSecurityService;
 
        property ServiceHost: string read FServiceHost;
        property ServiceName: string read FServiceName;
@@ -46,21 +46,27 @@ implementation
 function TChatService.ConnectService: boolean;
 var
  IResponse: IHTTPResponse;
- vUTF8: TStringStream;
+ vUTF8Data: TStringStream;
 begin
-
+ {O método "ConnectService" apenas dá um GET no serviço remoto, sob http e
+  verifica se o serviço responde e retorna dados como esperado. Não há conexão
+  persistente com o serviço remoto.}
  FSecurityObj := TSecurityService.Create;
  FServiceObj := TNetHTTPClient.Create(nil);
  self.LoadServiceParams;
 
- vUTF8 := TStringStream.Create('', TEncoding.GetEncoding(TChatServiceConst.AcceptEncoding.ToInteger));
+ vUTF8Data := TStringStream.Create('', TEncoding.GetEncoding(TChatServiceConst.AcceptEncoding.ToInteger));
 
  try
-  IResponse := FServiceObj.Get(TChatServiceConst.ServiceHost, vUTF8);
-  Result := (IResponse <> nil);
-
-  outputdebugstring(PWideChar(IResponse.ContentAsString));
-  outputdebugstring(PWideChar('utf8:' + TNetEncoding.URL.UrlDecode(vUTF8.DataString)));
+  IResponse := FServiceObj.Get(TChatServiceConst.ServiceHost, vUTF8Data);
+  Result := (IResponse <> nil) and (IResponse.StatusCode = THTTPStatus.StatusOK);
+  if Result then
+   begin
+     outputdebugstring(PWideChar(THTTPStatus.ToText(THTTPStatus.StatusOK) + ' | ' +
+        IResponse.ContentAsString));
+     {outputdebugstring(PWideChar(THTTPStatus.ToText(THTTPStatus.StatusOK) + ' | ' +
+         TNetEncoding.UrlDecode(vUTF8Data.DataString)));}
+   end;
 
  except
    on E: Exception do
@@ -99,7 +105,7 @@ end;
 
 function TChatService.GetConnected: boolean;
 begin
- Result := SecuritySvc <> nil;
+ Result := Security <> nil;
 end;
 
 function TChatService.GetSecurityService: ISecurityService;
@@ -115,7 +121,7 @@ begin
     AcceptEncoding := TChatServiceConst.AcceptEncoding;
     AcceptLanguage := TChatServiceConst.AcceptLanguage;
     ContentType := TChatServiceConst.ContentType;
-    UserAgent :=TChatServiceConst.UserAgent;
+    UserAgent := TChatServiceConst.UserAgent;
 
     //Timeouts
     ConnectionTimeout := TChatServiceConst.ConnectionTimeout;

@@ -3,7 +3,7 @@
         <ProjectGuid>{4C602DD4-6831-47E7-86F7-22744080BFE0}</ProjectGuid>
     </PropertyGroup>
     <ItemGroup>
-        <Projects Include="Client\chatclient.dproj">
+        <Projects Include="Client\mercurio.dproj">
             <Dependencies/>
         </Projects>
         <Projects Include="Client\Libraries\InterfacesLib\interfaces.dproj">
@@ -23,14 +23,14 @@
             <Default.Personality/>
         </BorlandProject>
     </ProjectExtensions>
-    <Target Name="chatclient">
-        <MSBuild Projects="Client\chatclient.dproj"/>
+    <Target Name="mercurio">
+        <MSBuild Projects="Client\mercurio.dproj"/>
     </Target>
-    <Target Name="chatclient:Clean">
-        <MSBuild Projects="Client\chatclient.dproj" Targets="Clean"/>
+    <Target Name="mercurio:Clean">
+        <MSBuild Projects="Client\mercurio.dproj" Targets="Clean"/>
     </Target>
-    <Target Name="chatclient:Make">
-        <MSBuild Projects="Client\chatclient.dproj" Targets="Make"/>
+    <Target Name="mercurio:Make">
+        <MSBuild Projects="Client\mercurio.dproj" Targets="Make"/>
     </Target>
     <Target Name="interfaces">
         <MSBuild Projects="Client\Libraries\InterfacesLib\interfaces.dproj"/>
@@ -60,13 +60,13 @@
         <MSBuild Projects="Client\Libraries\ServiceConnection\svccon.dproj" Targets="Make"/>
     </Target>
     <Target Name="Build">
-        <CallTarget Targets="chatclient;interfaces;resources;svccon"/>
+        <CallTarget Targets="mercurio;interfaces;resources;svccon"/>
     </Target>
     <Target Name="Clean">
-        <CallTarget Targets="chatclient:Clean;interfaces:Clean;resources:Clean;svccon:Clean"/>
+        <CallTarget Targets="mercurio:Clean;interfaces:Clean;resources:Clean;svccon:Clean"/>
     </Target>
     <Target Name="Make">
-        <CallTarget Targets="chatclient:Make;interfaces:Make;resources:Make;svccon:Make"/>
+        <CallTarget Targets="mercurio:Make;interfaces:Make;resources:Make;svccon:Make"/>
     </Target>
     <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
 </Project>

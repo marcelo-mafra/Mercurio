@@ -17,7 +17,7 @@ type
    procedure DisconnectService;
 
    property Connected: boolean read GetConnected;
-   property SecurityService: ISecurityService read GetSecurityService;
+   property Security: ISecurityService read GetSecurityService;
  end;
 
 implementation

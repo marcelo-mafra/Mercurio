@@ -34,6 +34,7 @@ requires
 
 contains
   client.resources.consts in '..\..\Common\client.resources.consts.pas',
-  client.resources.svcconsts in '..\..\Common\client.resources.svcconsts.pas';
+  client.resources.svcconsts in '..\..\Common\client.resources.svcconsts.pas',
+  client.resources.httpstatus in '..\..\Common\client.resources.httpstatus.pas';
 
 end.
