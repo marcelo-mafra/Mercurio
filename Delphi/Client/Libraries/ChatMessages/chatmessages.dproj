@@ -1,7 +1,7 @@
 ﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
     <PropertyGroup>
-        <ProjectGuid>{BFC3B36C-2E55-4A76-BED3-9E19D6401A65}</ProjectGuid>
-        <MainSource>resources.dpk</MainSource>
+        <ProjectGuid>{0B004E60-E200-40FF-A383-A9C3B15525F4}</ProjectGuid>
+        <MainSource>chatmessages.dpk</MainSource>
         <ProjectVersion>18.8</ProjectVersion>
         <FrameworkType>None</FrameworkType>
         <Base>True</Base>
@@ -82,14 +82,13 @@
         <GenPackage>true</GenPackage>
         <DCC_Namespace>System;Xml;Data;Datasnap;Web;Soap;$(DCC_Namespace)</DCC_Namespace>
         <DCC_CBuilderOutput>All</DCC_CBuilderOutput>
-        <RuntimeOnlyPackage>true</RuntimeOnlyPackage>
-        <SanitizedProjectName>resources</SanitizedProjectName>
-        <VerInfo_Locale>1046</VerInfo_Locale>
-        <VerInfo_Keys>CompanyName=;FileDescription=$(MSBuildProjectName);FileVersion=1.0.0.0;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProgramID=com.embarcadero.$(MSBuildProjectName);ProductName=$(MSBuildProjectName);ProductVersion=1.0.0.0;Comments=</VerInfo_Keys>
         <DCC_DcpOutput>$(MERCURIODIR)\DCP\$(Platform)\$(Config)</DCC_DcpOutput>
         <DCC_BplOutput>$(MERCURIODIR)\BIN\$(Platform)\$(Config)</DCC_BplOutput>
-        <DCC_UnitSearchPath>$(MERCURIODIR)\DCU;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
-        <DCC_Description>Unidades de resources utilizados em todos os módulos do mercúrio.</DCC_Description>
+        <DCC_UnitSearchPath>$(MERCURIODIR)\DCU\$(Platform)\$(Config);$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
+        <VerInfo_Locale>1046</VerInfo_Locale>
+        <VerInfo_Keys>CompanyName=;FileDescription=$(MSBuildProjectName);FileVersion=1.0.0.0;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProgramID=com.embarcadero.$(MSBuildProjectName);ProductName=$(MSBuildProjectName);ProductVersion=1.0.0.0;Comments=</VerInfo_Keys>
+        <DCC_Description>Classes que implementam as mensagens de chat do Mercúrio.</DCC_Description>
+        <SanitizedProjectName>chatmessages</SanitizedProjectName>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Base_Android)'!=''">
         <DCC_CBuilderOutput>None</DCC_CBuilderOutput>
@@ -132,8 +131,6 @@
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_1_Win32)'!=''">
         <DCC_RemoteDebug>false</DCC_RemoteDebug>
-        <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
-        <VerInfo_Locale>1033</VerInfo_Locale>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_1_Win64)'!=''">
         <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
@@ -150,10 +147,10 @@
             <MainSource>MainSource</MainSource>
         </DelphiCompile>
         <DCCReference Include="rtl.dcp"/>
-        <DCCReference Include="..\..\Common\client.resources.consts.pas"/>
-        <DCCReference Include="..\..\Common\client.resources.svcconsts.pas"/>
-        <DCCReference Include="..\..\Common\client.resources.httpstatus.pas"/>
-        <DCCReference Include="..\..\Common\client.resources.svccon.pas"/>
+        <DCCReference Include="interfaces.dcp"/>
+        <DCCReference Include="cmlib.dcp"/>
+        <DCCReference Include="resources.dcp"/>
+        <DCCReference Include="client.classes.chatmessages.pas"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>
@@ -176,7 +173,7 @@
                     <Excluded_Packages Name="$(BDSBIN)\dclofficexp260.bpl">Microsoft Office XP Sample Automation Server Wrapper Components</Excluded_Packages>
                 </Excluded_Packages>
                 <Source>
-                    <Source Name="MainSource">resources.dpk</Source>
+                    <Source Name="MainSource">chatmessages.dpk</Source>
                 </Source>
             </Delphi.Personality>
             <Deployment Version="3">
@@ -195,15 +192,9 @@
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
-                <DeployFile LocalName="C:\Users\Public\Documents\Embarcadero\Studio\20.0\Bpl\resources.bpl" Configuration="Debug" Class="ProjectOutput">
-                    <Platform Name="Win32">
-                        <RemoteName>resources.bpl</RemoteName>
-                        <Overwrite>true</Overwrite>
-                    </Platform>
-                </DeployFile>
-                <DeployFile LocalName="..\..\..\BIN\Win64\Debug\resources.bpl" Configuration="Debug" Class="ProjectOutput">
+                <DeployFile LocalName="..\..\..\BIN\Win64\Debug\chatmessages.bpl" Configuration="Debug" Class="ProjectOutput">
                     <Platform Name="Win64">
-                        <RemoteName>resources.bpl</RemoteName>
+                        <RemoteName>chatmessages.bpl</RemoteName>
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>

@@ -1,4 +1,4 @@
-package resources;
+package cmlib;
 
 {$R *.res}
 {$IFDEF IMPLICITBUILDING This IFDEF should not be used by users}
@@ -25,7 +25,6 @@ package resources;
 {$IMAGEBASE $400000}
 {$DEFINE DEBUG}
 {$ENDIF IMPLICITBUILDING}
-{$DESCRIPTION 'Unidades de resources utilizados em todos os módulos do mercúrio.'}
 {$RUNONLY}
 {$IMPLICITBUILD ON}
 
@@ -33,9 +32,6 @@ requires
   rtl;
 
 contains
-  client.resources.consts in '..\..\Common\client.resources.consts.pas',
-  client.resources.svcconsts in '..\..\Common\client.resources.svcconsts.pas',
-  client.resources.httpstatus in '..\..\Common\client.resources.httpstatus.pas',
-  client.resources.svccon in '..\..\Common\client.resources.svccon.pas';
+  classes.exceptions in 'classes.exceptions.pas';
 
 end.

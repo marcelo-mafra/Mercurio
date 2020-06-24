@@ -4,9 +4,9 @@ interface
 
 uses
   System.SysUtils, System.Classes, System.Net.URLClient, System.Net.HttpClient,
-  System.Net.HttpClientComponent, Winapi.Windows, System.NetEncoding,
+  System.Net.HttpClientComponent, Winapi.Windows, System.NetEncoding, classes.exceptions,
   client.interfaces.security, client.interfaces.service, client.resources.svcconsts,
-  client.classes.security, client.resources.httpstatus;
+  client.resources.svccon, client.classes.security, client.resources.httpstatus;
 
  type
    {Classe que encapsula as funcionalidades de conexão com o serviço remoto.}
@@ -46,31 +46,55 @@ implementation
 function TChatService.ConnectService: boolean;
 var
  IResponse: IHTTPResponse;
- vUTF8Data: TStringStream;
+// vUTF8Data: TStringStream;
 begin
  {O método "ConnectService" apenas dá um GET no serviço remoto, sob http e
   verifica se o serviço responde e retorna dados como esperado. Não há conexão
   persistente com o serviço remoto.}
+ Result := False;
  FSecurityObj := TSecurityService.Create;
  FServiceObj := TNetHTTPClient.Create(nil);
  self.LoadServiceParams;
 
- vUTF8Data := TStringStream.Create('', TEncoding.GetEncoding(TChatServiceConst.AcceptEncoding.ToInteger));
+// vUTF8Data := TStringStream.Create('', TEncoding.GetEncoding(TChatServiceConst.AcceptEncoding.ToInteger));
 
  try
-  IResponse := FServiceObj.Get(TChatServiceConst.ServiceHost, vUTF8Data);
+  IResponse := FServiceObj.Get(self.ServiceHost, nil {vUTF8Data});
   Result := (IResponse <> nil) and (IResponse.StatusCode = THTTPStatus.StatusOK);
-  if Result then
+
+  if Result then //Serviço respondeu corretamente.
    begin
-     outputdebugstring(PWideChar(THTTPStatus.ToText(THTTPStatus.StatusOK) + ' | ' +
-        IResponse.ContentAsString));
-     {outputdebugstring(PWideChar(THTTPStatus.ToText(THTTPStatus.StatusOK) + ' | ' +
-         TNetEncoding.UrlDecode(vUTF8Data.DataString)));}
+     outputdebugstring(PWideChar(IResponse.ContentAsString));
+     outputdebugstring(PWideChar(IResponse.StatusText));
+     {outputdebugstring(PWideChar(TNetEncoding.UrlDecode(vUTF8Data.DataString)));}
+   end
+  else //Serviço não respondeu ou respondeu sinalizando alguma falha.
+   begin
+    //Alguma falha impediu que houvesse um response do serviço remoto.
+    if IResponse <> nil then
+     raise ENoServiceResponse.Create(TServiceConnectionConst.NoServiceResponse)
+    else //HTTPStatus <> 200
+     begin
+      case IResponse.StatusCode of //Respostas tratadas de forma específica.
+        THTTPStatus.StatusBadRequest:
+          begin
+           raise EHTTPBadRequest.Create(TServiceConnectionConst.StatusBadRequest);
+          end;
+      end;
+     end;
    end;
 
  except
-   on E: Exception do
+   on E: ENoServiceResponse do //Não houve resposta do serviço remoto.
     begin
+      self.DestroyInnerObjs;
+    end;
+   on E: EHTTPBadRequest do //Serviço remoto respondeu com falha: Bad Request.
+    begin
+      self.DestroyInnerObjs;
+    end
+   else
+    begin //Serviço remoto respondeu com falha: demais cenários.
       Result := (IResponse <> nil);
       self.DestroyInnerObjs;
     end;
@@ -79,8 +103,9 @@ end;
 
 constructor TChatService.Create;
 begin
-  FServiceName := TChatServiceConst.ServiceName;
-  FServiceHost := TChatServiceConst.ServiceHost;
+ //Service host and name
+ FServiceName := TChatServiceConst.ServiceName;
+ FServiceHost := TChatServiceConst.ServiceHost;
 end;
 
 destructor TChatService.Destroy;

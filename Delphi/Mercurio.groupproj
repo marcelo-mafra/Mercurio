@@ -6,6 +6,9 @@
         <Projects Include="Client\mercurio.dproj">
             <Dependencies/>
         </Projects>
+        <Projects Include="Common\CmLib\cmlib.dproj">
+            <Dependencies/>
+        </Projects>
         <Projects Include="Client\Libraries\InterfacesLib\interfaces.dproj">
             <Dependencies/>
         </Projects>
@@ -14,6 +17,9 @@
         </Projects>
         <Projects Include="Client\Libraries\ServiceConnection\svccon.dproj">
             <Dependencies>Client\Libraries\InterfacesLib\interfaces.dproj</Dependencies>
+        </Projects>
+        <Projects Include="Client\Libraries\ChatMessages\chatmessages.dproj">
+            <Dependencies/>
         </Projects>
     </ItemGroup>
     <ProjectExtensions>
@@ -31,6 +37,15 @@
     </Target>
     <Target Name="mercurio:Make">
         <MSBuild Projects="Client\mercurio.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="cmlib">
+        <MSBuild Projects="Common\CmLib\cmlib.dproj"/>
+    </Target>
+    <Target Name="cmlib:Clean">
+        <MSBuild Projects="Common\CmLib\cmlib.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="cmlib:Make">
+        <MSBuild Projects="Common\CmLib\cmlib.dproj" Targets="Make"/>
     </Target>
     <Target Name="interfaces">
         <MSBuild Projects="Client\Libraries\InterfacesLib\interfaces.dproj"/>
@@ -59,14 +74,23 @@
     <Target Name="svccon:Make" DependsOnTargets="interfaces:Make">
         <MSBuild Projects="Client\Libraries\ServiceConnection\svccon.dproj" Targets="Make"/>
     </Target>
+    <Target Name="chatmessages">
+        <MSBuild Projects="Client\Libraries\ChatMessages\chatmessages.dproj"/>
+    </Target>
+    <Target Name="chatmessages:Clean">
+        <MSBuild Projects="Client\Libraries\ChatMessages\chatmessages.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="chatmessages:Make">
+        <MSBuild Projects="Client\Libraries\ChatMessages\chatmessages.dproj" Targets="Make"/>
+    </Target>
     <Target Name="Build">
-        <CallTarget Targets="mercurio;interfaces;resources;svccon"/>
+        <CallTarget Targets="mercurio;cmlib;interfaces;resources;svccon;chatmessages"/>
     </Target>
     <Target Name="Clean">
-        <CallTarget Targets="mercurio:Clean;interfaces:Clean;resources:Clean;svccon:Clean"/>
+        <CallTarget Targets="mercurio:Clean;cmlib:Clean;interfaces:Clean;resources:Clean;svccon:Clean;chatmessages:Clean"/>
     </Target>
     <Target Name="Make">
-        <CallTarget Targets="mercurio:Make;interfaces:Make;resources:Make;svccon:Make"/>
+        <CallTarget Targets="mercurio:Make;cmlib:Make;interfaces:Make;resources:Make;svccon:Make;chatmessages:Make"/>
     </Target>
     <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
 </Project>

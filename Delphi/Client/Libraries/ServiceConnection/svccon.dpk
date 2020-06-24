@@ -32,7 +32,8 @@ package svccon;
 requires
   rtl,
   interfaces,
-  resources;
+  resources,
+  cmlib;
 
 contains
   client.classes.svccon in 'client.classes.svccon.pas',

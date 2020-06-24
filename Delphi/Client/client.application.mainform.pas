@@ -32,7 +32,7 @@ type
 
   public
     { Public declarations }
-    property Mercurio: IChatService read GetMercurio;
+    property MercurioIntf: IChatService read GetMercurio;
   end;
 
 var
@@ -44,39 +44,43 @@ implementation
 
 procedure TFrmMainForm.ActConnectServiceExecute(Sender: TObject);
 begin
- Mercurio.ConnectService;
+ if not MercurioIntf.ConnectService then
+  Tag := 0;
 end;
 
 procedure TFrmMainForm.ActConnectServiceUpdate(Sender: TObject);
 begin
- TAction(Sender).Enabled := (Assigned(FMercurioObj)) and (Mercurio <> nil) and
-   (Mercurio.Connected = False);
+ TAction(Sender).Enabled := (Assigned(FMercurioObj)) and (MercurioIntf <> nil) and
+   (MercurioIntf.Connected = False);
 end;
 
 procedure TFrmMainForm.ActDisconnectServiceExecute(Sender: TObject);
 begin
- Mercurio.DisconnectService;
+ MercurioIntf.DisconnectService;
 end;
 
 procedure TFrmMainForm.ActDisconnectServiceUpdate(Sender: TObject);
 begin
- TAction(Sender).Enabled := (Mercurio <> nil) and (Mercurio.Connected = True);
+ TAction(Sender).Enabled := (MercurioIntf <> nil) and (MercurioIntf.Connected = True);
 end;
 
 procedure TFrmMainForm.Button1Click(Sender: TObject);
 begin
- Mercurio.ConnectService;
+ MercurioIntf.ConnectService;
 end;
 
 procedure TFrmMainForm.Button2Click(Sender: TObject);
 begin
- Mercurio.DisconnectService;
+ MercurioIntf.DisconnectService;
 end;
 
 procedure TFrmMainForm.FormClose(Sender: TObject; var Action: TCloseAction);
 begin
  if Assigned(FMercurioObj) then
-  FreeAndNil(FMercurioObj);
+  begin
+    MercurioIntf.DisconnectService;
+   //FreeAndNil(FMercurioObj);
+  end;
 end;
 
 procedure TFrmMainForm.FormCreate(Sender: TObject);

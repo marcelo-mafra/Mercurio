@@ -152,6 +152,7 @@
         <DCCReference Include="rtl.dcp"/>
         <DCCReference Include="interfaces.dcp"/>
         <DCCReference Include="resources.dcp"/>
+        <DCCReference Include="cmlib.dcp"/>
         <DCCReference Include="client.classes.svccon.pas"/>
         <DCCReference Include="client.classes.security.pas"/>
         <BuildConfiguration Include="Release">
@@ -204,12 +205,6 @@
                 <DeployFile LocalName="..\..\..\BIN\Win64\Debug\svccon.bpl" Configuration="Debug" Class="ProjectOutput">
                     <Platform Name="Win64">
                         <RemoteName>svccon.bpl</RemoteName>
-                        <Overwrite>true</Overwrite>
-                    </Platform>
-                </DeployFile>
-                <DeployFile LocalName="..\..\..\BIN\Win64\Debug\svccon.rsm" Configuration="Debug" Class="DebugSymbols">
-                    <Platform Name="Win64">
-                        <RemoteName>svccon.rsm</RemoteName>
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
