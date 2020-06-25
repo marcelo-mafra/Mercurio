@@ -11,18 +11,22 @@ object FrmMainForm: TFrmMainForm
   OnClose = FormClose
   DesignerMasterStyle = 0
   object Button1: TButton
+    Action = ActConnectService
+    Enabled = True
+    Images = ImgList
+    ImageIndex = 0
     Position.X = 24.000000000000000000
     Position.Y = 24.000000000000000000
     TabOrder = 3
-    Text = 'Conectar'
-    OnClick = Button1Click
   end
   object Button2: TButton
+    Action = ActDisconnectService
+    Enabled = True
+    Images = ImgList
+    ImageIndex = 1
     Position.X = 24.000000000000000000
     Position.Y = 56.000000000000000000
     TabOrder = 5
-    Text = 'Desconectar'
-    OnClick = Button2Click
   end
   object ActList: TActionList
     Images = ImgList
@@ -144,9 +148,5 @@ object FrmMainForm: TFrmMainForm
     Destination = <>
     Left = 200
     Top = 80
-  end
-  object ActionList1: TActionList
-    Left = 128
-    Top = 240
   end
 end

@@ -6,15 +6,15 @@ uses
   System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants,
   FMX.Types, FMX.Controls, FMX.Forms, FMX.Graphics, FMX.Dialogs,
   client.interfaces.service, client.classes.svccon, System.Actions, FMX.ActnList,
-  System.ImageList, FMX.ImgList, FMX.Controls.Presentation, FMX.StdCtrls;
+  System.ImageList, FMX.ImgList, FMX.Controls.Presentation, FMX.StdCtrls,
+  client.interfaces.application, client.classes.dlgmessages;
 
 type
-  TFrmMainForm = class(TForm)
+  TFrmMainForm = class(TForm, IChatApplication)
     ActList: TActionList;
     ActConnectService: TAction;
     ActDisconnectService: TAction;
     ImgList: TImageList;
-    ActionList1: TActionList;
     Button1: TButton;
     Button2: TButton;
     procedure ActDisconnectServiceExecute(Sender: TObject);
@@ -23,16 +23,31 @@ type
     procedure FormCreate(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure ActConnectServiceExecute(Sender: TObject);
-    procedure Button1Click(Sender: TObject);
-    procedure Button2Click(Sender: TObject);
+
+  strict private
+    //FConnectionObj: TChatConnection; //conexão com o serviço remoto
+   // FDialogsObj: TDlgMessages; //dialogs nas múltiplas plataformas suportadas.
+   FConnected: boolean;
+
   private
     { Private declarations }
-    FMercurioObj: TChatService;
-    function GetMercurio: IChatService;
+    //IChatApplication
+    function GetConnected: boolean;
+    procedure SetConnected(const Value: boolean);
+    function GetDialogs: IDlgMessage;
+    function GetRemoteService: IChatService;
+    function GetTitle: string;
 
   public
     { Public declarations }
-    property MercurioIntf: IChatService read GetMercurio;
+
+
+
+    //IChatApplication
+    property Connected: boolean read GetConnected write SetConnected;
+    property Dialogs: IDlgMessage read GetDialogs;
+    property RemoteService: IChatService read GetRemoteService;
+    property Title: string read GetTitle;
   end;
 
 var
@@ -44,55 +59,64 @@ implementation
 
 procedure TFrmMainForm.ActConnectServiceExecute(Sender: TObject);
 begin
- if not MercurioIntf.ConnectService then
-  Tag := 0;
+ Connected := RemoteService.ConnectService;
+ if Connected then
+  Dialogs.InfoMessage('Marcelo', 'O teste de conexão foi feito com sucesso');
 end;
 
 procedure TFrmMainForm.ActConnectServiceUpdate(Sender: TObject);
 begin
- TAction(Sender).Enabled := (Assigned(FMercurioObj)) and (MercurioIntf <> nil) and
-   (MercurioIntf.Connected = False);
+ TAction(Sender).Enabled := (Connected = False);
 end;
 
 procedure TFrmMainForm.ActDisconnectServiceExecute(Sender: TObject);
 begin
- MercurioIntf.DisconnectService;
+ Connected := not RemoteService.DisconnectService;
 end;
 
 procedure TFrmMainForm.ActDisconnectServiceUpdate(Sender: TObject);
 begin
- TAction(Sender).Enabled := (MercurioIntf <> nil) and (MercurioIntf.Connected = True);
-end;
-
-procedure TFrmMainForm.Button1Click(Sender: TObject);
-begin
- MercurioIntf.ConnectService;
-end;
-
-procedure TFrmMainForm.Button2Click(Sender: TObject);
-begin
- MercurioIntf.DisconnectService;
+ TAction(Sender).Enabled := (Connected = True);
 end;
 
 procedure TFrmMainForm.FormClose(Sender: TObject; var Action: TCloseAction);
 begin
- if Assigned(FMercurioObj) then
-  begin
-    MercurioIntf.DisconnectService;
-   //FreeAndNil(FMercurioObj);
-  end;
+ if (RemoteService <> nil) then
+  RemoteService.DisconnectService;
 end;
 
 procedure TFrmMainForm.FormCreate(Sender: TObject);
 begin
- FMercurioObj := TChatService.Create;
+ Connected := False; //default
+ //FConnectionObj := TChatConnection.Create;
+ //FDialogsObj := TDlgMessages.Create;
 end;
 
-function TFrmMainForm.GetMercurio: IChatService;
+function TFrmMainForm.GetConnected: boolean;
 begin
- Result := nil;
- if FMercurioObj <> nil then
-   Result := FMercurioObj as IChatService;
+ Result := FConnected;
+end;
+
+function TFrmMainForm.GetDialogs: IDlgMessage;
+begin
+//  Result := FDialogsObj as IDlgMessage;
+ Result := TDlgMessages.Create as IDlgMessage;
+end;
+
+function TFrmMainForm.GetRemoteService: IChatService;
+begin
+  //Result := FConnectionObj as IChatService;
+  Result := TChatConnection.Create as IChatService;
+end;
+
+function TFrmMainForm.GetTitle: string;
+begin
+ Result := Application.Title;
+end;
+
+procedure TFrmMainForm.SetConnected(const Value: boolean);
+begin
+ FConnected := Value;
 end;
 
 end.

@@ -1,4 +1,4 @@
-package interfaces;
+package dlgmessages;
 
 {$R *.res}
 {$IFDEF IMPLICITBUILDING This IFDEF should not be used by users}
@@ -25,18 +25,16 @@ package interfaces;
 {$IMAGEBASE $400000}
 {$DEFINE DEBUG}
 {$ENDIF IMPLICITBUILDING}
-{$DESCRIPTION 'Unidades contendo interfaces de abstração de entidades do mercúrio.'}
+{$DESCRIPTION 'Dialogs usados pelas classes do mercúrio.'}
 {$RUNONLY}
 {$IMPLICITBUILD ON}
 
 requires
-  rtl;
+  rtl,
+  fmx,
+  interfaces;
 
 contains
-  client.interfaces.common in '..\..\Common\client.interfaces.common.pas',
-  client.interfaces.service in '..\..\Common\client.interfaces.service.pas',
-  client.interfaces.messages in '..\..\Common\client.interfaces.messages.pas',
-  client.interfaces.security in '..\..\Common\client.interfaces.security.pas',
-  client.interfaces.application in '..\..\Common\client.interfaces.application.pas';
+  client.classes.dlgmessages in 'client.classes.dlgmessages.pas';
 
 end.

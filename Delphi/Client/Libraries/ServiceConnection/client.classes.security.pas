@@ -15,7 +15,7 @@ uses
 
        //ISecurityService methods
        function Authenticate(const UserName, Password: string): boolean;
- end;
+   end;
 
 implementation
 

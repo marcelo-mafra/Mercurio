@@ -16,11 +16,11 @@ type
  //Abstrai uma mensagem específica do chat.
  IChatMessage = interface(IChatInterface)
    ['{36B6B4C7-781A-4118-A2E4-76144DE8C426}']
+   function GetContentText: string;
    function GetMessageId: MsgIdentifier;
    function GetSenderUser: ISenderUser;
 
-   function Delete: boolean;
-
+   property ContentText: string read GetContentText;
    property MessageId: MsgIdentifier read GetMessageId;
    property SenderUser: ISenderUser read GetSenderUser;
  end;

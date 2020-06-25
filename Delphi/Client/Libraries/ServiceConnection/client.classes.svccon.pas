@@ -9,8 +9,8 @@ uses
   client.resources.svccon, client.classes.security, client.resources.httpstatus;
 
  type
-   {Classe que encapsula as funcionalidades de conexão com o serviço remoto.}
-   TChatService = class(TInterfacedObject, IChatService)
+   {Classe que encapsula as funcionalidades de conexão com o serviço remoto de chat.}
+   TChatConnection = class(TInterfacedObject, IChatService)
      strict private
        procedure DestroyInnerObjs; inline;
 
@@ -28,8 +28,8 @@ uses
        destructor Destroy; override;
 
        //IChatService
-       function  ConnectService: boolean;
-       procedure DisconnectService;
+       function ConnectService: boolean;
+       function DisconnectService: boolean;
 
        property Connected: boolean read GetConnected;
        property Security: ISecurityService read GetSecurityService;
@@ -41,9 +41,9 @@ uses
 implementation
 
 
-{ TChatService }
+{ TChatConnection }
 
-function TChatService.ConnectService: boolean;
+function TChatConnection.ConnectService: boolean;
 var
  IResponse: IHTTPResponse;
 // vUTF8Data: TStringStream;
@@ -101,20 +101,20 @@ begin
  end;
 end;
 
-constructor TChatService.Create;
+constructor TChatConnection.Create;
 begin
  //Service host and name
  FServiceName := TChatServiceConst.ServiceName;
  FServiceHost := TChatServiceConst.ServiceHost;
 end;
 
-destructor TChatService.Destroy;
+destructor TChatConnection.Destroy;
 begin
   self.DestroyInnerObjs;
   inherited;
 end;
 
-procedure TChatService.DestroyInnerObjs;
+procedure TChatConnection.DestroyInnerObjs;
 begin
  if (Assigned(FSecurityObj)) and (Assigned(FServiceObj)) then
   begin
@@ -123,22 +123,23 @@ begin
   end;
 end;
 
-procedure TChatService.DisconnectService;
+function TChatConnection.DisconnectService: boolean;
 begin
  self.DestroyInnerObjs;
+ Result := True;
 end;
 
-function TChatService.GetConnected: boolean;
+function TChatConnection.GetConnected: boolean;
 begin
  Result := Security <> nil;
 end;
 
-function TChatService.GetSecurityService: ISecurityService;
+function TChatConnection.GetSecurityService: ISecurityService;
 begin
  Result :=  FSecurityObj as ISecurityService;
 end;
 
-procedure TChatService.LoadServiceParams;
+procedure TChatConnection.LoadServiceParams;
 begin
  with FServiceObj do
   begin

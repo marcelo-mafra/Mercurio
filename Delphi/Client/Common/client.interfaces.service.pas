@@ -14,7 +14,7 @@ type
    function GetSecurityService: ISecurityService;
 
    function  ConnectService: boolean;
-   procedure DisconnectService;
+   function DisconnectService: boolean;
 
    property Connected: boolean read GetConnected;
    property Security: ISecurityService read GetSecurityService;

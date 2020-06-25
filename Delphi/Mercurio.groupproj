@@ -21,6 +21,9 @@
         <Projects Include="Client\Libraries\ChatMessages\chatmessages.dproj">
             <Dependencies/>
         </Projects>
+        <Projects Include="Client\Libraries\DlgMessages\dlgmessages.dproj">
+            <Dependencies/>
+        </Projects>
     </ItemGroup>
     <ProjectExtensions>
         <Borland.Personality>Default.Personality.12</Borland.Personality>
@@ -83,14 +86,23 @@
     <Target Name="chatmessages:Make">
         <MSBuild Projects="Client\Libraries\ChatMessages\chatmessages.dproj" Targets="Make"/>
     </Target>
+    <Target Name="dlgmessages">
+        <MSBuild Projects="Client\Libraries\DlgMessages\dlgmessages.dproj"/>
+    </Target>
+    <Target Name="dlgmessages:Clean">
+        <MSBuild Projects="Client\Libraries\DlgMessages\dlgmessages.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="dlgmessages:Make">
+        <MSBuild Projects="Client\Libraries\DlgMessages\dlgmessages.dproj" Targets="Make"/>
+    </Target>
     <Target Name="Build">
-        <CallTarget Targets="mercurio;cmlib;interfaces;resources;svccon;chatmessages"/>
+        <CallTarget Targets="mercurio;cmlib;interfaces;resources;svccon;chatmessages;dlgmessages"/>
     </Target>
     <Target Name="Clean">
-        <CallTarget Targets="mercurio:Clean;cmlib:Clean;interfaces:Clean;resources:Clean;svccon:Clean;chatmessages:Clean"/>
+        <CallTarget Targets="mercurio:Clean;cmlib:Clean;interfaces:Clean;resources:Clean;svccon:Clean;chatmessages:Clean;dlgmessages:Clean"/>
     </Target>
     <Target Name="Make">
-        <CallTarget Targets="mercurio:Make;cmlib:Make;interfaces:Make;resources:Make;svccon:Make;chatmessages:Make"/>
+        <CallTarget Targets="mercurio:Make;cmlib:Make;interfaces:Make;resources:Make;svccon:Make;chatmessages:Make;dlgmessages:Make"/>
     </Target>
     <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
 </Project>
