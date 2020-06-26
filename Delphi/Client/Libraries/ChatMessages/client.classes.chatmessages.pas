@@ -21,7 +21,6 @@ interface
      destructor Destroy; override;
 
      //IChatMessage
-
      property ContentText: string read GetContentText;
      property MessageId: MsgIdentifier read GetMessageId;
      property SenderUser: ISenderUser read GetSenderUser;

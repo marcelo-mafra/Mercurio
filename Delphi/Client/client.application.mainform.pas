@@ -5,9 +5,9 @@ interface
 uses
   System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants,
   FMX.Types, FMX.Controls, FMX.Forms, FMX.Graphics, FMX.Dialogs,
-  client.interfaces.service, client.classes.svccon, System.Actions, FMX.ActnList,
+  client.interfaces.service, client.classes.chatservice, System.Actions, FMX.ActnList,
   System.ImageList, FMX.ImgList, FMX.Controls.Presentation, FMX.StdCtrls,
-  client.interfaces.application, client.classes.dlgmessages;
+  client.interfaces.application, client.classes.dlgmessages, FMX.Objects;
 
 type
   TFrmMainForm = class(TForm, IChatApplication)
@@ -15,19 +15,23 @@ type
     ActConnectService: TAction;
     ActDisconnectService: TAction;
     ImgList: TImageList;
-    Button1: TButton;
-    Button2: TButton;
+    Panel1: TPanel;
+    ImgProfile: TImage;
+    ActProfile: TAction;
+    PnlProfile: TExpander;
     procedure ActDisconnectServiceExecute(Sender: TObject);
     procedure ActDisconnectServiceUpdate(Sender: TObject);
     procedure ActConnectServiceUpdate(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure ActConnectServiceExecute(Sender: TObject);
+    procedure FormShow(Sender: TObject);
+    procedure ActProfileExecute(Sender: TObject);
+    procedure ImgProfileClick(Sender: TObject);
 
   strict private
-    //FConnectionObj: TChatConnection; //conexão com o serviço remoto
-   // FDialogsObj: TDlgMessages; //dialogs nas múltiplas plataformas suportadas.
    FConnected: boolean;
+   function GetBitmap(const ImageIndex: integer): TBitmap; inline;
 
   private
     { Private declarations }
@@ -40,8 +44,6 @@ type
 
   public
     { Public declarations }
-
-
 
     //IChatApplication
     property Connected: boolean read GetConnected write SetConnected;
@@ -60,8 +62,6 @@ implementation
 procedure TFrmMainForm.ActConnectServiceExecute(Sender: TObject);
 begin
  Connected := RemoteService.ConnectService;
- if Connected then
-  Dialogs.InfoMessage('Marcelo', 'O teste de conexão foi feito com sucesso');
 end;
 
 procedure TFrmMainForm.ActConnectServiceUpdate(Sender: TObject);
@@ -79,6 +79,28 @@ begin
  TAction(Sender).Enabled := (Connected = True);
 end;
 
+procedure TFrmMainForm.ActProfileExecute(Sender: TObject);
+var
+ ListObj: TStringList;
+begin
+ if Connected then
+  begin
+   ListObj := TStringList.Create;
+    try
+      RemoteService.ServiceInfo.GetServiceInfo(ListObj);
+
+    finally
+      Dialogs.InfoMessage('', ListObj.Values['ServiceName'] + ' | ' +
+                              ListObj.Values['ServiceHost']);
+
+      PnlProfile.IsExpanded := True;
+      if Assigned(ListObj) then FreeAndNil(ListObj);
+
+    end;
+
+  end;
+end;
+
 procedure TFrmMainForm.FormClose(Sender: TObject; var Action: TCloseAction);
 begin
  if (RemoteService <> nil) then
@@ -88,8 +110,12 @@ end;
 procedure TFrmMainForm.FormCreate(Sender: TObject);
 begin
  Connected := False; //default
- //FConnectionObj := TChatConnection.Create;
- //FDialogsObj := TDlgMessages.Create;
+ ImgProfile.Bitmap.Assign(GetBitmap(0));
+end;
+
+procedure TFrmMainForm.FormShow(Sender: TObject);
+begin
+ ActConnectService.Execute;
 end;
 
 function TFrmMainForm.GetConnected: boolean;
@@ -99,19 +125,33 @@ end;
 
 function TFrmMainForm.GetDialogs: IDlgMessage;
 begin
-//  Result := FDialogsObj as IDlgMessage;
+ //Interface que abstrai dialogs nas múltiplas plataformas suportadas.
  Result := TDlgMessages.Create as IDlgMessage;
 end;
 
 function TFrmMainForm.GetRemoteService: IChatService;
 begin
-  //Result := FConnectionObj as IChatService;
-  Result := TChatConnection.Create as IChatService;
+  //Interface que abstrai o serviço remoto de chat.
+  Result := TChatService.Create as IChatService;
 end;
 
 function TFrmMainForm.GetTitle: string;
 begin
  Result := Application.Title;
+end;
+
+procedure TFrmMainForm.ImgProfileClick(Sender: TObject);
+begin
+ ActProfile.Execute;
+end;
+
+function TFrmMainForm.GetBitmap(const ImageIndex: integer): TBitmap;
+var
+ sz: TSize;
+begin
+ //Retorna uma das imagens da lista de imagens da aplicação.
+ sz := TSize.Create(18, 18);
+ Result :=  ImgList.Bitmap(sz, ImageIndex);
 end;
 
 procedure TFrmMainForm.SetConnected(const Value: boolean);

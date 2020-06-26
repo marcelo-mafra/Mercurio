@@ -1,4 +1,4 @@
-package svccon;
+package chatservice;
 
 {$R *.res}
 {$IFDEF IMPLICITBUILDING This IFDEF should not be used by users}
@@ -33,10 +33,12 @@ requires
   rtl,
   interfaces,
   resources,
-  cmlib;
+  cmlib,
+  nethttp;
 
 contains
-  client.classes.svccon in 'client.classes.svccon.pas',
-  client.classes.security in 'client.classes.security.pas';
+  client.classes.chatservice in 'client.classes.chatservice.pas',
+  client.classes.security in 'client.classes.security.pas',
+  client.classes.chatserviceinfo in 'client.classes.chatserviceinfo.pas';
 
 end.
