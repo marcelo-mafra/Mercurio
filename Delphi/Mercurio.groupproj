@@ -3,6 +3,9 @@
         <ProjectGuid>{4C602DD4-6831-47E7-86F7-22744080BFE0}</ProjectGuid>
     </PropertyGroup>
     <ItemGroup>
+        <Projects Include="Service\GUI Server\chatserver.dproj">
+            <Dependencies/>
+        </Projects>
         <Projects Include="Client\mercurio.dproj">
             <Dependencies/>
         </Projects>
@@ -35,6 +38,15 @@
             <Default.Personality/>
         </BorlandProject>
     </ProjectExtensions>
+    <Target Name="chatserver">
+        <MSBuild Projects="Service\GUI Server\chatserver.dproj"/>
+    </Target>
+    <Target Name="chatserver:Clean">
+        <MSBuild Projects="Service\GUI Server\chatserver.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="chatserver:Make">
+        <MSBuild Projects="Service\GUI Server\chatserver.dproj" Targets="Make"/>
+    </Target>
     <Target Name="mercurio">
         <MSBuild Projects="Client\mercurio.dproj"/>
     </Target>
@@ -108,13 +120,13 @@
         <MSBuild Projects="Client\Libraries\ChatMessages\chatmessages.dproj" Targets="Make"/>
     </Target>
     <Target Name="Build">
-        <CallTarget Targets="mercurio;cmlib;interfaces;resources;dlgmessages;nethttp;chatservice;chatmessages"/>
+        <CallTarget Targets="chatserver;mercurio;cmlib;interfaces;resources;dlgmessages;nethttp;chatservice;chatmessages"/>
     </Target>
     <Target Name="Clean">
-        <CallTarget Targets="mercurio:Clean;cmlib:Clean;interfaces:Clean;resources:Clean;dlgmessages:Clean;nethttp:Clean;chatservice:Clean;chatmessages:Clean"/>
+        <CallTarget Targets="chatserver:Clean;mercurio:Clean;cmlib:Clean;interfaces:Clean;resources:Clean;dlgmessages:Clean;nethttp:Clean;chatservice:Clean;chatmessages:Clean"/>
     </Target>
     <Target Name="Make">
-        <CallTarget Targets="mercurio:Make;cmlib:Make;interfaces:Make;resources:Make;dlgmessages:Make;nethttp:Make;chatservice:Make;chatmessages:Make"/>
+        <CallTarget Targets="chatserver:Make;mercurio:Make;cmlib:Make;interfaces:Make;resources:Make;dlgmessages:Make;nethttp:Make;chatservice:Make;chatmessages:Make"/>
     </Target>
     <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
 </Project>

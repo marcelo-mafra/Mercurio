@@ -16,12 +16,19 @@ type
 
       ResponseTimeout = 10000; // 10 seconds
       ServiceCharset = 'utf-8';
-      ServiceHost = 'https://viacep.com.br/ws/31030-440/json';//'http://offeu.com/utf8.txt';
-      ServiceName = 'Mercúrio chat service';
+      ServiceHostTEMP = 'https://viacep.com.br/ws/31030-440/json';
+      ServiceHost    = 'http://localhost:8080/soap/IMercurioChatServer/';
+      ServiceInfoURL = 'http://localhost:8080/wsdl/IMercurioChatServer/ServiceInfo';
 
-      UserAgent = 'Embarcadero URI Client/1.0';
+      UserAgent = 'Embarcadeiro URI Client/1.0';
   end;
-
+  //Labels usados em diversos pontos da interface de uso da aplicação.
+  TChatServiceLabels = class
+    const
+      ServiceName = 'Mercúrio chat';
+      ServiceHost = 'Endereço remoto';
+      ServiceTime = 'Server time';
+  end;
 
 
 implementation

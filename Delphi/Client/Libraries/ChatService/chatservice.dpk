@@ -34,11 +34,13 @@ requires
   interfaces,
   resources,
   cmlib,
-  nethttp;
+  nethttp,
+  soaprtl;
 
 contains
   client.classes.chatservice in 'client.classes.chatservice.pas',
   client.classes.security in 'client.classes.security.pas',
-  client.classes.chatserviceinfo in 'client.classes.chatserviceinfo.pas';
+  client.classes.chatserviceinfo in 'client.classes.chatserviceinfo.pas',
+  client.chatservice.serverintf in 'client.chatservice.serverintf.pas';
 
 end.

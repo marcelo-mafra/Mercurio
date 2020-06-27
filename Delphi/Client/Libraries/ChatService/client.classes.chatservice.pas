@@ -28,7 +28,6 @@ uses
        function DisconnectService: boolean;
 
        property Security: ISecurityService read GetSecurityService;
-
        property ServiceHost: string read FServiceHost;
        property ServiceName: string read FServiceName;
 
@@ -44,30 +43,23 @@ function TChatService.ConnectService: boolean;
 var
  NetHTTPObj: TNetHTTPService;
  IResponse: IHTTPResponse;
- vUTF8Data: TStringStream;
+// vUTF8Data: TStringStream;
 begin
  {O método "ConnectService" apenas dá um GET no serviço remoto, sob http e
   verifica se o serviço responde e retorna dados como esperado. Não há conexão
   persistente com o serviço remoto.}
- vUTF8Data := TStringStream.Create('', TEncoding.GetEncoding(TChatServiceConst.AcceptEncoding.ToInteger));
+ //vUTF8Data := TStringStream.Create('', TEncoding.GetEncoding(TChatServiceConst.AcceptEncoding.ToInteger));
  NetHTTPObj := TNetHTTPService.Create;
 
  try
-  Result := False;
   IResponse := NetHTTPObj.Execute(TChatServiceConst.ServiceHost, nil);
-  //IResponse := self.Execute(self.ServiceHost, vUTF8Data});
+  Result := (IResponse <> nil) and (IResponse.StatusCode = THTTPStatus.StatusOK)
+            and not (IResponse.ContentAsString.IsEmpty);
 
-  Result := (IResponse <> nil) and (IResponse.StatusCode = THTTPStatus.StatusOK);
-
-  if Result then //Serviço respondeu corretamente.
-   begin
-     outputdebugstring(PWideChar(IResponse.ContentAsString));
-     outputdebugstring(PWideChar(IResponse.StatusText));
-     {outputdebugstring(PWideChar(TNetEncoding.UrlDecode(vUTF8Data.DataString)));}
-   end;
-
+  {IResponse := self.Execute(self.ServiceHost, vUTF8Data);
+  outputdebugstring(PWideChar(TNetEncoding.UrlDecode(vUTF8Data.DataString)));}
  finally
-  if Assigned(vUTF8Data) then FreeAndNil(vUTF8Data);
+  //if Assigned(vUTF8Data) then FreeAndNil(vUTF8Data);
   if Assigned(NetHTTPObj) then FreeAndNil(NetHTTPObj);
  end;
 end;
@@ -75,9 +67,8 @@ end;
 constructor TChatService.Create;
 begin
  //Service host and name
-
- FServiceName := TChatServiceConst.ServiceName;
- FServiceHost := TChatServiceConst.ServiceHost;
+ FServiceName := TChatServiceLabels.ServiceName;
+ FServiceHost := TChatServiceLabels.ServiceHost;
 end;
 
 destructor TChatService.Destroy;

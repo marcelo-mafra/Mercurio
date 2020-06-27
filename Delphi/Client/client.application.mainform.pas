@@ -7,7 +7,10 @@ uses
   FMX.Types, FMX.Controls, FMX.Forms, FMX.Graphics, FMX.Dialogs,
   client.interfaces.service, client.classes.chatservice, System.Actions, FMX.ActnList,
   System.ImageList, FMX.ImgList, FMX.Controls.Presentation, FMX.StdCtrls,
-  client.interfaces.application, client.classes.dlgmessages, FMX.Objects;
+  client.interfaces.application, client.classes.dlgmessages, FMX.Objects,
+  FMX.StdActns, FMX.ListView.Types, FMX.ListView.Appearances,
+  FMX.ListView.Adapters.Base, FMX.ListView, FMX.ListBox, FMX.Layouts,
+  client.resources.svcconsts;
 
 type
   TFrmMainForm = class(TForm, IChatApplication)
@@ -18,7 +21,11 @@ type
     Panel1: TPanel;
     ImgProfile: TImage;
     ActProfile: TAction;
-    PnlProfile: TExpander;
+    PnlServiceInfo: TCalloutPanel;
+    ActServiceInfoView: TViewAction;
+    LstServiceInfo: TListBox;
+    ListBoxHeader1: TListBoxHeader;
+    ListBoxItem1: TListBoxItem;
     procedure ActDisconnectServiceExecute(Sender: TObject);
     procedure ActDisconnectServiceUpdate(Sender: TObject);
     procedure ActConnectServiceUpdate(Sender: TObject);
@@ -26,7 +33,6 @@ type
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure ActConnectServiceExecute(Sender: TObject);
     procedure FormShow(Sender: TObject);
-    procedure ActProfileExecute(Sender: TObject);
     procedure ImgProfileClick(Sender: TObject);
 
   strict private
@@ -58,6 +64,10 @@ var
 implementation
 
 {$R *.fmx}
+{$R *.iPad.fmx IOS}
+{$R *.iPhone55in.fmx IOS}
+{$R *.Moto360.fmx ANDROID}
+{$R *.LgXhdpiPh.fmx ANDROID}
 
 procedure TFrmMainForm.ActConnectServiceExecute(Sender: TObject);
 begin
@@ -79,28 +89,6 @@ begin
  TAction(Sender).Enabled := (Connected = True);
 end;
 
-procedure TFrmMainForm.ActProfileExecute(Sender: TObject);
-var
- ListObj: TStringList;
-begin
- if Connected then
-  begin
-   ListObj := TStringList.Create;
-    try
-      RemoteService.ServiceInfo.GetServiceInfo(ListObj);
-
-    finally
-      Dialogs.InfoMessage('', ListObj.Values['ServiceName'] + ' | ' +
-                              ListObj.Values['ServiceHost']);
-
-      PnlProfile.IsExpanded := True;
-      if Assigned(ListObj) then FreeAndNil(ListObj);
-
-    end;
-
-  end;
-end;
-
 procedure TFrmMainForm.FormClose(Sender: TObject; var Action: TCloseAction);
 begin
  if (RemoteService <> nil) then
@@ -110,6 +98,7 @@ end;
 procedure TFrmMainForm.FormCreate(Sender: TObject);
 begin
  Connected := False; //default
+ PnlServiceInfo.Visible := False;
  ImgProfile.Bitmap.Assign(GetBitmap(0));
 end;
 
@@ -141,8 +130,53 @@ begin
 end;
 
 procedure TFrmMainForm.ImgProfileClick(Sender: TObject);
+var
+ Counter: integer;
+ ListObj: TStringList;
+ ItemObj: TListBoxItem;
+ HeaderObj: TListBoxGroupHeader;
 begin
- ActProfile.Execute;
+ if Connected then
+  begin
+   ListObj := TStringList.Create;
+
+    try
+      RemoteService.ServiceInfo.GetServiceInfo(ListObj);
+
+    finally
+      if ListObj.Count > 0 then
+       begin
+         LstServiceInfo.BeginUpdate;
+         LstServiceInfo.Items.Clear;
+
+         HeaderObj :=  TListBoxGroupHeader.Create(LstServiceInfo);
+         HeaderObj.Text := 'Header service';
+         //HeaderObj.TextSettings.Font.Style := [TFontStyle(fsBold)];
+         LstServiceInfo.AddObject(HeaderObj);
+
+         for Counter := 0 to ListObj.Count - 1 do
+          begin
+             //Item do listbox.
+             ItemObj := TListBoxItem.Create(LstServiceInfo);
+             ItemObj.Text :=  ListObj.Names[Counter];
+             ItemObj.Height := 40;
+             //ItemObj.ItemData.Bitmap := GetBitmap(3);
+
+             ItemObj.ItemData.Detail:= ListObj.ValueFromIndex[Counter];
+             ItemObj.StyleLookup := 'listboxitembottomdetail';
+             ItemObj.ItemData.Accessory := TlistBoxItemData.TAccessory(1);
+             ItemObj.WordWrap := True;
+             ItemObj.Hint := ItemObj.ItemData.Detail;
+             LstServiceInfo.AddObject(ItemObj);
+          end;
+
+         LstServiceInfo.EndUpdate;
+         ActServiceInfoView.Execute;
+       end;
+
+      if Assigned(ListObj) then FreeAndNil(ListObj);
+    end;
+  end;
 end;
 
 function TFrmMainForm.GetBitmap(const ImageIndex: integer): TBitmap;

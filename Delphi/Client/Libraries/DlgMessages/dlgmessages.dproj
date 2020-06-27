@@ -89,7 +89,7 @@
         <SanitizedProjectName>dlgmessages</SanitizedProjectName>
         <DCC_DcpOutput>$(MERCURIODIR)\DCP\$(Platform)\$(Config)</DCC_DcpOutput>
         <DCC_BplOutput>$(MERCURIODIR)\BIN\$(Platform)\$(Config)</DCC_BplOutput>
-        <DCC_UnitSearchPath>$(BDSLIBRIES);$(MERCURIODIR)\DCU\$(Platform)\$(Config);$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
+        <DCC_UnitSearchPath>$(BDSLIBRIES);$(MERCURIODIR)\DCU\$(Platform)\$(Config);$(MERCURIODIR)\DCP\Win64\Debug;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Base_Android)'!=''">
         <DCC_CBuilderOutput>None</DCC_CBuilderOutput>
