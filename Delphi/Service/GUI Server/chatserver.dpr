@@ -8,7 +8,9 @@ uses
   server.classes.mainform in 'server.classes.mainform.pas' {Form1},
   server.webmodule in 'server.webmodule.pas' {WebModuleMercurio: TWebModule},
   server.chatserver.impl in 'server.chatserver.impl.pas',
-  server.chatserver.intf in 'server.chatserver.intf.pas';
+  server.chatserver.intf in 'server.chatserver.intf.pas',
+  server.contatos.intf in 'server.contatos.intf.pas',
+  server.contatos.impl in 'server.contatos.impl.pas';
 
 {$R *.res}
 

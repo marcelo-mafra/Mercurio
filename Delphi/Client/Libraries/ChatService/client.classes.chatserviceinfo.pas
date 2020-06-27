@@ -7,7 +7,7 @@ uses
   System.Net.HttpClientComponent, Winapi.Windows, System.NetEncoding, classes.exceptions,
   client.interfaces.service, client.classes.json, client.resources.svcconsts,
   client.classes.nethttp, client.resources.httpstatus,
-  client.chatservice.serverintf;
+  client.serverintf.chatservice;
 
 type
    {Classe que representa o conjunto de informações sobre o serviço de chat.}
@@ -63,11 +63,20 @@ procedure TChatServiceInfo.GetServiceInfo(List: TStringList);
 var
  IChatService: IMercurioChatServer;
  JsonStr: UnicodeString;
+ MessageObj: client.serverintf.chatservice.TChatMessage;
 begin
  IChatService := GetIMercurioChatServer();
 
  try
    JsonStr := IChatService.ServiceInfo;
+
+   MessageObj := client.serverintf.chatservice.TChatMessage.Create;
+   MessageObj.ContentText := 'essa é a minha mensagem';
+   MessageObj.SenderUser := 'Marcelo';
+   MessageObj.MessageId := Random;
+   MessageObj.StatusMsg := TMessageStatus.msNew;
+
+    MessageObj := IChatService.NewChatMessage(MessageObj);
 
    if (IChatService <> nil) and not (JsonStr.IsEmpty) then
     begin
@@ -81,6 +90,8 @@ begin
     begin
      List.Clear;
      List.CommaText := InfoListObj.CommaText;
+     if Assigned(MessageObj) then FreeAndNil(MessageObj);
+
     end;
  end;
 

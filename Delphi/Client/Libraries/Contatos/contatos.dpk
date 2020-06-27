@@ -1,4 +1,4 @@
-package chatservice;
+package contatos;
 
 {$R *.res}
 {$IFDEF IMPLICITBUILDING This IFDEF should not be used by users}
@@ -25,20 +25,18 @@ package chatservice;
 {$IMAGEBASE $400000}
 {$DEFINE DEBUG}
 {$ENDIF IMPLICITBUILDING}
-{$DESCRIPTION 'Unidades de classes de objetos de conexão com o serviço remoto.'}
+{$DESCRIPTION 'Implementa as classes de contato e lista de contatos.'}
 {$RUNONLY}
 {$IMPLICITBUILD ON}
 
 requires
   rtl,
-  interfaces,
+  nethttp,
   resources,
-  cmlib,
-  nethttp;
+  interfaces,
+  cmlib;
 
 contains
-  client.classes.chatservice in 'client.classes.chatservice.pas',
-  client.classes.security in 'client.classes.security.pas',
-  client.classes.chatserviceinfo in 'client.classes.chatserviceinfo.pas';
+  client.classes.contatos in 'client.classes.contatos.pas';
 
 end.

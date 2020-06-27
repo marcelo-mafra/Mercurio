@@ -10,7 +10,7 @@ uses
   client.interfaces.application, client.classes.dlgmessages, FMX.Objects,
   FMX.StdActns, FMX.ListView.Types, FMX.ListView.Appearances,
   FMX.ListView.Adapters.Base, FMX.ListView, FMX.ListBox, FMX.Layouts,
-  client.resources.svcconsts;
+  client.resources.svcconsts, client.interfaces.contatos, client.classes.contatos;
 
 type
   TFrmMainForm = class(TForm, IChatApplication)
@@ -45,6 +45,7 @@ type
     function GetConnected: boolean;
     procedure SetConnected(const Value: boolean);
     function GetDialogs: IDlgMessage;
+    function GetContatosService: IContatosService;
     function GetRemoteService: IChatService;
     function GetTitle: string;
 
@@ -53,6 +54,7 @@ type
 
     //IChatApplication
     property Connected: boolean read GetConnected write SetConnected;
+    property ContatosService: IContatosService read GetContatosService;
     property Dialogs: IDlgMessage read GetDialogs;
     property RemoteService: IChatService read GetRemoteService;
     property Title: string read GetTitle;
@@ -105,11 +107,19 @@ end;
 procedure TFrmMainForm.FormShow(Sender: TObject);
 begin
  ActConnectService.Execute;
+ if Connected then
+  ContatosService.NewContato;
 end;
 
 function TFrmMainForm.GetConnected: boolean;
 begin
  Result := FConnected;
+end;
+
+function TFrmMainForm.GetContatosService: IContatosService;
+begin
+  //Interface que abstrai o serviço remoto de contatos do usuário.
+  Result := TContatosService.Create as IContatosService;
 end;
 
 function TFrmMainForm.GetDialogs: IDlgMessage;

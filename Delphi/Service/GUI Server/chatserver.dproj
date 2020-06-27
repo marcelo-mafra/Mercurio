@@ -137,6 +137,8 @@
         </DCCReference>
         <DCCReference Include="server.chatserver.impl.pas"/>
         <DCCReference Include="server.chatserver.intf.pas"/>
+        <DCCReference Include="server.contatos.intf.pas"/>
+        <DCCReference Include="server.contatos.impl.pas"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>
@@ -166,6 +168,18 @@
                 <DeployFile LocalName="Win32\Debug\chatserver.exe" Configuration="Debug" Class="ProjectOutput">
                     <Platform Name="Win32">
                         <RemoteName>chatserver.exe</RemoteName>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
+                <DeployFile LocalName="..\..\BIN\Win64\Debug\chatserver.exe" Configuration="Debug" Class="ProjectOutput">
+                    <Platform Name="Win64">
+                        <RemoteName>chatserver.exe</RemoteName>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
+                <DeployFile LocalName="..\..\BIN\Win64\Debug\chatserver.rsm" Configuration="Debug" Class="DebugSymbols">
+                    <Platform Name="Win64">
+                        <RemoteName>chatserver.rsm</RemoteName>
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>

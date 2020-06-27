@@ -7,7 +7,7 @@
 // (26/06/2020 16:07:39 - - $Rev: 96726 $)
 // ************************************************************************ //
 
-unit client.chatservice.serverintf;
+unit client.serverintf.chatservice;
 
 interface
 
@@ -26,6 +26,7 @@ type
   // !:double          - "http://www.w3.org/2001/XMLSchema"[Gbl]
 
   TMyEmployee          = class;                 { "urn:server.chatserver.intf"[GblCplx] }
+  TChatMessage         = class;                 { "urn:server.chatserver.intf"[GblCplx] }
 
   {$SCOPEDENUMS ON}
   { "urn:server.chatserver.intf"[GblSmpl] }
@@ -34,6 +35,12 @@ type
   {$SCOPEDENUMS OFF}
 
 
+  //Status de cada mensagem do chat.
+  {$SCOPEDENUMS ON}
+  { "urn:server.chatserver.intf"[GblSmpl] }
+  TMessageStatus = (msNew, msRegistered, msEContentInvalid, msESenderUserInvalid,
+    msEUnknown);
+  {$SCOPEDENUMS OFF}
 
   // ************************************************************************ //
   // XML       : TMyEmployee, global, <complexType>
@@ -48,6 +55,25 @@ type
     property LastName:  string  read FLastName write FLastName;
     property FirstName: string  read FFirstName write FFirstName;
     property Salary:    Double  read FSalary write FSalary;
+  end;
+
+  // ************************************************************************ //
+  // XML       : TChatMessage, global, <complexType>
+  // Namespace : urn:server.chatserver.intf
+  // ************************************************************************ //
+  TChatMessage = class(TRemotable)
+  private
+    FContentText, FSenderUser: UnicodeString;
+    FMessageId: double;
+    FRegisteredTime: TDateTime;
+    FStatusMsg: TMessageStatus;
+
+  published
+    property ContentText: UnicodeString read FContentText write FContentText;
+    property MessageId: double read FMessageId write FMessageId;
+    property SenderUser: UnicodeString read FSenderUser write FSenderUser;
+    property StatusMsg: TMessageStatus read FStatusMsg write FStatusMsg;
+    property RegisteredTime: TDateTime read FRegisteredTime write FRegisteredTime;
   end;
 
   TDoubleArray = array of Double;               { "urn:server.chatserver.intf"[GblCplx] }
@@ -70,12 +96,15 @@ type
     function  echoMyEmployee(const Value: TMyEmployee): TMyEmployee; stdcall;
     function  echoDouble(const Value: Double): Double; stdcall;
     function  ServiceInfo: string; stdcall;
+    function  NewChatMessage(const Value: TChatMessage): TChatMessage; stdcall;
   end;
 
-function GetIMercurioChatServer(UseWSDL: Boolean=System.False; Addr: string=''; HTTPRIO: THTTPRIO = nil): IMercurioChatServer;
+function GetIMercurioChatServer(UseWSDL: Boolean = System.False; Addr: string = '';
+             HTTPRIO: THTTPRIO = nil): IMercurioChatServer;
 
 
 implementation
+
   uses System.SysUtils;
 
 function GetIMercurioChatServer(UseWSDL: Boolean; Addr: string; HTTPRIO: THTTPRIO): IMercurioChatServer;
@@ -88,10 +117,10 @@ var
   RIO: THTTPRIO;
 begin
   Result := nil;
+
   if (Addr = '') then
   begin
-    if UseWSDL then
-      Addr := defWSDL
+    if UseWSDL then Addr := defWSDL
     else
       Addr := defURL;
   end;
@@ -106,8 +135,10 @@ begin
       RIO.WSDLLocation := Addr;
       RIO.Service := defSvc;
       RIO.Port := defPrt;
-    end else
+    end
+    else
       RIO.URL := Addr;
+
   finally
     if (Result = nil) and (HTTPRIO = nil) then
       RIO.Free;
@@ -122,5 +153,8 @@ initialization
   RemClassRegistry.RegisterXSInfo(TypeInfo(TEnumTest), 'urn:server.chatserver.intf', 'TEnumTest');
   RemClassRegistry.RegisterXSClass(TMyEmployee, 'urn:server.chatserver.intf', 'TMyEmployee');
   RemClassRegistry.RegisterXSInfo(TypeInfo(TDoubleArray), 'urn:server.chatserver.intf', 'TDoubleArray');
+  //-----------
+  RemClassRegistry.RegisterXSInfo(TypeInfo(TMessageStatus), 'urn:server.chatserver.intf', 'TMessageStatus');
+  RemClassRegistry.RegisterXSClass(TChatMessage, 'urn:server.chatserver.intf', 'TChatMessage');
 
 end.

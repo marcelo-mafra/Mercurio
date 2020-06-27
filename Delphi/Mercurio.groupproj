@@ -30,6 +30,9 @@
         <Projects Include="Client\Libraries\ChatMessages\chatmessages.dproj">
             <Dependencies/>
         </Projects>
+        <Projects Include="Client\Libraries\Contatos\contatos.dproj">
+            <Dependencies/>
+        </Projects>
     </ItemGroup>
     <ProjectExtensions>
         <Borland.Personality>Default.Personality.12</Borland.Personality>
@@ -119,14 +122,23 @@
     <Target Name="chatmessages:Make">
         <MSBuild Projects="Client\Libraries\ChatMessages\chatmessages.dproj" Targets="Make"/>
     </Target>
+    <Target Name="contatos">
+        <MSBuild Projects="Client\Libraries\Contatos\contatos.dproj"/>
+    </Target>
+    <Target Name="contatos:Clean">
+        <MSBuild Projects="Client\Libraries\Contatos\contatos.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="contatos:Make">
+        <MSBuild Projects="Client\Libraries\Contatos\contatos.dproj" Targets="Make"/>
+    </Target>
     <Target Name="Build">
-        <CallTarget Targets="chatserver;mercurio;cmlib;interfaces;resources;dlgmessages;nethttp;chatservice;chatmessages"/>
+        <CallTarget Targets="chatserver;mercurio;cmlib;interfaces;resources;dlgmessages;nethttp;chatservice;chatmessages;contatos"/>
     </Target>
     <Target Name="Clean">
-        <CallTarget Targets="chatserver:Clean;mercurio:Clean;cmlib:Clean;interfaces:Clean;resources:Clean;dlgmessages:Clean;nethttp:Clean;chatservice:Clean;chatmessages:Clean"/>
+        <CallTarget Targets="chatserver:Clean;mercurio:Clean;cmlib:Clean;interfaces:Clean;resources:Clean;dlgmessages:Clean;nethttp:Clean;chatservice:Clean;chatmessages:Clean;contatos:Clean"/>
     </Target>
     <Target Name="Make">
-        <CallTarget Targets="chatserver:Make;mercurio:Make;cmlib:Make;interfaces:Make;resources:Make;dlgmessages:Make;nethttp:Make;chatservice:Make;chatmessages:Make"/>
+        <CallTarget Targets="chatserver:Make;mercurio:Make;cmlib:Make;interfaces:Make;resources:Make;dlgmessages:Make;nethttp:Make;chatservice:Make;chatmessages:Make;contatos:Make"/>
     </Target>
     <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
 </Project>

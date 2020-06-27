@@ -18,6 +18,7 @@ type
     function echoDouble(const Value: Double): Double; stdcall;
     //------------------------------------
     function ServiceInfo: UnicodeString; stdcall;
+    function NewChatMessage(const Value: TChatMessage): TChatMessage; stdcall;
   end;
 
 implementation
@@ -38,6 +39,15 @@ function TMercurioChatServer.echoMyEmployee(const Value: TMyEmployee): TMyEmploy
 begin
   { TODO : Implement method echoMyEmployee }
   Result := Value;
+end;
+
+function TMercurioChatServer.NewChatMessage(
+  const Value: TChatMessage): TChatMessage;
+begin
+  Result := Value;
+  Result.MessageId := Result.MessageId * 2;
+  Result.StatusMsg := msRegistered;
+  Result.RegisteredTime := Now;
 end;
 
 function TMercurioChatServer.ServiceInfo: UnicodeString;

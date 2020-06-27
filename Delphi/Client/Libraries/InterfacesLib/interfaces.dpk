@@ -37,6 +37,7 @@ contains
   client.interfaces.service in '..\..\Common\client.interfaces.service.pas',
   client.interfaces.messages in '..\..\Common\client.interfaces.messages.pas',
   client.interfaces.security in '..\..\Common\client.interfaces.security.pas',
-  client.interfaces.application in '..\..\Common\client.interfaces.application.pas';
+  client.interfaces.application in '..\..\Common\client.interfaces.application.pas',
+  client.interfaces.contatos in '..\..\Common\client.interfaces.contatos.pas';
 
 end.

@@ -155,6 +155,7 @@
         <DCCReference Include="..\..\Common\client.interfaces.messages.pas"/>
         <DCCReference Include="..\..\Common\client.interfaces.security.pas"/>
         <DCCReference Include="..\..\Common\client.interfaces.application.pas"/>
+        <DCCReference Include="..\..\Common\client.interfaces.contatos.pas"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>

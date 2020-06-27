@@ -31,10 +31,13 @@ package nethttp;
 requires
   rtl,
   cmlib,
-  resources;
+  resources,
+  soaprtl;
 
 contains
   client.classes.nethttp in 'client.classes.nethttp.pas',
-  client.classes.json in 'client.classes.json.pas';
+  client.classes.json in 'client.classes.json.pas',
+  client.serverintf.chatservice in 'client.serverintf.chatservice.pas',
+  client.serverintf.contatos in 'client.serverintf.contatos.pas';
 
 end.
