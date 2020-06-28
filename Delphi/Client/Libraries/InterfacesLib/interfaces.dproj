@@ -150,6 +150,7 @@
             <MainSource>MainSource</MainSource>
         </DelphiCompile>
         <DCCReference Include="rtl.dcp"/>
+        <DCCReference Include="nethttp.dcp"/>
         <DCCReference Include="..\..\Common\client.interfaces.common.pas"/>
         <DCCReference Include="..\..\Common\client.interfaces.service.pas"/>
         <DCCReference Include="..\..\Common\client.interfaces.messages.pas"/>

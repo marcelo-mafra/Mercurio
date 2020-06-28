@@ -12,6 +12,9 @@
         <Projects Include="Common\CmLib\cmlib.dproj">
             <Dependencies/>
         </Projects>
+        <Projects Include="Client\Libraries\NetHTTP\nethttp.dproj">
+            <Dependencies/>
+        </Projects>
         <Projects Include="Client\Libraries\InterfacesLib\interfaces.dproj">
             <Dependencies/>
         </Projects>
@@ -19,9 +22,6 @@
             <Dependencies/>
         </Projects>
         <Projects Include="Client\Libraries\DlgMessages\dlgmessages.dproj">
-            <Dependencies/>
-        </Projects>
-        <Projects Include="Client\Libraries\NetHTTP\nethttp.dproj">
             <Dependencies/>
         </Projects>
         <Projects Include="Client\Libraries\ChatService\chatservice.dproj">
@@ -68,6 +68,15 @@
     <Target Name="cmlib:Make">
         <MSBuild Projects="Common\CmLib\cmlib.dproj" Targets="Make"/>
     </Target>
+    <Target Name="nethttp">
+        <MSBuild Projects="Client\Libraries\NetHTTP\nethttp.dproj"/>
+    </Target>
+    <Target Name="nethttp:Clean">
+        <MSBuild Projects="Client\Libraries\NetHTTP\nethttp.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="nethttp:Make">
+        <MSBuild Projects="Client\Libraries\NetHTTP\nethttp.dproj" Targets="Make"/>
+    </Target>
     <Target Name="interfaces">
         <MSBuild Projects="Client\Libraries\InterfacesLib\interfaces.dproj"/>
     </Target>
@@ -94,15 +103,6 @@
     </Target>
     <Target Name="dlgmessages:Make">
         <MSBuild Projects="Client\Libraries\DlgMessages\dlgmessages.dproj" Targets="Make"/>
-    </Target>
-    <Target Name="nethttp">
-        <MSBuild Projects="Client\Libraries\NetHTTP\nethttp.dproj"/>
-    </Target>
-    <Target Name="nethttp:Clean">
-        <MSBuild Projects="Client\Libraries\NetHTTP\nethttp.dproj" Targets="Clean"/>
-    </Target>
-    <Target Name="nethttp:Make">
-        <MSBuild Projects="Client\Libraries\NetHTTP\nethttp.dproj" Targets="Make"/>
     </Target>
     <Target Name="chatservice">
         <MSBuild Projects="Client\Libraries\ChatService\chatservice.dproj"/>
@@ -132,13 +132,13 @@
         <MSBuild Projects="Client\Libraries\Contatos\contatos.dproj" Targets="Make"/>
     </Target>
     <Target Name="Build">
-        <CallTarget Targets="chatserver;mercurio;cmlib;interfaces;resources;dlgmessages;nethttp;chatservice;chatmessages;contatos"/>
+        <CallTarget Targets="chatserver;mercurio;cmlib;nethttp;interfaces;resources;dlgmessages;chatservice;chatmessages;contatos"/>
     </Target>
     <Target Name="Clean">
-        <CallTarget Targets="chatserver:Clean;mercurio:Clean;cmlib:Clean;interfaces:Clean;resources:Clean;dlgmessages:Clean;nethttp:Clean;chatservice:Clean;chatmessages:Clean;contatos:Clean"/>
+        <CallTarget Targets="chatserver:Clean;mercurio:Clean;cmlib:Clean;nethttp:Clean;interfaces:Clean;resources:Clean;dlgmessages:Clean;chatservice:Clean;chatmessages:Clean;contatos:Clean"/>
     </Target>
     <Target Name="Make">
-        <CallTarget Targets="chatserver:Make;mercurio:Make;cmlib:Make;interfaces:Make;resources:Make;dlgmessages:Make;nethttp:Make;chatservice:Make;chatmessages:Make;contatos:Make"/>
+        <CallTarget Targets="chatserver:Make;mercurio:Make;cmlib:Make;nethttp:Make;interfaces:Make;resources:Make;dlgmessages:Make;chatservice:Make;chatmessages:Make;contatos:Make"/>
     </Target>
     <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
 </Project>

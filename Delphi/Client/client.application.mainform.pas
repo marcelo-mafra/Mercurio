@@ -10,7 +10,8 @@ uses
   client.interfaces.application, client.classes.dlgmessages, FMX.Objects,
   FMX.StdActns, FMX.ListView.Types, FMX.ListView.Appearances,
   FMX.ListView.Adapters.Base, FMX.ListView, FMX.ListBox, FMX.Layouts,
-  client.resources.svcconsts, client.interfaces.contatos, client.classes.contatos;
+  client.resources.svcconsts, client.interfaces.contatos, client.classes.contatos,
+  client.serverintf.contatos;
 
 type
   TFrmMainForm = class(TForm, IChatApplication)
@@ -26,14 +27,15 @@ type
     LstServiceInfo: TListBox;
     ListBoxHeader1: TListBoxHeader;
     ListBoxItem1: TListBoxItem;
+    LstContatos: TListBox;
     procedure ActDisconnectServiceExecute(Sender: TObject);
     procedure ActDisconnectServiceUpdate(Sender: TObject);
     procedure ActConnectServiceUpdate(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure ActConnectServiceExecute(Sender: TObject);
-    procedure FormShow(Sender: TObject);
     procedure ImgProfileClick(Sender: TObject);
+    procedure FormShow(Sender: TObject);
 
   strict private
    FConnected: boolean;
@@ -48,6 +50,7 @@ type
     function GetContatosService: IContatosService;
     function GetRemoteService: IChatService;
     function GetTitle: string;
+    procedure ListarContatos;
 
   public
     { Public declarations }
@@ -74,6 +77,8 @@ implementation
 procedure TFrmMainForm.ActConnectServiceExecute(Sender: TObject);
 begin
  Connected := RemoteService.ConnectService;
+ if Connected then
+   self.ListarContatos;
 end;
 
 procedure TFrmMainForm.ActConnectServiceUpdate(Sender: TObject);
@@ -107,8 +112,6 @@ end;
 procedure TFrmMainForm.FormShow(Sender: TObject);
 begin
  ActConnectService.Execute;
- if Connected then
-  ContatosService.NewContato;
 end;
 
 function TFrmMainForm.GetConnected: boolean;
@@ -187,6 +190,58 @@ begin
       if Assigned(ListObj) then FreeAndNil(ListObj);
     end;
   end;
+end;
+
+procedure TFrmMainForm.ListarContatos;
+var
+ I: integer;
+ ContatosList: TListaContatos;
+ MyContatoObj: TMyContato;
+ ItemObj: TListBoxItem;
+begin
+ if Connected then
+  begin
+    ContatosList := TListaContatos.Create;
+
+    try
+      ContatosService.GetMyContatos(ContatosList);
+
+      if ContatosList.IsEmpty then
+       Exit;
+
+      LstContatos.BeginUpdate;
+      LstContatos.Clear;
+
+      for I := 0 to ContatosList.Count - 1 do
+       begin
+        MyContatoObj := ContatosList.FindObject(I);
+
+        if MyContatoObj <> nil then
+         begin
+          ItemObj := TListBoxItem.Create(LstContatos);
+          ItemObj.Text :=  MyContatoObj.FirstName.TrimRight;
+          ItemObj.Height := 40;
+          //ItemObj.ItemData.Bitmap := GetBitmap(3);
+
+          ItemObj.ItemData.Detail:= MyContatoObj.LastName.TrimRight;
+          ItemObj.StyleLookup := 'listboxitembottomdetail';
+          ItemObj.ItemData.Accessory := TlistBoxItemData.TAccessory(1);
+          ItemObj.WordWrap := True;
+          ItemObj.Hint := ItemObj.ItemData.Detail;
+
+          LstContatos.AddObject(ItemObj);
+         end;
+       end;
+
+    finally
+     LstContatos.EndUpdate;
+     //Não descomentar. Dá memory leak ao chamar o método FREE da classe.
+     //if Assigned(ContatosList) then
+       //FreeAndNil(ContatosList);
+    end;
+
+  end;
+
 end;
 
 function TFrmMainForm.GetBitmap(const ImageIndex: integer): TBitmap;

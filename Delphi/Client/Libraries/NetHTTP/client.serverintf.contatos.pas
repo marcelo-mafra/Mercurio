@@ -25,28 +25,28 @@ type
   // !:string          - "http://www.w3.org/2001/XMLSchema"[Gbl]
   // !:double          - "http://www.w3.org/2001/XMLSchema"[Gbl]
 
-  TMyContato          = class;                 { "urn:server.chatserver.intf"[GblCplx] }
-  TMyContatos         = class;                 { "urn:server.chatserver.intf"[GblCplx] }
+  TMyContato          = class;                 { "urn:server.contatos.intf"[GblCplx] }
+  TMyContatos         = class;                 { "urn:server.contatos.intf"[GblCplx] }
 
 
   // ************************************************************************ //
   // XML       : TMyContato, global, <complexType>
-  // Namespace : urn:server.chatserver.intf
+  // Namespace : urn:server.contatos.intf
   // ************************************************************************ //
   TMyContato = class(TRemotable)
   private
-    FLastName: string;
-    FFirstName: string;
+    FLastName: UnicodeString;
+    FFirstName: UnicodeString;
 
   published
-    property LastName:  string  read FLastName write FLastName;
-    property FirstName: string  read FFirstName write FFirstName;
+    property LastName:  UnicodeString  read FLastName write FLastName;
+    property FirstName: UnicodeString  read FFirstName write FFirstName;
 
   end;
 
   // ************************************************************************ //
-  // XML       : TChatMessage, global, <complexType>
-  // Namespace : urn:server.chatserver.intf
+  // XML       : TMyContatos, global, <complexType>
+  // Namespace : urn:server.contatos.intf
   // ************************************************************************ //
   TMyContatos = class(TRemotable)
   private
@@ -61,23 +61,24 @@ type
     property RegisteredTime: TDateTime read FRegisteredTime write FRegisteredTime;
   end;
 
-  TDoubleArray = array of Double;               { "urn:server.chatserver.intf"[GblCplx] }
+  TDoubleArray = array of Double;               { "urn:server.contatos.intf"[GblCplx] }
 
   // ************************************************************************ //
-  // Namespace : urn:server.chatserver.intf-IMercurioChatServer
-  // soapAction: urn:server.chatserver.intf-IMercurioChatServer#%operationName%
+  // Namespace : urn:server.contatos.intf-IMercurioContatosServer
+  // soapAction: urn:server.contatos.intf-IMercurioContatosServer#%operationName%
   // transport : http://schemas.xmlsoap.org/soap/http
   // style     : rpc
   // use       : encoded
-  // binding   : IMercurioChatServerbinding
-  // service   : IMercurioChatServerservice
-  // port      : IMercurioChatServerPort
-  // URL       : http://localhost:8080/soap/IMercurioChatServer
+  // binding   : IMercurioContatosServerbinding
+  // service   : IMercurioContatosServerservice
+  // port      : IMercurioContatosServerPort
+  // URL       : http://localhost:8080/soap/IMercurioContatosServer
   // ************************************************************************ //
   IMercurioContatosServer = interface(IInvokable)
-  ['{59533F8F-83C8-4145-8CE6-B3AF1A28FB61}']
+  ['{AE65F833-C137-487E-96F9-037DA184BD4F}']
 
     function  NewContato(const Value: TMyContato): TMyContato; stdcall;
+    function GetMyContatos: UnicodeString; stdcall;
   end;
 
 function GetIMercurioContatosServer(UseWSDL: Boolean = System.False; Addr: string = '';
@@ -130,11 +131,11 @@ end;
 
 initialization
   { IMercurioChatServer }
-  InvRegistry.RegisterInterface(TypeInfo(IMercurioContatosServer), 'urn:server.chatserver.intf-IMercurioContatosServer', '');
-  InvRegistry.RegisterDefaultSOAPAction(TypeInfo(IMercurioContatosServer), 'urn:server.chatserver.intf-IMercurioContatosServer#%operationName%');
-  RemClassRegistry.RegisterXSInfo(TypeInfo(TDoubleArray), 'urn:server.chatserver.intf', 'TDoubleArray');
+  InvRegistry.RegisterInterface(TypeInfo(IMercurioContatosServer), 'urn:server.contatos.intf-IMercurioContatosServer', '');
+  InvRegistry.RegisterDefaultSOAPAction(TypeInfo(IMercurioContatosServer), 'urn:server.contatos.intf-IMercurioContatosServer#%operationName%');
+  RemClassRegistry.RegisterXSInfo(TypeInfo(TDoubleArray), 'urn:server.contatos.intf', 'TDoubleArray');
   //-----------
-  RemClassRegistry.RegisterXSClass(TMyContato, 'urn:server.chatserver.intf', 'TMyContato');
-  RemClassRegistry.RegisterXSClass(TMyContatos, 'urn:server.chatserver.intf', 'TMyContatos');
+  RemClassRegistry.RegisterXSClass(TMyContato, 'urn:server.contatos.intf', 'TMyContato');
+  RemClassRegistry.RegisterXSClass(TMyContatos, 'urn:server.contatos.intf', 'TMyContatos');
 
 end.

@@ -44,6 +44,7 @@ object FrmMainForm: TFrmMainForm
     Size.Width = 275.000000000000000000
     Size.Height = 454.000000000000000000
     Size.PlatformDefault = False
+    Visible = False
     TabOrder = 13
     CalloutWidth = 23.000000000000000000
     CalloutLength = 11.000000000000000000
@@ -80,6 +81,19 @@ object FrmMainForm: TFrmMainForm
         TabOrder = 0
       end
     end
+  end
+  object LstContatos: TListBox
+    Align = Client
+    Size.Width = 275.000000000000000000
+    Size.Height = 455.000000000000000000
+    Size.PlatformDefault = False
+    TabOrder = 17
+    DisableFocusEffect = True
+    DefaultItemStyles.ItemStyle = ''
+    DefaultItemStyles.GroupHeaderStyle = ''
+    DefaultItemStyles.GroupFooterStyle = ''
+    Viewport.Width = 271.000000000000000000
+    Viewport.Height = 451.000000000000000000
   end
   object ActList: TActionList
     Images = ImgList

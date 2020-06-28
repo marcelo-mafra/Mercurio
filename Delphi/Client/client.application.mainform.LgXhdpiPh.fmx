@@ -14,7 +14,7 @@ inherited FrmMainForm_LgXhdpiPh: TFrmMainForm_LgXhdpiPh
     inherited LstServiceInfo: TListBox
       Size.Height = 654.000000000000000000
       Viewport.Width = 271.000000000000000000
-      Viewport.Height = 606.000000000000000000
+      Viewport.Height = 654.000000000000000000
       inherited ListBoxItem1: TListBoxItem
         Size.Width = 271.000000000000000000
       end
@@ -23,6 +23,12 @@ inherited FrmMainForm_LgXhdpiPh: TFrmMainForm_LgXhdpiPh
         Size.Height = 48.000000000000000000
       end
     end
+  end
+  inherited LstContatos: TListBox
+    Size.Width = 450.000000000000000000
+    Size.Height = 670.000000000000000000
+    Viewport.Width = 450.000000000000000000
+    Viewport.Height = 670.000000000000000000
   end
   inherited ActList: TActionList
     inherited ActConnectService: TAction

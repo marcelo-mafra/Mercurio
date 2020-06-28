@@ -14,7 +14,7 @@ inherited FrmMainForm_iPhone55in: TFrmMainForm_iPhone55in
     inherited LstServiceInfo: TListBox
       Size.Height = 675.000000000000000000
       Viewport.Width = 271.000000000000000000
-      Viewport.Height = 631.000000000000000000
+      Viewport.Height = 675.000000000000000000
       inherited ListBoxItem1: TListBoxItem
         Size.Width = 271.000000000000000000
       end
@@ -22,6 +22,12 @@ inherited FrmMainForm_iPhone55in: TFrmMainForm_iPhone55in
         Size.Width = 271.000000000000000000
       end
     end
+  end
+  inherited LstContatos: TListBox
+    Size.Width = 414.000000000000000000
+    Size.Height = 691.000000000000000000
+    Viewport.Width = 414.000000000000000000
+    Viewport.Height = 691.000000000000000000
   end
   inherited ActList: TActionList
     inherited ActConnectService: TAction

@@ -30,7 +30,8 @@ package interfaces;
 {$IMPLICITBUILD ON}
 
 requires
-  rtl;
+  rtl,
+  nethttp;
 
 contains
   client.interfaces.common in '..\..\Common\client.interfaces.common.pas',

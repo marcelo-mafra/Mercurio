@@ -41,6 +41,7 @@ type
     { Methods of Invokable interface must not use the default }
     { calling convention; stdcall is recommended }
     function NewContato(const Value: TMyContato): TMyContato; stdcall;
+    function GetMyContatos: UnicodeString; stdcall;
   end;
 
 implementation
