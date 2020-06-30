@@ -7,7 +7,8 @@ uses
   System.Net.HttpClientComponent, Winapi.Windows, System.NetEncoding, classes.exceptions,
   client.resources.svcconsts, client.classes.nethttp, client.resources.httpstatus,
   client.interfaces.common, client.interfaces.contatos, client.serverintf.contatos,
-  Generics.Collections, client.classes.json;
+  client.interfaces.application, Generics.Collections, client.classes.json, FMX.Forms,
+  client.resources.consts;
 
 type
    {Classe que representa uma lista de contatos.}
@@ -62,6 +63,7 @@ var
  ContatoObj: TMyContato;
  JsonData: string;
  I , Counter: integer;
+ IApplication: IChatApplication;
 begin
  if List = nil then
   Exit;
@@ -69,6 +71,9 @@ begin
  try
    IService := GetIMercurioContatosServer;
    JsonData := IService.GetMyContatos;
+
+   IApplication := Application.MainForm as IChatApplication;
+   IApplication.LogsWriter.RegisterInfo(TChatMessagesConst.CallRemoteMethodSucess);
 
    if (IService <> nil) and not (JsonData.IsEmpty) then
     begin
@@ -92,6 +97,7 @@ end;
 function TContatosService.NewContato(Value: TMyContato): TMyContato;
 var
  IService: IMercurioContatosServer;
+ IChatService: IChatApplication;
  //MessageObj: TMyContato;
 begin
 
@@ -101,7 +107,8 @@ begin
 
    if (IService <> nil) and (Result <> nil) then
     begin
-      Result.LastName := 'ok1';
+      IChatService := Application.MainForm as IChatApplication;
+      IChatService.LogsWriter.RegisterInfo(TChatMessagesConst.CallRemoteMethodSucess);
     end;
 
   finally

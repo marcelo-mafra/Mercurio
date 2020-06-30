@@ -31,7 +31,8 @@ package interfaces;
 
 requires
   rtl,
-  nethttp;
+  nethttp,
+  logwrt;
 
 contains
   client.interfaces.common in '..\..\Common\client.interfaces.common.pas',

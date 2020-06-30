@@ -6,8 +6,8 @@ uses
   System.SysUtils, System.Classes, System.Net.URLClient, System.Net.HttpClient,
   System.Net.HttpClientComponent, Winapi.Windows, System.NetEncoding, classes.exceptions,
   client.interfaces.service, client.classes.json, client.resources.svcconsts,
-  client.classes.nethttp, client.resources.httpstatus,
-  client.serverintf.chatservice;
+  client.classes.nethttp, client.resources.httpstatus,client.interfaces.application,
+  client.serverintf.chatservice, FMX.Forms, client.resources.consts;
 
 type
    {Classe que representa o conjunto de informações sobre o serviço de chat.}
@@ -62,6 +62,7 @@ end;
 procedure TChatServiceInfo.GetServiceInfo(List: TStringList);
 var
  IChatService: IMercurioChatServer;
+ IApplication: IChatApplication;
  JsonStr: UnicodeString;
  MessageObj: client.serverintf.chatservice.TChatMessage;
 begin
@@ -69,6 +70,8 @@ begin
 
  try
    JsonStr := IChatService.ServiceInfo;
+   IApplication := Application.MainForm as IChatApplication;
+   IApplication.LogsWriter.RegisterInfo(TChatMessagesConst.CallRemoteMethodSucess);
 
    MessageObj := client.serverintf.chatservice.TChatMessage.Create;
    MessageObj.ContentText := 'essa é a minha mensagem';

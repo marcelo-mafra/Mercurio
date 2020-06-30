@@ -4,10 +4,10 @@ interface
 
 uses
   System.SysUtils, System.Classes, System.Net.HttpClient, Winapi.Windows,
-  System.NetEncoding, classes.exceptions,
+  System.NetEncoding, classes.exceptions, client.classes.nethttp, FMX.Forms,
   client.interfaces.security, client.interfaces.service, client.resources.svcconsts,
   client.resources.svccon, client.classes.security, client.resources.httpstatus,
-  client.classes.chatserviceinfo, client.classes.nethttp;
+  client.classes.chatserviceinfo, client.interfaces.application, client.resources.consts ;
 
  type
    {Classe que encapsula as funcionalidades de conexão com o serviço remoto de chat.}
@@ -43,7 +43,8 @@ function TChatService.ConnectService: boolean;
 var
  NetHTTPObj: TNetHTTPService;
  IResponse: IHTTPResponse;
-// vUTF8Data: TStringStream;
+ IApplication: IChatApplication;
+ // vUTF8Data: TStringStream;
 begin
  {O método "ConnectService" apenas dá um GET no serviço remoto, sob http e
   verifica se o serviço responde e retorna dados como esperado. Não há conexão
@@ -56,6 +57,12 @@ begin
   Result := (IResponse <> nil) and (IResponse.StatusCode = THTTPStatus.StatusOK)
             and not (IResponse.ContentAsString.IsEmpty);
 
+  IApplication := Application.MainForm as IChatApplication;
+
+  if Result then
+     IApplication.LogsWriter.RegisterInfo(TSecurityConst.ConnectionSucess)
+  else
+     IApplication.LogsWriter.RegisterInfo(TSecurityConst.ConnectionFailure);
   {IResponse := self.Execute(self.ServiceHost, vUTF8Data);
   outputdebugstring(PWideChar(TNetEncoding.UrlDecode(vUTF8Data.DataString)));}
  finally
@@ -78,8 +85,12 @@ begin
 end;
 
 function TChatService.DisconnectService: boolean;
+var
+ IApplication: IChatApplication;
 begin
  Result := True;
+ IApplication := Application.MainForm as IChatApplication;
+ IApplication.LogsWriter.RegisterInfo(TSecurityConst.DisconnectionSucess);
 end;
 
 function TChatService.GetChatServiceInfo: IChatServiceInfo;

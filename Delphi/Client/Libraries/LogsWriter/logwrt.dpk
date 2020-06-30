@@ -1,4 +1,4 @@
-package contatos;
+package logwrt;
 
 {$R *.res}
 {$IFDEF IMPLICITBUILDING This IFDEF should not be used by users}
@@ -25,19 +25,17 @@ package contatos;
 {$IMAGEBASE $400000}
 {$DEFINE DEBUG}
 {$ENDIF IMPLICITBUILDING}
-{$DESCRIPTION 'Implementa as classes de contato e lista de contatos.'}
+{$DESCRIPTION 'Classes que registram logs do Mercúrio.'}
 {$RUNONLY}
 {$IMPLICITBUILD ON}
 
 requires
-  rtl,
-  nethttp,
-  resources,
-  interfaces,
-  cmlib,
-  fmx;
+  rtl;
 
 contains
-  client.classes.contatos in 'client.classes.contatos.pas';
+  classes.logs.controller in 'classes.logs.controller.pas',
+  classes.logs in 'classes.logs.pas',
+  classes.logs.textfile in 'classes.logs.textfile.pas',
+  System.FastStreams in 'System.FastStreams.pas';
 
 end.

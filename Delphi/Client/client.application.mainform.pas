@@ -4,17 +4,17 @@ interface
 
 uses
   System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants,
-  FMX.Types, FMX.Controls, FMX.Forms, FMX.Graphics, FMX.Dialogs,
+  FMX.Types, FMX.Controls, FMX.Forms, FMX.Graphics, FMX.Dialogs, classes.logs.controller,
   client.interfaces.service, client.classes.chatservice, System.Actions, FMX.ActnList,
   System.ImageList, FMX.ImgList, FMX.Controls.Presentation, FMX.StdCtrls,
   client.interfaces.application, client.classes.dlgmessages, FMX.Objects,
-  FMX.StdActns, FMX.ListView.Types, FMX.ListView.Appearances,
-  FMX.ListView.Adapters.Base, FMX.ListView, FMX.ListBox, FMX.Layouts,
+  FMX.StdActns, FMX.ListView.Types, FMX.ListView.Appearances, classes.logs,
+  FMX.ListView.Adapters.Base, FMX.ListView, FMX.ListBox, FMX.Layouts, System.IniFiles,
   client.resources.svcconsts, client.interfaces.contatos, client.classes.contatos,
-  client.serverintf.contatos;
+  client.serverintf.contatos, client.resources.mercurio, client.resources.consts;
 
 type
-  TFrmMainForm = class(TForm, IChatApplication)
+  TFrmMainForm = class(TForm, IChatApplication, IMercurioLogs)
     ActList: TActionList;
     ActConnectService: TAction;
     ActDisconnectService: TAction;
@@ -36,29 +36,39 @@ type
     procedure ActConnectServiceExecute(Sender: TObject);
     procedure ImgProfileClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
+    procedure FormDestroy(Sender: TObject);
 
   strict private
+   Events: TLogEvents;
+   FLogFolder, FLogCurrentFile: string;
+   FLogMaxFileSize: Int64;
    FConnected: boolean;
+   FLogWriter: TMercurioLogsController;
    function GetBitmap(const ImageIndex: integer): TBitmap; inline;
 
   private
     { Private declarations }
+    //FLogsFilesPath: string;
     //IChatApplication
     function GetConnected: boolean;
     procedure SetConnected(const Value: boolean);
     function GetDialogs: IDlgMessage;
+    function GetLogWriter: IMercurioLogs;
     function GetContatosService: IContatosService;
     function GetRemoteService: IChatService;
     function GetTitle: string;
     procedure ListarContatos;
+    procedure LoadLogsParams;
 
   public
     { Public declarations }
+    //property LogsFilesPath: string read FLogsFilesPath;
 
     //IChatApplication
     property Connected: boolean read GetConnected write SetConnected;
     property ContatosService: IContatosService read GetContatosService;
     property Dialogs: IDlgMessage read GetDialogs;
+    property LogsWriter: IMercurioLogs read GetLogWriter implements IMercurioLogs;
     property RemoteService: IChatService read GetRemoteService;
     property Title: string read GetTitle;
   end;
@@ -104,9 +114,17 @@ end;
 
 procedure TFrmMainForm.FormCreate(Sender: TObject);
 begin
+ LoadLogsParams;
+
  Connected := False; //default
  PnlServiceInfo.Visible := False;
  ImgProfile.Bitmap.Assign(GetBitmap(0));
+end;
+
+procedure TFrmMainForm.FormDestroy(Sender: TObject);
+begin
+// if Assigned(FLogWriter) then
+  // FreeAndNil(FlogWriter);
 end;
 
 procedure TFrmMainForm.FormShow(Sender: TObject);
@@ -129,6 +147,18 @@ function TFrmMainForm.GetDialogs: IDlgMessage;
 begin
  //Interface que abstrai dialogs nas múltiplas plataformas suportadas.
  Result := TDlgMessages.Create as IDlgMessage;
+end;
+
+function TFrmMainForm.GetLogWriter: IMercurioLogs;
+var
+ LogsObj: TMercurioLogsController;
+begin
+ LogsObj := TMercurioLogsController.Create(FLogFolder, '.log', TEncoding.UTF8, Events);
+ LogsObj.MaxFileSize := FLogMaxFileSize;
+ LogsObj.AppName := TChatServiceLabels.ServiceName;
+ LogsObj.CurrentFile := FLogCurrentFile;
+
+ Result := LogsObj  as IMercurioLogs;
 end;
 
 function TFrmMainForm.GetRemoteService: IChatService;
@@ -155,6 +185,7 @@ begin
 
     try
       RemoteService.ServiceInfo.GetServiceInfo(ListObj);
+      LogsWriter.RegisterInfo(TChatMessagesConst.CallRemoteMethodSucess);
 
     finally
       if ListObj.Count > 0 then
@@ -212,24 +243,26 @@ begin
       LstContatos.BeginUpdate;
       LstContatos.Clear;
 
-      for I := 0 to ContatosList.Count - 1 do
+      for I := 0 to ContatosList.Count - 2 do
        begin
         MyContatoObj := ContatosList.FindObject(I);
 
         if MyContatoObj <> nil then
          begin
           ItemObj := TListBoxItem.Create(LstContatos);
+
           ItemObj.Text :=  MyContatoObj.FirstName.TrimRight;
           ItemObj.Height := 40;
           //ItemObj.ItemData.Bitmap := GetBitmap(3);
 
-          ItemObj.ItemData.Detail:= MyContatoObj.LastName.TrimRight;
+           ItemObj.ItemData.Detail := MyContatoObj.LastName.TrimRight;
           ItemObj.StyleLookup := 'listboxitembottomdetail';
           ItemObj.ItemData.Accessory := TlistBoxItemData.TAccessory(1);
           ItemObj.WordWrap := True;
           ItemObj.Hint := ItemObj.ItemData.Detail;
 
           LstContatos.AddObject(ItemObj);
+          FreeAndNil(MyContatoObj);
          end;
        end;
 
@@ -237,11 +270,32 @@ begin
      LstContatos.EndUpdate;
      //Não descomentar. Dá memory leak ao chamar o método FREE da classe.
      //if Assigned(ContatosList) then
-       //FreeAndNil(ContatosList);
+     //  FreeAndNil(ContatosList);
     end;
 
   end;
 
+end;
+
+procedure TFrmMainForm.LoadLogsParams;
+var
+ ConfigFile: TIniFile;
+ FileName: string;
+begin
+  Events := [leOnError, leOnAuthenticateSucess, leOnAuthenticateFail, leOnInformation,
+             leOnWarning, leOnConnect, leOnConnectError, leOnMethodCallError, leUnknown];
+
+  FileName := GetCurrentDir + '\' + TMercurioConst.ConfigFile;
+  ConfigFile := TIniFile.Create(FileName);
+
+    try
+      FLogFolder := ConfigFile.ReadString(TMercurioConst.ConfigSection, TMercurioConst.ConfigFolder, '');
+      FLogCurrentFile := ConfigFile.ReadString(TMercurioConst.ConfigSection, TMercurioConst.ConfigCurrentFile, '');
+      FLogMaxFileSize := ConfigFile.ReadInteger(TMercurioConst.ConfigSection, TMercurioConst.ConfigMaxFileSize, TMercurioConst.DefaultMaxSize);
+
+    finally
+      ConfigFile.Free;
+    end;
 end;
 
 function TFrmMainForm.GetBitmap(const ImageIndex: integer): TBitmap;

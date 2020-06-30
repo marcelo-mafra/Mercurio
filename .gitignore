@@ -69,6 +69,7 @@ __recovery/
 *.png
 *.gif
 *.db
+*.log
 
 # Office
 *.docx

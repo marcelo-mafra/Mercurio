@@ -34,7 +34,8 @@ requires
   interfaces,
   resources,
   cmlib,
-  nethttp;
+  nethttp,
+  fmx;
 
 contains
   client.classes.chatservice in 'client.classes.chatservice.pas',

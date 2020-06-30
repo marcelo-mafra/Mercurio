@@ -3,7 +3,7 @@ unit client.interfaces.application;
 interface
 
 uses
- client.interfaces.common, client.interfaces.service;
+ client.interfaces.common, client.interfaces.service, classes.logs;
 
  type
   IDlgMessage = interface(IChatInterface)
@@ -21,14 +21,13 @@ uses
     function GetConnected: boolean;
     procedure SetConnected(const Value: boolean);
     function GetDialogs: IDlgMessage;
+    function GetLogWriter: IMercurioLogs;
     function GetRemoteService: IChatService;
     function GetTitle: string;
 
-    //function GetMainLog: ICosmosLogs;
-    // property MainLog: ICosmosLogs read GetMainLog;
-
     property Connected: boolean read GetConnected write SetConnected;
     property Dialogs: IDlgMessage read GetDialogs;
+    property LogsWriter: IMercurioLogs read GetLogWriter;
     property RemoteService: IChatService read GetRemoteService;
     property Title: string read GetTitle;
 
