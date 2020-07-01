@@ -12,7 +12,8 @@ uses
    {Classe que encapsula as a comunicação http com o serviço remoto de chat.}
    TNetHTTPService = class(TInterfacedObject)
      private
-       procedure LoadServiceParams(ClientObj: TNetHTTPClient);
+       procedure LoadServiceParams(ClientObj: TNetHTTPClient); inline;
+       procedure SetEvents(ClientObj: TNetHTTPClient); inline;
 
      public
        constructor Create;
@@ -48,6 +49,7 @@ begin
 
  HTTPClientObj :=  TNetHTTPClient.Create(nil);
  self.LoadServiceParams(HTTPClientObj);
+ self.SetEvents(HTTPClientObj);
 
  try
   IResponse := HTTPClientObj.Get(ServiceUrl);
@@ -67,7 +69,7 @@ begin
      if Result = nil then //sem resposta do serviço remoto.
       raise ENoServiceResponse.Create(TServiceConnectionConst.NoServiceResponse);
     end;
-
+   //Isso está errado. O ContentAsString nunca retorna um JSON, mas um HTML.
    Result := TNetJsonUtils.AsJsonObject(IResponse.ContentAsString);
 
    if Assigned(HTTPClientObj) then
@@ -76,18 +78,18 @@ begin
  except
    on E: ENoServiceResponse do //Não houve resposta do serviço remoto.
     begin
-      if Assigned(HTTPClientObj) then
-       FreeAndNil(HTTPClientObj);
+      if Assigned(HTTPClientObj) then FreeAndNil(HTTPClientObj);
+      TSOAPEvents.DoOnSOAPError(ServiceUrl, nil, E);
     end;
    on E: EHTTPBadRequest do //Serviço remoto respondeu com falha: Bad Request.
     begin
-      if Assigned(HTTPClientObj) then
-       FreeAndNil(HTTPClientObj);
+      if Assigned(HTTPClientObj) then FreeAndNil(HTTPClientObj);
+      TSOAPEvents.DoOnSOAPError(ServiceUrl, nil, E);
     end
    else
     begin //Serviço remoto respondeu com falha: demais cenários.
-      if Assigned(HTTPClientObj) then
-       FreeAndNil(HTTPClientObj);
+      if Assigned(HTTPClientObj) then FreeAndNil(HTTPClientObj);
+      TSOAPEvents.DoOnSOAPError(ServiceUrl, nil, nil);
     end;
  end;
 
@@ -103,13 +105,15 @@ begin
   raise EInvalidURL.Create(TServiceConnectionConst.InvalidUrl);
 
  HTTPClientObj :=  TNetHTTPClient.Create(nil);
- self.LoadServiceParams(HTTPClientObj);
 
  try
+  self.LoadServiceParams(HTTPClientObj);
+  self.SetEvents(HTTPClientObj);
+
   Result := HTTPClientObj.Get(ServiceUrl, Stream);
 
   if (Result <> nil) and (Result.StatusCode <> THTTPStatus.StatusOK) then
-   begin //Serviço não respondeu ou respondeu sinalizando alguma falha.
+   begin //Trata cenários onde houver resposta, mas sinalizando alguma falha.
       case Result.StatusCode of //Respostas tratadas de forma específica: HTTPStatus <> 200
         THTTPStatus.StatusBadRequest:
           begin
@@ -119,7 +123,7 @@ begin
    end
    else
     begin
-     if Result = nil then //sem resposta do serviço remoto.
+     if Result = nil then //Cenário sem resposta do serviço remoto.
       raise ENoServiceResponse.Create(TServiceConnectionConst.NoServiceResponse);
     end;
 
@@ -129,18 +133,19 @@ begin
  except
    on E: ENoServiceResponse do //Não houve resposta do serviço remoto.
     begin
-      if Assigned(HTTPClientObj) then
-       FreeAndNil(HTTPClientObj);
+      TSOAPEvents.DoOnSOAPError(ServiceUrl, Stream, E);
+      if Assigned(HTTPClientObj) then FreeAndNil(HTTPClientObj);
+
     end;
    on E: EHTTPBadRequest do //Serviço remoto respondeu com falha: Bad Request.
     begin
-      if Assigned(HTTPClientObj) then
-       FreeAndNil(HTTPClientObj);
+      if Assigned(HTTPClientObj) then FreeAndNil(HTTPClientObj);
+      TSOAPEvents.DoOnSOAPError(ServiceUrl, Stream, E);
     end
    else
     begin //Serviço remoto respondeu com falha: demais cenários.
-      if Assigned(HTTPClientObj) then
-       FreeAndNil(HTTPClientObj);
+      if Assigned(HTTPClientObj) then FreeAndNil(HTTPClientObj);
+      TSOAPEvents.DoOnSOAPError(ServiceUrl, Stream, nil);
     end;
  end;
 end;
@@ -158,11 +163,14 @@ begin
     //Timeouts
     ConnectionTimeout := TChatServiceConst.ConnectionTimeout;
     ResponseTimeout := TChatServiceConst.ResponseTimeout;
-
-    //Mapeamento de eventos.
-    ClientObj.OnRequestCompleted := TSOAPEvents.DoOnRequestCompleted;
-    ClientObj.OnRequestError     := TSOAPEvents.DoOnRequestError;
   end;
+end;
+
+procedure TNetHTTPService.SetEvents(ClientObj: TNetHTTPClient);
+begin
+ //"Apontamento" de eventos do objeto TNetHTTPClient.
+ ClientObj.OnRequestCompleted := TSOAPEvents.DoOnRequestCompleted;
+ ClientObj.OnRequestError     := TSOAPEvents.DoOnRequestError;
 end;
 
 end.

@@ -4,30 +4,69 @@ inherited FrmMainForm_iPad: TFrmMainForm_iPad
   DesignerMasterStyle = 2
   inherited Panel1: TPanel
     Size.Width = 768.000000000000000000
-    inherited ImgProfile: TImage
-      Position.X = 746.000000000000000000
+    inherited BtnMaster: TSpeedButton
+      Size.Width = 44.000000000000000000
+      Size.Height = 44.000000000000000000
     end
   end
   inherited PnlServiceInfo: TCalloutPanel
-    Position.X = 493.000000000000000000
     Size.Height = 978.000000000000000000
     inherited LstServiceInfo: TListBox
-      Size.Height = 963.000000000000000000
+      Size.Height = 974.000000000000000000
       Viewport.Width = 271.000000000000000000
       Viewport.Height = 963.000000000000000000
       inherited ListBoxItem1: TListBoxItem
         Size.Width = 271.000000000000000000
       end
       inherited ListBoxHeader1: TListBoxHeader
-        Size.Width = 271.000000000000000000
+        Size.Width = 228.000000000000000000
       end
     end
   end
-  inherited LstContatos: TListBox
-    Size.Width = 768.000000000000000000
+  inherited TabControl1: TTabControl
+    Size.Width = 738.000000000000000000
     Size.Height = 979.000000000000000000
-    Viewport.Width = 768.000000000000000000
-    Viewport.Height = 979.000000000000000000
+    Sizes = (
+      738s
+      965s
+      738s
+      965s)
+    inherited TabItem1: TTabItem
+      Size.Width = 369.000000000000000000
+      Size.Height = 14.000000000000000000
+      ExplicitSize.cx = 200.000000000000000000
+      ExplicitSize.cy = 49.000000000000000000
+      inherited LstContatos: TListBox
+        Margins.Left = 30.000000000000000000
+        Size.Width = 708.000000000000000000
+        Size.Height = 965.000000000000000000
+        Viewport.Width = 708.000000000000000000
+        Viewport.Height = 965.000000000000000000
+      end
+    end
+    inherited TabItem2: TTabItem
+      Size.Width = 369.000000000000000000
+      Size.Height = 14.000000000000000000
+      ExplicitSize.cx = 100.000000000000000000
+      ExplicitSize.cy = 49.000000000000000000
+    end
+  end
+  inherited MultiView1: TMultiView
+    Size.Width = 250.000000000000000000
+    Size.Height = 400.000000000000000000
+    inherited SpeedButton2: TSpeedButton
+      Size.Width = 44.000000000000000000
+      Size.Height = 44.000000000000000000
+    end
+    inherited SpeedButton1: TSpeedButton
+      Position.Y = 44.000000000000000000
+      Size.Width = 44.000000000000000000
+      Size.Height = 44.000000000000000000
+    end
+    inherited SpeedButton3: TSpeedButton
+      Position.Y = 88.000000000000000000
+      Size.Height = 44.000000000000000000
+    end
   end
   inherited ActList: TActionList
     inherited ActConnectService: TAction
@@ -38,6 +77,9 @@ inherited FrmMainForm_iPad: TFrmMainForm_iPad
     end
     inherited ActProfile: TAction
       ImageIndex = 0
+    end
+    inherited ActBack: TAction
+      ImageIndex = 4
     end
   end
   inherited ImgList: TImageList

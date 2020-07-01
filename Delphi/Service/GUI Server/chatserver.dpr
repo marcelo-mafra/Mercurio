@@ -10,7 +10,8 @@ uses
   server.chatserver.impl in 'server.chatserver.impl.pas',
   server.chatserver.intf in 'server.chatserver.intf.pas',
   server.contatos.intf in 'server.contatos.intf.pas',
-  server.contatos.impl in 'server.contatos.impl.pas';
+  server.contatos.impl in 'server.contatos.impl.pas',
+  server.data.contatos in 'server.data.contatos.pas';
 
 {$R *.res}
 

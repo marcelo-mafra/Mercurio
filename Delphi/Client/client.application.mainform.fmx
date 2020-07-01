@@ -20,55 +20,51 @@ object FrmMainForm: TFrmMainForm
     Size.Height = 25.000000000000000000
     Size.PlatformDefault = False
     TabOrder = 6
-    object ImgProfile: TImage
-      MultiResBitmap = <
-        item
-        end>
-      Anchors = [akTop, akRight]
-      Cursor = crHandPoint
-      Position.X = 253.000000000000000000
-      Position.Y = 2.000000000000000000
-      Size.Width = 20.000000000000000000
-      Size.Height = 20.000000000000000000
+    object BtnMaster: TSpeedButton
+      Align = FitLeft
+      Size.Width = 30.000000000000000000
+      Size.Height = 25.000000000000000000
       Size.PlatformDefault = False
-      WrapMode = Center
-      OnClick = ImgProfileClick
+      StyleLookup = 'detailstoolbutton'
+      Text = 'BtnMaster'
     end
   end
   object PnlServiceInfo: TCalloutPanel
     Action = ActServiceInfoView
-    Align = Right
+    Align = MostRight
     Enabled = True
-    Padding.Top = 11.000000000000000000
+    Padding.Left = 11.000000000000000000
     Margins.Bottom = 1.000000000000000000
-    Position.Y = 25.000000000000000000
-    Size.Width = 275.000000000000000000
-    Size.Height = 454.000000000000000000
+    Position.X = 32.000000000000000000
+    Position.Y = 24.000000000000000000
+    Size.Width = 243.000000000000000000
+    Size.Height = 455.000000000000000000
     Size.PlatformDefault = False
     Visible = False
     TabOrder = 13
     CalloutWidth = 23.000000000000000000
     CalloutLength = 11.000000000000000000
+    CalloutPosition = Left
     object LstServiceInfo: TListBox
       Align = Client
       Margins.Left = 2.000000000000000000
       Margins.Top = 2.000000000000000000
       Margins.Right = 2.000000000000000000
       Margins.Bottom = 2.000000000000000000
-      Size.Width = 271.000000000000000000
-      Size.Height = 439.000000000000000000
+      Size.Width = 228.000000000000000000
+      Size.Height = 451.000000000000000000
       Size.PlatformDefault = False
       TabOrder = 14
       DisableFocusEffect = True
       DefaultItemStyles.ItemStyle = ''
       DefaultItemStyles.GroupHeaderStyle = 'listboxgroupheader'
       DefaultItemStyles.GroupFooterStyle = ''
-      Viewport.Width = 267.000000000000000000
-      Viewport.Height = 391.000000000000000000
+      Viewport.Width = 224.000000000000000000
+      Viewport.Height = 403.000000000000000000
       object ListBoxItem1: TListBoxItem
         ItemData.Detail = 'O detalhe '#233'....'
         ItemData.Accessory = aMore
-        Size.Width = 267.000000000000000000
+        Size.Width = 224.000000000000000000
         Size.Height = 41.000000000000000000
         Size.PlatformDefault = False
         StyleLookup = 'listboxitembottomdetail'
@@ -76,25 +72,103 @@ object FrmMainForm: TFrmMainForm
         Text = 'ListBoxItem1'
       end
       object ListBoxHeader1: TListBoxHeader
-        Size.Width = 267.000000000000000000
+        Size.Width = 224.000000000000000000
         Size.Height = 44.000000000000000000
         Size.PlatformDefault = False
         TabOrder = 0
       end
     end
   end
-  object LstContatos: TListBox
+  object TabControl1: TTabControl
     Align = Client
-    Size.Width = 275.000000000000000000
+    Margins.Left = 30.000000000000000000
+    Size.Width = 245.000000000000000000
     Size.Height = 455.000000000000000000
     Size.PlatformDefault = False
-    TabOrder = 17
-    DisableFocusEffect = True
-    DefaultItemStyles.ItemStyle = ''
-    DefaultItemStyles.GroupHeaderStyle = ''
-    DefaultItemStyles.GroupFooterStyle = ''
-    Viewport.Width = 271.000000000000000000
-    Viewport.Height = 451.000000000000000000
+    TabIndex = 0
+    TabOrder = 20
+    TabPosition = PlatformDefault
+    Sizes = (
+      245s
+      429s
+      245s
+      429s)
+    object TabItem1: TTabItem
+      CustomIcon = <
+        item
+        end>
+      IsSelected = True
+      Size.Width = 68.000000000000000000
+      Size.Height = 26.000000000000000000
+      Size.PlatformDefault = False
+      StyleLookup = ''
+      TabOrder = 0
+      Text = 'Contatos'
+      object LstContatos: TListBox
+        Align = Client
+        Size.Width = 245.000000000000000000
+        Size.Height = 429.000000000000000000
+        Size.PlatformDefault = False
+        TabOrder = 0
+        DisableFocusEffect = True
+        DefaultItemStyles.ItemStyle = ''
+        DefaultItemStyles.GroupHeaderStyle = ''
+        DefaultItemStyles.GroupFooterStyle = ''
+        Viewport.Width = 241.000000000000000000
+        Viewport.Height = 425.000000000000000000
+      end
+    end
+    object TabItem2: TTabItem
+      CustomIcon = <
+        item
+        end>
+      IsSelected = False
+      Size.Width = 54.000000000000000000
+      Size.Height = 26.000000000000000000
+      Size.PlatformDefault = False
+      StyleLookup = ''
+      TabOrder = 0
+      Text = 'Profile'
+    end
+  end
+  object MultiView1: TMultiView
+    TargetControl = TabControl1
+    MasterButton = BtnMaster
+    Mode = NavigationPane
+    NavigationPaneOptions.CollapsedWidth = 30.000000000000000000
+    Size.Width = 250.000000000000000000
+    Size.Height = 400.000000000000000000
+    Size.PlatformDefault = False
+    TabOrder = 19
+    object SpeedButton2: TSpeedButton
+      Align = MostTop
+      Position.Y = 30.000000000000000000
+      Size.Width = 30.000000000000000000
+      Size.Height = 33.000000000000000000
+      Size.PlatformDefault = False
+      StyleLookup = 'trashtoolbutton'
+      Text = 'Voltar'
+      OnClick = ActBackExecute
+    end
+    object SpeedButton1: TSpeedButton
+      Align = MostTop
+      Size.Width = 30.000000000000000000
+      Size.Height = 30.000000000000000000
+      Size.PlatformDefault = False
+      StyleLookup = 'addtoolbuttonbordered'
+      Text = 'SpeedButton1'
+    end
+    object SpeedButton3: TSpeedButton
+      Action = ActProfile
+      Align = MostTop
+      Enabled = True
+      Images = ImgList
+      ImageIndex = 0
+      Position.Y = 63.000000000000000000
+      Size.Width = 30.000000000000000000
+      Size.Height = 30.000000000000000000
+      Size.PlatformDefault = False
+    end
   end
   object ActList: TActionList
     Images = ImgList
@@ -117,12 +191,22 @@ object FrmMainForm: TFrmMainForm
     object ActProfile: TAction
       Text = 'Profile'
       ImageIndex = 0
+      OnExecute = ActProfileExecute
+      OnUpdate = ActProfileUpdate
       ImageIndex = 0
     end
     object ActServiceInfoView: TViewAction
       Category = 'View'
       Text = 'CalloutPanel1'
       FmxObject = PnlServiceInfo
+    end
+    object ActBack: TAction
+      Category = 'View'
+      Text = 'Voltar'
+      ImageIndex = 4
+      OnExecute = ActBackExecute
+      OnUpdate = ActBackUpdate
+      ImageIndex = 4
     end
   end
   object ImgList: TImageList
@@ -380,6 +464,37 @@ object FrmMainForm: TFrmMainForm
             FileName = 'E:\Marcelo\Mercurio\Resources\Imagens\Cadastrado inativo.bmp'
           end>
         Name = 'Profile2'
+      end
+      item
+        MultiResBitmap.Height = 18
+        MultiResBitmap.Width = 18
+        MultiResBitmap.LoadSize = 0
+        MultiResBitmap.TransparentColor = 536870912
+        MultiResBitmap = <
+          item
+            Width = 18
+            Height = 18
+            PNG = {
+              89504E470D0A1A0A0000000D494844520000001200000012080600000056CE8E
+              57000000017352474200AECE1CE90000000467414D410000B18F0BFC61050000
+              01AB49444154384FBD93AD73C24010C55F3B1589BB738D3C993A2A9191C8E2A8
+              ACA40E642592382A919195F44F681DB8E2883C5CE23877DDBD1C246981CE743A
+              FD0D9BFB7EECBE4BF0575CF816496F648300103242C81DEEFBB573A4E9A3D3B8
+              722342E71AF36C02AF418FD0CD9F237D7EF1BD06713CB03B6B7F8C260FC399F5
+              C7EB8C987C5B425D0B44E335CAD2F8D9EF0811404F63EC4CBDA725640A831C25
+              B261442357E051625E2678FF9E4BDF3A0A49F6EE0C6E65BD99ADDADBC56D5705
+              88D8C82FB4320AB5C6D3720C194A8840205D3FF8959A492FC2A853DDA741E15A
+              A625C43CF7334C5F817152C5398A868FADD24424319CAEA8BC120519792AF852
+              58A2E9512BA3FBD11B9284D23025D24C53796416DB110AF4635D6DDA435E1AB3
+              F303FF66CF16DACEB325D4CD2D94BA86E4C3148A7498E5C716AFE9A81A3408C8
+              FDD56AEE34DCA33358584965894001745892D1ACA4E8E60475F3F516E96374F8
+              9C8EE13CEAF763149ADE2093938305995879946BF2807EA5A96FE714877F99BE
+              6C6C96BD43468AB40A3A5C3A115246D24D307FBA399B518BD962633B77995514
+              7EEAF7B0F1AA577F8CFF0CF00951C1D6F024AF88C60000000049454E44AE4260
+              82}
+            FileName = 'E:\Marcelo\Mercurio\Resources\Imagens\Data Prior.bmp'
+          end>
+        Name = 'Back'
       end>
     Destination = <
       item
@@ -410,6 +525,14 @@ object FrmMainForm: TFrmMainForm
         Layers = <
           item
             Name = 'Contatos'
+            SourceRect.Right = 18.000000000000000000
+            SourceRect.Bottom = 18.000000000000000000
+          end>
+      end
+      item
+        Layers = <
+          item
+            Name = 'Back'
             SourceRect.Right = 18.000000000000000000
             SourceRect.Bottom = 18.000000000000000000
           end>

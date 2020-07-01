@@ -4,30 +4,69 @@ inherited FrmMainForm_iPhone55in: TFrmMainForm_iPhone55in
   DesignerMasterStyle = 2
   inherited Panel1: TPanel
     Size.Width = 414.000000000000000000
-    inherited ImgProfile: TImage
-      Position.X = 392.000000000000000000
+    inherited BtnMaster: TSpeedButton
+      Size.Width = 44.000000000000000000
+      Size.Height = 44.000000000000000000
     end
   end
   inherited PnlServiceInfo: TCalloutPanel
-    Position.X = 139.000000000000000000
     Size.Height = 690.000000000000000000
     inherited LstServiceInfo: TListBox
-      Size.Height = 675.000000000000000000
+      Size.Height = 686.000000000000000000
       Viewport.Width = 271.000000000000000000
       Viewport.Height = 675.000000000000000000
       inherited ListBoxItem1: TListBoxItem
         Size.Width = 271.000000000000000000
       end
       inherited ListBoxHeader1: TListBoxHeader
-        Size.Width = 271.000000000000000000
+        Size.Width = 228.000000000000000000
       end
     end
   end
-  inherited LstContatos: TListBox
-    Size.Width = 414.000000000000000000
+  inherited TabControl1: TTabControl
+    Size.Width = 384.000000000000000000
     Size.Height = 691.000000000000000000
-    Viewport.Width = 414.000000000000000000
-    Viewport.Height = 691.000000000000000000
+    Sizes = (
+      384s
+      677s
+      384s
+      677s)
+    inherited TabItem1: TTabItem
+      Size.Width = 192.000000000000000000
+      Size.Height = 14.000000000000000000
+      ExplicitSize.cx = 200.000000000000000000
+      ExplicitSize.cy = 49.000000000000000000
+      inherited LstContatos: TListBox
+        Margins.Left = 30.000000000000000000
+        Size.Width = 354.000000000000000000
+        Size.Height = 677.000000000000000000
+        Viewport.Width = 354.000000000000000000
+        Viewport.Height = 677.000000000000000000
+      end
+    end
+    inherited TabItem2: TTabItem
+      Size.Width = 192.000000000000000000
+      Size.Height = 14.000000000000000000
+      ExplicitSize.cx = 100.000000000000000000
+      ExplicitSize.cy = 49.000000000000000000
+    end
+  end
+  inherited MultiView1: TMultiView
+    Size.Width = 250.000000000000000000
+    Size.Height = 400.000000000000000000
+    inherited SpeedButton2: TSpeedButton
+      Size.Width = 44.000000000000000000
+      Size.Height = 44.000000000000000000
+    end
+    inherited SpeedButton1: TSpeedButton
+      Position.Y = 44.000000000000000000
+      Size.Width = 44.000000000000000000
+      Size.Height = 44.000000000000000000
+    end
+    inherited SpeedButton3: TSpeedButton
+      Position.Y = 88.000000000000000000
+      Size.Height = 44.000000000000000000
+    end
   end
   inherited ActList: TActionList
     inherited ActConnectService: TAction
@@ -38,6 +77,9 @@ inherited FrmMainForm_iPhone55in: TFrmMainForm_iPhone55in
     end
     inherited ActProfile: TAction
       ImageIndex = 0
+    end
+    inherited ActBack: TAction
+      ImageIndex = 4
     end
   end
   inherited ImgList: TImageList

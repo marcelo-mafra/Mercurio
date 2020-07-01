@@ -9,7 +9,7 @@ type
   TServiceConnectionConst = class
     const
       InvalidUrl        = 'O endereço remoto é inválido!';
-      NoServiceResponse = 'O servidor remoto não respondeu.';
+      NoServiceResponse = 'O serviço remoto não respondeu a uma requisição feita.';
       StatusBadRequest  = 'Bad request';
   end;
 

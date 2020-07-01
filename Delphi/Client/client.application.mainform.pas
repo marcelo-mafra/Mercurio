@@ -11,7 +11,8 @@ uses
   FMX.StdActns, FMX.ListView.Types, FMX.ListView.Appearances, classes.logs,
   FMX.ListView.Adapters.Base, FMX.ListView, FMX.ListBox, FMX.Layouts, System.IniFiles,
   client.resources.svcconsts, client.interfaces.contatos, client.classes.contatos,
-  client.serverintf.contatos, client.resources.mercurio, client.resources.consts;
+  client.serverintf.contatos, client.resources.mercurio, client.resources.consts,
+  FMX.MultiView, FMX.TabControl;
 
 type
   TFrmMainForm = class(TForm, IChatApplication, IMercurioLogs)
@@ -20,7 +21,6 @@ type
     ActDisconnectService: TAction;
     ImgList: TImageList;
     Panel1: TPanel;
-    ImgProfile: TImage;
     ActProfile: TAction;
     PnlServiceInfo: TCalloutPanel;
     ActServiceInfoView: TViewAction;
@@ -28,23 +28,33 @@ type
     ListBoxHeader1: TListBoxHeader;
     ListBoxItem1: TListBoxItem;
     LstContatos: TListBox;
+    ActBack: TAction;
+    MultiView1: TMultiView;
+    BtnMaster: TSpeedButton;
+    TabControl1: TTabControl;
+    TabItem1: TTabItem;
+    TabItem2: TTabItem;
+    SpeedButton2: TSpeedButton;
+    SpeedButton1: TSpeedButton;
+    SpeedButton3: TSpeedButton;
     procedure ActDisconnectServiceExecute(Sender: TObject);
     procedure ActDisconnectServiceUpdate(Sender: TObject);
     procedure ActConnectServiceUpdate(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure ActConnectServiceExecute(Sender: TObject);
-    procedure ImgProfileClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
+    procedure ActBackExecute(Sender: TObject);
+    procedure ActBackUpdate(Sender: TObject);
+    procedure ActProfileExecute(Sender: TObject);
+    procedure ActProfileUpdate(Sender: TObject);
 
   strict private
    Events: TLogEvents;
    FLogFolder, FLogCurrentFile: string;
    FLogMaxFileSize: Int64;
    FConnected: boolean;
-   FLogWriter: TMercurioLogsController;
-   function GetBitmap(const ImageIndex: integer): TBitmap; inline;
 
   private
     { Private declarations }
@@ -84,6 +94,16 @@ implementation
 {$R *.Moto360.fmx ANDROID}
 {$R *.LgXhdpiPh.fmx ANDROID}
 
+procedure TFrmMainForm.ActBackExecute(Sender: TObject);
+begin
+ PnlServiceInfo.Visible := False;
+end;
+
+procedure TFrmMainForm.ActBackUpdate(Sender: TObject);
+begin
+ TAction(Sender).Enabled := PnlServiceInfo.Visible;
+end;
+
 procedure TFrmMainForm.ActConnectServiceExecute(Sender: TObject);
 begin
  Connected := RemoteService.ConnectService;
@@ -106,6 +126,62 @@ begin
  TAction(Sender).Enabled := (Connected = True);
 end;
 
+procedure TFrmMainForm.ActProfileExecute(Sender: TObject);
+var
+ Counter: integer;
+ ListObj: TStringList;
+ ItemObj: TListBoxItem;
+ HeaderObj: TListBoxGroupHeader;
+begin
+ if Connected then
+  begin
+   ListObj := TStringList.Create;
+
+    try
+      RemoteService.ServiceInfo.GetServiceInfo(ListObj);
+      LogsWriter.RegisterInfo(TChatMessagesConst.CallRemoteMethodSucess);
+
+    finally
+      if ListObj.Count > 0 then
+       begin
+         LstServiceInfo.BeginUpdate;
+         LstServiceInfo.Items.Clear;
+
+         HeaderObj :=  TListBoxGroupHeader.Create(LstServiceInfo);
+         HeaderObj.Text := 'Header service';
+         //HeaderObj.TextSettings.Font.Style := [TFontStyle(fsBold)];
+         LstServiceInfo.AddObject(HeaderObj);
+
+         for Counter := 0 to ListObj.Count - 1 do
+          begin
+             //Item do listbox.
+             ItemObj := TListBoxItem.Create(LstServiceInfo);
+             ItemObj.Text :=  ListObj.Names[Counter];
+             ItemObj.Height := 40;
+             //ItemObj.ItemData.Bitmap := GetBitmap(3);
+
+             ItemObj.ItemData.Detail:= ListObj.ValueFromIndex[Counter];
+             ItemObj.StyleLookup := 'listboxitembottomdetail';
+             ItemObj.ItemData.Accessory := TlistBoxItemData.TAccessory(1);
+             ItemObj.WordWrap := True;
+             ItemObj.Hint := ItemObj.ItemData.Detail;
+             LstServiceInfo.AddObject(ItemObj);
+          end;
+
+         LstServiceInfo.EndUpdate;
+         ActServiceInfoView.Execute;
+       end;
+
+      if Assigned(ListObj) then FreeAndNil(ListObj);
+    end;
+  end;
+end;
+
+procedure TFrmMainForm.ActProfileUpdate(Sender: TObject);
+begin
+ TAction(Sender).Enabled := Connected;
+end;
+
 procedure TFrmMainForm.FormClose(Sender: TObject; var Action: TCloseAction);
 begin
  if (RemoteService <> nil) then
@@ -118,7 +194,6 @@ begin
 
  Connected := False; //default
  PnlServiceInfo.Visible := False;
- ImgProfile.Bitmap.Assign(GetBitmap(0));
 end;
 
 procedure TFrmMainForm.FormDestroy(Sender: TObject);
@@ -170,57 +245,6 @@ end;
 function TFrmMainForm.GetTitle: string;
 begin
  Result := Application.Title;
-end;
-
-procedure TFrmMainForm.ImgProfileClick(Sender: TObject);
-var
- Counter: integer;
- ListObj: TStringList;
- ItemObj: TListBoxItem;
- HeaderObj: TListBoxGroupHeader;
-begin
- if Connected then
-  begin
-   ListObj := TStringList.Create;
-
-    try
-      RemoteService.ServiceInfo.GetServiceInfo(ListObj);
-      LogsWriter.RegisterInfo(TChatMessagesConst.CallRemoteMethodSucess);
-
-    finally
-      if ListObj.Count > 0 then
-       begin
-         LstServiceInfo.BeginUpdate;
-         LstServiceInfo.Items.Clear;
-
-         HeaderObj :=  TListBoxGroupHeader.Create(LstServiceInfo);
-         HeaderObj.Text := 'Header service';
-         //HeaderObj.TextSettings.Font.Style := [TFontStyle(fsBold)];
-         LstServiceInfo.AddObject(HeaderObj);
-
-         for Counter := 0 to ListObj.Count - 1 do
-          begin
-             //Item do listbox.
-             ItemObj := TListBoxItem.Create(LstServiceInfo);
-             ItemObj.Text :=  ListObj.Names[Counter];
-             ItemObj.Height := 40;
-             //ItemObj.ItemData.Bitmap := GetBitmap(3);
-
-             ItemObj.ItemData.Detail:= ListObj.ValueFromIndex[Counter];
-             ItemObj.StyleLookup := 'listboxitembottomdetail';
-             ItemObj.ItemData.Accessory := TlistBoxItemData.TAccessory(1);
-             ItemObj.WordWrap := True;
-             ItemObj.Hint := ItemObj.ItemData.Detail;
-             LstServiceInfo.AddObject(ItemObj);
-          end;
-
-         LstServiceInfo.EndUpdate;
-         ActServiceInfoView.Execute;
-       end;
-
-      if Assigned(ListObj) then FreeAndNil(ListObj);
-    end;
-  end;
 end;
 
 procedure TFrmMainForm.ListarContatos;
@@ -297,15 +321,6 @@ begin
     finally
       ConfigFile.Free;
     end;
-end;
-
-function TFrmMainForm.GetBitmap(const ImageIndex: integer): TBitmap;
-var
- sz: TSize;
-begin
- //Retorna uma das imagens da lista de imagens da aplicação.
- sz := TSize.Create(18, 18);
- Result :=  ImgList.Bitmap(sz, ImageIndex);
 end;
 
 procedure TFrmMainForm.SetConnected(const Value: boolean);

@@ -5,7 +5,7 @@ unit server.contatos.impl;
 interface
 
 uses Soap.InvokeRegistry, System.Types, Soap.XSBuiltIns, server.contatos.intf,
- System.SysUtils, System.Json, System.Classes;
+ System.SysUtils, System.Json, System.Classes, server.data.contatos;
 
 type
 
@@ -25,11 +25,30 @@ I: integer;
  JsonObj: TJsonObject;
  JsonPair: TJsonPair;
  JDocumment: TStringStream;
+ StrData: TStringList;
 begin
   JDocumment := TStringStream.Create('', TEncoding.UTF8);
   JDocumment.WriteString('{"ArrayContatos":[');
+  StrData := TContatosData.GetContatos;
 
   try
+   if StrData.Count > 0 then
+   begin
+   for I := 0 to StrData.Count - 1 do
+    begin
+     JsonObj := TJsonObject.Create;
+     JsonObj.ParseJSONValue(StrData.Strings[I]);
+     {JsonObj.AddPair(TJsonPair.Create('FirstName', 'Marcelo' + Random.ToString));
+     JsonObj.AddPair(TJsonPair.Create('LastName', 'Mafra'));}
+
+     if I < StrData.Count - 1 then
+      JDocumment.WriteString(JsonObj.Format + ',')
+     else
+      JDocumment.WriteString(JsonObj.Format);
+    end;
+    end;
+
+  {
    for I := 0 to 10 do
    begin
      JsonObj := TJsonObject.Create;
@@ -40,13 +59,13 @@ begin
       JDocumment.WriteString(JsonObj.Format + ',')
      else
       JDocumment.WriteString(JsonObj.Format);
-   end;
+   end;  }
 
   JDocumment.WriteString(']}');
   Result := JDocumment.DataString;
 
   finally
-   if Assigned(JsonObj) then FreeAndNil(JsonObj);
+//   if Assigned(JsonObj) then FreeAndNil(JsonObj);
    if Assigned(JDocumment) then FreeAndNil(JDocumment);
   end;
 end;

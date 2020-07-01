@@ -85,7 +85,7 @@ begin
     end;
 
  finally
-  if Assigned(ContatoObj) then FreeAndNil(ContatoObj);
+  if Assigned(ContatoObj) and (Counter > 0) then FreeAndNil(ContatoObj);
  end;
 end;
 

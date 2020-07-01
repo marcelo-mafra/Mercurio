@@ -14,6 +14,7 @@ interface
     class function  StreamToString(aStream: TStream): string;
     class procedure DoOnRequestCompleted(const Sender: TObject; const AResponse: IHTTPResponse);
     class procedure DoOnRequestError(const Sender: TObject; const AError: string);
+    class procedure DoOnSOAPError(const ServiceUrl: string; Stream: TStream; E: Exception);
   end;
 
 implementation
@@ -105,6 +106,29 @@ begin
   finally
    if Assigned(LogsObj) then FreeAndNil(LogsObj);
   end;
+end;
+
+class procedure TSOAPEvents.DoOnSOAPError(const ServiceUrl: string;
+  Stream: TStream; E: Exception);
+var
+ LogsObj: TMercurioLogsController;
+ ContextInfo: string;
+begin
+  LogsObj := TSOAPEvents.CreateLogsObject;
+
+  try
+   ContextInfo := ServiceUrl + #13; //do not localize!
+   ContextInfo := ContextInfo + self.StreamToString(Stream);
+
+   if E <> nil then
+    LogsObj.RegisterRemoteCallFailure(E.Message, ContextInfo)
+   else
+    LogsObj.RegisterRemoteCallFailure(TChatMessagesConst.CallRemoteMethodError, ContextInfo);
+
+  finally
+   if Assigned(LogsObj) then FreeAndNil(LogsObj);
+  end;
+
 end;
 
 class function TSOAPEvents.StreamToString(aStream: TStream): string;
