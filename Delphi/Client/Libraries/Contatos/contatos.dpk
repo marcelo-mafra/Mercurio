@@ -34,8 +34,7 @@ requires
   nethttp,
   resources,
   interfaces,
-  cmlib,
-  fmx;
+  cmlib;
 
 contains
   client.classes.contatos in 'client.classes.contatos.pas';

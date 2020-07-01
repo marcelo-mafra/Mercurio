@@ -153,10 +153,12 @@
         <DCCReference Include="cmlib.dcp"/>
         <DCCReference Include="resources.dcp"/>
         <DCCReference Include="soaprtl.dcp"/>
+        <DCCReference Include="logwrt.dcp"/>
         <DCCReference Include="client.classes.nethttp.pas"/>
         <DCCReference Include="client.classes.json.pas"/>
         <DCCReference Include="client.serverintf.chatservice.pas"/>
         <DCCReference Include="client.serverintf.contatos.pas"/>
+        <DCCReference Include="client.serverintf.soaputils.pas"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>

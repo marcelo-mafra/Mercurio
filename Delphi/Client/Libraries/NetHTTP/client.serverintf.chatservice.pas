@@ -11,7 +11,8 @@ unit client.serverintf.chatservice;
 
 interface
 
-uses Soap.InvokeRegistry, Soap.SOAPHTTPClient, System.Types, Soap.XSBuiltIns;
+uses Soap.InvokeRegistry, Soap.SOAPHTTPClient, System.Types, Soap.XSBuiltIns,
+client.serverintf.soaputils;
 
 type
 
@@ -124,12 +125,17 @@ begin
     else
       Addr := defURL;
   end;
+
   if HTTPRIO = nil then
     RIO := THTTPRIO.Create(nil)
   else
     RIO := HTTPRIO;
+
   try
+    RIO.OnAfterExecute := TSOAPEvents.DoAfterExecuteEvent;
+
     Result := (RIO as IMercurioChatServer);
+
     if UseWSDL then
     begin
       RIO.WSDLLocation := Addr;

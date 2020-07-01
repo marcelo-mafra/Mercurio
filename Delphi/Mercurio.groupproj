@@ -12,10 +12,10 @@
         <Projects Include="Common\CmLib\cmlib.dproj">
             <Dependencies/>
         </Projects>
-        <Projects Include="Client\Libraries\NetHTTP\nethttp.dproj">
+        <Projects Include="Client\Libraries\LogsWriter\logwrt.dproj">
             <Dependencies/>
         </Projects>
-        <Projects Include="Client\Libraries\LogsWriter\logwrt.dproj">
+        <Projects Include="Client\Libraries\NetHTTP\nethttp.dproj">
             <Dependencies/>
         </Projects>
         <Projects Include="Client\Libraries\InterfacesLib\interfaces.dproj">
@@ -71,15 +71,6 @@
     <Target Name="cmlib:Make">
         <MSBuild Projects="Common\CmLib\cmlib.dproj" Targets="Make"/>
     </Target>
-    <Target Name="nethttp">
-        <MSBuild Projects="Client\Libraries\NetHTTP\nethttp.dproj"/>
-    </Target>
-    <Target Name="nethttp:Clean">
-        <MSBuild Projects="Client\Libraries\NetHTTP\nethttp.dproj" Targets="Clean"/>
-    </Target>
-    <Target Name="nethttp:Make">
-        <MSBuild Projects="Client\Libraries\NetHTTP\nethttp.dproj" Targets="Make"/>
-    </Target>
     <Target Name="logwrt">
         <MSBuild Projects="Client\Libraries\LogsWriter\logwrt.dproj"/>
     </Target>
@@ -88,6 +79,15 @@
     </Target>
     <Target Name="logwrt:Make">
         <MSBuild Projects="Client\Libraries\LogsWriter\logwrt.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="nethttp">
+        <MSBuild Projects="Client\Libraries\NetHTTP\nethttp.dproj"/>
+    </Target>
+    <Target Name="nethttp:Clean">
+        <MSBuild Projects="Client\Libraries\NetHTTP\nethttp.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="nethttp:Make">
+        <MSBuild Projects="Client\Libraries\NetHTTP\nethttp.dproj" Targets="Make"/>
     </Target>
     <Target Name="interfaces">
         <MSBuild Projects="Client\Libraries\InterfacesLib\interfaces.dproj"/>
@@ -144,13 +144,13 @@
         <MSBuild Projects="Client\Libraries\Contatos\contatos.dproj" Targets="Make"/>
     </Target>
     <Target Name="Build">
-        <CallTarget Targets="chatserver;mercurio;cmlib;nethttp;logwrt;interfaces;resources;dlgmessages;chatservice;chatmessages;contatos"/>
+        <CallTarget Targets="chatserver;mercurio;cmlib;logwrt;nethttp;interfaces;resources;dlgmessages;chatservice;chatmessages;contatos"/>
     </Target>
     <Target Name="Clean">
-        <CallTarget Targets="chatserver:Clean;mercurio:Clean;cmlib:Clean;nethttp:Clean;logwrt:Clean;interfaces:Clean;resources:Clean;dlgmessages:Clean;chatservice:Clean;chatmessages:Clean;contatos:Clean"/>
+        <CallTarget Targets="chatserver:Clean;mercurio:Clean;cmlib:Clean;logwrt:Clean;nethttp:Clean;interfaces:Clean;resources:Clean;dlgmessages:Clean;chatservice:Clean;chatmessages:Clean;contatos:Clean"/>
     </Target>
     <Target Name="Make">
-        <CallTarget Targets="chatserver:Make;mercurio:Make;cmlib:Make;nethttp:Make;logwrt:Make;interfaces:Make;resources:Make;dlgmessages:Make;chatservice:Make;chatmessages:Make;contatos:Make"/>
+        <CallTarget Targets="chatserver:Make;mercurio:Make;cmlib:Make;logwrt:Make;nethttp:Make;interfaces:Make;resources:Make;dlgmessages:Make;chatservice:Make;chatmessages:Make;contatos:Make"/>
     </Target>
     <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
 </Project>

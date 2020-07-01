@@ -255,7 +255,7 @@ begin
           ItemObj.Height := 40;
           //ItemObj.ItemData.Bitmap := GetBitmap(3);
 
-           ItemObj.ItemData.Detail := MyContatoObj.LastName.TrimRight;
+          ItemObj.ItemData.Detail := MyContatoObj.LastName.TrimRight;
           ItemObj.StyleLookup := 'listboxitembottomdetail';
           ItemObj.ItemData.Accessory := TlistBoxItemData.TAccessory(1);
           ItemObj.WordWrap := True;
@@ -283,7 +283,8 @@ var
  FileName: string;
 begin
   Events := [leOnError, leOnAuthenticateSucess, leOnAuthenticateFail, leOnInformation,
-             leOnWarning, leOnConnect, leOnConnectError, leOnMethodCallError, leUnknown];
+             leOnWarning, leOnConnect, leOnConnectError, leOnMethodCall,
+             leOnMethodCallError, leUnknown];
 
   FileName := GetCurrentDir + '\' + TMercurioConst.ConfigFile;
   ConfigFile := TIniFile.Create(FileName);
@@ -311,5 +312,6 @@ procedure TFrmMainForm.SetConnected(const Value: boolean);
 begin
  FConnected := Value;
 end;
+
 
 end.

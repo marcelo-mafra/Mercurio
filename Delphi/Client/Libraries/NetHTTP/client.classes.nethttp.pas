@@ -6,7 +6,7 @@ uses
   System.SysUtils, System.Classes, System.Net.URLClient, System.Net.HttpClient,
   System.Net.HttpClientComponent, Winapi.Windows, System.NetEncoding, classes.exceptions,
   client.resources.httpstatus, client.resources.svccon, client.resources.svcconsts,
-  System.Json, client.classes.json;
+  System.Json, client.classes.json, client.serverintf.soaputils;
 
  type
    {Classe que encapsula as a comunicação http com o serviço remoto de chat.}
@@ -158,6 +158,10 @@ begin
     //Timeouts
     ConnectionTimeout := TChatServiceConst.ConnectionTimeout;
     ResponseTimeout := TChatServiceConst.ResponseTimeout;
+
+    //Mapeamento de eventos.
+    ClientObj.OnRequestCompleted := TSOAPEvents.DoOnRequestCompleted;
+    ClientObj.OnRequestError     := TSOAPEvents.DoOnRequestError;
   end;
 end;
 

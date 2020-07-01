@@ -32,12 +32,14 @@ requires
   rtl,
   cmlib,
   resources,
-  soaprtl;
+  soaprtl,
+  logwrt;
 
 contains
   client.classes.nethttp in 'client.classes.nethttp.pas',
   client.classes.json in 'client.classes.json.pas',
   client.serverintf.chatservice in 'client.serverintf.chatservice.pas',
-  client.serverintf.contatos in 'client.serverintf.contatos.pas';
+  client.serverintf.contatos in 'client.serverintf.contatos.pas',
+  client.serverintf.soaputils in 'client.serverintf.soaputils.pas';
 
 end.

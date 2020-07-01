@@ -21,6 +21,7 @@ type
       MessageDataInvalid = 'Não é possível identificar uma mensagem de chat a partir ' +
         'dos dados recebidos!';
       CallRemoteMethodSucess = 'A chamada de um procedimento remoto foi feita com sucesso.';
+      CallRemoteMethodError = 'A chamada de um procedimento remoto falhou.';
   end;
 
 implementation

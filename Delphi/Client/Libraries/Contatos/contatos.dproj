@@ -143,7 +143,6 @@
         <DCCReference Include="resources.dcp"/>
         <DCCReference Include="interfaces.dcp"/>
         <DCCReference Include="cmlib.dcp"/>
-        <DCCReference Include="fmx.dcp"/>
         <DCCReference Include="client.classes.contatos.pas"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
@@ -189,6 +188,12 @@
                 </DeployFile>
                 <DeployFile LocalName="$(BDS)\Redist\iossimulator\libpcre.dylib" Class="DependencyModule">
                     <Platform Name="iOSSimulator">
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
+                <DeployFile LocalName="..\..\..\BIN\Win64\Debug\contatos.rsm" Configuration="Debug" Class="DebugSymbols">
+                    <Platform Name="Win64">
+                        <RemoteName>contatos.rsm</RemoteName>
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>

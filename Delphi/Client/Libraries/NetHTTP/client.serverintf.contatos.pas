@@ -11,7 +11,8 @@ unit client.serverintf.contatos;
 
 interface
 
-uses Soap.InvokeRegistry, Soap.SOAPHTTPClient, System.Types, Soap.XSBuiltIns;
+uses Soap.InvokeRegistry, Soap.SOAPHTTPClient, System.Types, Soap.XSBuiltIns,
+client.serverintf.soaputils;
 
 type
 
@@ -27,7 +28,6 @@ type
 
   TMyContato          = class;                 { "urn:server.contatos.intf"[GblCplx] }
   TMyContatos         = class;                 { "urn:server.contatos.intf"[GblCplx] }
-
 
   // ************************************************************************ //
   // XML       : TMyContato, global, <complexType>
@@ -78,16 +78,19 @@ type
   ['{AE65F833-C137-487E-96F9-037DA184BD4F}']
 
     function  NewContato(const Value: TMyContato): TMyContato; stdcall;
-    function GetMyContatos: UnicodeString; stdcall;
+    function  GetMyContatos: UnicodeString; stdcall;
+
   end;
 
-function GetIMercurioContatosServer(UseWSDL: Boolean = System.False; Addr: string = '';
+  function GetIMercurioContatosServer(UseWSDL: Boolean = System.False; Addr: string = '';
              HTTPRIO: THTTPRIO = nil): IMercurioContatosServer;
 
 
 implementation
 
   uses System.SysUtils;
+
+
 
 function GetIMercurioContatosServer(UseWSDL: Boolean; Addr: string;
     HTTPRIO: THTTPRIO): IMercurioContatosServer;
@@ -112,7 +115,10 @@ begin
   else
     RIO := HTTPRIO;
   try
+    RIO.OnAfterExecute := TSOAPEvents.DoAfterExecuteEvent;
+
     Result := (RIO as IMercurioContatosServer);
+
     if UseWSDL then
     begin
       RIO.WSDLLocation := Addr;
