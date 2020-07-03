@@ -3,31 +3,12 @@ unit client.classes.contatos;
 interface
 
 uses
-  System.SysUtils, System.Classes, System.Net.URLClient, System.Net.HttpClient,
-  System.Net.HttpClientComponent, Winapi.Windows, System.NetEncoding, classes.exceptions,
-  client.resources.svcconsts, client.classes.nethttp, client.resources.httpstatus,
+  System.SysUtils, System.Classes, client.resources.svcconsts, client.classes.json,
   client.interfaces.common, client.interfaces.contatos, client.serverintf.contatos,
-  client.interfaces.application, Generics.Collections, client.classes.json;
+  client.interfaces.application, client.classes.listacontatos;
 
 type
-   {Classe que representa uma lista de contatos.}
-   TListaContatos = class(TListaObjetos)
-    private
-       FList: TObjectList<TMyContato>;
-       function GetCount: integer;
-       function GetIsEmpty: boolean;
-    public
-       constructor Create;
-       destructor Destroy; override;
-
-       procedure AddItem(value: TMyContato); reintroduce;
-       function FindObject(Index: integer): TMyContato;
-
-       property Count: integer read GetCount;
-       property IsEmpty: boolean read GetIsEmpty;
-   end;
-
-
+   //Encapsula a interface com o serviço remoto para o domínio "CONTATOS".
    TContatosService = class(TInterfacedObject, IContatosService)
      private
 
@@ -77,6 +58,7 @@ begin
      for I := 0 to Counter - 1 do
        begin
         ContatoObj := TMyContato.Create;
+        ContatoObj.ContatoId := TNetJsonUtils.FindValue(JsonData, 'ArrayContatos', 'ContatoId', I).ToInteger;
         ContatoObj.FirstName := TNetJsonUtils.FindValue(JsonData, 'ArrayContatos', 'FirstName', I);
         ContatoObj.LastName :=  TNetJsonUtils.FindValue(JsonData, 'ArrayContatos', 'LastName', I);
 
@@ -84,59 +66,29 @@ begin
        end;
     end;
 
- finally
-  if Assigned(ContatoObj) and (Counter > 0) then FreeAndNil(ContatoObj);
+  {Não dar "FreeAndNil" em ContatoObj, uma vez que foi adicionado na lista
+   da variável List. FreeAndNil aqui vai eliminar de List o último ponteiro
+   associado à variável ContatoObj. }
+ except
+   //to-do: gerar logs.
+
  end;
 end;
 
 function TContatosService.NewContato(Value: TMyContato): TMyContato;
 var
  IService: IMercurioContatosServer;
- //MessageObj: TMyContato;
 begin
 
  try
    IService := GetIMercurioContatosServer();
    Result := IService.NewContato(Value);
 
- finally
-   //if Assigned(MessageObj) then FreeAndNil(MessageObj);
+ except
+   //to-do: gerar logs.
+
  end;
 end;
 
-{ TListaContatos }
-
-procedure TListaContatos.AddItem(value: TMyContato);
-begin
- FList.Add(Value);
-end;
-
-constructor TListaContatos.Create;
-begin
- FList := TObjectList<TMyContato>.Create;
- FList.OwnsObjects := true;
-end;
-
-destructor TListaContatos.Destroy;
-begin
-  FList.Clear;
-  FList.Free;
-  inherited;
-end;
-
-function TListaContatos.FindObject(Index: integer): TMyContato;
-begin
- Result := FList.Items[Index];
-end;
-
-function TListaContatos.GetCount: integer;
-begin
- Result :=  FList.Count;
-end;
-
-function TListaContatos.GetIsEmpty: boolean;
-begin
- Result := FList.Count = 0;
-end;
 
 end.

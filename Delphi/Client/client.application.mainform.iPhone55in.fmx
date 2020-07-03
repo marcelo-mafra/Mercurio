@@ -4,6 +4,7 @@ inherited FrmMainForm_iPhone55in: TFrmMainForm_iPhone55in
   DesignerMasterStyle = 2
   inherited Panel1: TPanel
     Size.Width = 414.000000000000000000
+    Size.Height = 44.000000000000000000
     inherited BtnMaster: TSpeedButton
       Size.Width = 44.000000000000000000
       Size.Height = 44.000000000000000000
@@ -28,65 +29,77 @@ inherited FrmMainForm_iPhone55in: TFrmMainForm_iPhone55in
     end
   end
   inherited TabMain: TTabControl
-    Size.Width = 384.000000000000000000
-    Size.Height = 691.000000000000000000
+    Margins.Left = 44.000000000000000000
+    Size.Width = 370.000000000000000000
+    Size.Height = 672.000000000000000000
     Sizes = (
-      384s
-      677s
-      384s
-      677s
-      384s
-      677s)
+      370s
+      623s
+      370s
+      623s
+      370s
+      623s)
     inherited TabContatos: TTabItem
-      Size.Width = 128.000000000000000000
-      Size.Height = 14.000000000000000000
+      Size.Width = 123.000000000000000000
       ExplicitSize.cx = 200.000000000000000000
       ExplicitSize.cy = 49.000000000000000000
       inherited LstContatos: TListBox
         Margins.Left = 30.000000000000000000
-        Size.Width = 354.000000000000000000
-        Size.Height = 677.000000000000000000
-        Viewport.Width = 354.000000000000000000
-        Viewport.Height = 642.000000000000000000
+        Size.Width = 340.000000000000000000
+        Size.Height = 623.000000000000000000
+        Viewport.Width = 340.000000000000000000
+        Viewport.Height = 535.000000000000000000
+        inherited SearchBox1: TSearchBox
+          Size.Width = 340.000000000000000000
+          Size.Height = 44.000000000000000000
+        end
+        inherited ListBoxHeader2: TListBoxHeader
+          Position.Y = 44.000000000000000000
+          Size.Width = 340.000000000000000000
+          Size.Height = 44.000000000000000000
+          inherited SpeedButton5: TSpeedButton
+            Position.X = 296.000000000000000000
+            Size.Width = 44.000000000000000000
+            Size.Height = 44.000000000000000000
+          end
+          inherited Label2: TLabel
+            Position.Y = 7.000000000000000000
+            Size.Width = 337.000000000000000000
+          end
+        end
       end
     end
     inherited TabItem2: TTabItem
-      Size.Width = 128.000000000000000000
-      Size.Height = 14.000000000000000000
+      Size.Width = 123.000000000000000000
       ExplicitSize.cx = 100.000000000000000000
       ExplicitSize.cy = 49.000000000000000000
     end
     inherited TabNewContact: TTabItem
-      Size.Width = 128.000000000000000000
-      Size.Height = 14.000000000000000000
+      Size.Width = 124.000000000000000000
       ExplicitSize.cx = 128.000000000000000000
       ExplicitSize.cy = 49.000000000000000000
-      inherited EdtFirstName: TEdit
-        Size.Height = 30.000000000000000000
-      end
-      inherited EdtLastName: TEdit
-        Size.Height = 30.000000000000000000
-      end
     end
   end
   inherited MultiView1: TMultiView
+    NavigationPaneOptions.CollapsedWidth = 44.000000000000000000
     Size.Width = 121.000000000000000000
     Size.Height = 400.000000000000000000
     inherited SpeedButton2: TSpeedButton
+      Position.Y = 88.000000000000000000
       Size.Width = 44.000000000000000000
       Size.Height = 44.000000000000000000
     end
     inherited SpeedButton1: TSpeedButton
-      Position.Y = 44.000000000000000000
       Size.Width = 44.000000000000000000
       Size.Height = 44.000000000000000000
     end
     inherited SpeedButton3: TSpeedButton
       Position.Y = 132.000000000000000000
+      Size.Width = 44.000000000000000000
       Size.Height = 44.000000000000000000
     end
     inherited SpeedButton4: TSpeedButton
-      Position.Y = 88.000000000000000000
+      Position.Y = 44.000000000000000000
       Size.Width = 44.000000000000000000
       Size.Height = 44.000000000000000000
     end

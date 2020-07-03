@@ -5,7 +5,7 @@ interface
 type
  MsgIdentifier = int64;
 
-  //Classe abstrata usada como base para diversas listas de objetos.
+ //Classe abstrata usada como classe-base para diversas listas de objetos.
  TListaObjetos = class
 
    public

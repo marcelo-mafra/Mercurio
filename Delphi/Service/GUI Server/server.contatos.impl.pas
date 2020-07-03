@@ -21,9 +21,7 @@ implementation
 
 function TMercurioContatosServer.GetMyContatos: UnicodeString;
 var
-I: integer;
- JsonObj: TJsonObject;
- JsonPair: TJsonPair;
+ I: integer;
  JDocumment: TStringStream;
  StrData: TStringList;
 begin
@@ -36,13 +34,10 @@ begin
    begin
    for I := 0 to StrData.Count - 1 do
     begin
-     JsonObj := TJsonObject.Create;
-     JsonObj.ParseJSONValue(StrData.Strings[I]);
-
      if I < StrData.Count - 1 then
-      JDocumment.WriteString(JsonObj.Format + ',')
+      JDocumment.WriteString(StrData.Strings[I] + ',')
      else
-      JDocumment.WriteString(JsonObj.Format);
+      JDocumment.WriteString(StrData.Strings[I]);
     end;
     end;
 
@@ -50,7 +45,6 @@ begin
   Result := JDocumment.DataString;
 
   finally
-//   if Assigned(JsonObj) then FreeAndNil(JsonObj);
    if Assigned(JDocumment) then FreeAndNil(JDocumment);
   end;
 end;

@@ -75,14 +75,16 @@ begin
      try
        //value as object
        originalObject := jsValue as TJsonObject;
+
       //get pair, wich contains Array of objects
        jsPair := originalObject.Get(ArrayName);
        //pair value as array
+
        jsArray := jsPair.jsonValue as  TJsonArray;
 
       //enumerate objects in array
       // i-th object
-       jsObject := jsArray.Get(Index) as TJsonObject;
+       jsObject := jsArray.Items[Index] as TJsonObject;
 
       //Percorre os campos do objeto json
       for jsPair in jsObject do

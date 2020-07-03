@@ -37,6 +37,7 @@ requires
   cmlib;
 
 contains
-  client.classes.contatos in 'client.classes.contatos.pas';
+  client.classes.contatos in 'client.classes.contatos.pas',
+  client.classes.listacontatos in 'client.classes.listacontatos.pas';
 
 end.

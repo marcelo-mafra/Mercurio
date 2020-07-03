@@ -17,13 +17,13 @@ object FrmMainForm: TFrmMainForm
   object Panel1: TPanel
     Align = Top
     Size.Width = 275.000000000000000000
-    Size.Height = 25.000000000000000000
+    Size.Height = 30.000000000000000000
     Size.PlatformDefault = False
     TabOrder = 6
     object BtnMaster: TSpeedButton
       Align = FitLeft
-      Size.Width = 30.000000000000000000
-      Size.Height = 25.000000000000000000
+      Size.Width = 36.000000000000000000
+      Size.Height = 30.000000000000000000
       Size.PlatformDefault = False
       StyleLookup = 'detailstoolbutton'
       Text = 'BtnMaster'
@@ -32,7 +32,7 @@ object FrmMainForm: TFrmMainForm
       Align = MostRight
       Position.X = 245.000000000000000000
       Size.Width = 30.000000000000000000
-      Size.Height = 25.000000000000000000
+      Size.Height = 30.000000000000000000
       Size.PlatformDefault = False
       StyleLookup = 'backtoolbutton'
     end
@@ -91,27 +91,28 @@ object FrmMainForm: TFrmMainForm
     Align = Client
     Margins.Left = 30.000000000000000000
     Size.Width = 245.000000000000000000
-    Size.Height = 455.000000000000000000
+    Size.Height = 450.000000000000000000
     Size.PlatformDefault = False
-    TabIndex = 2
+    TabHeight = 49.000000000000000000
+    TabIndex = 0
     TabOrder = 20
     TabPosition = PlatformDefault
     Sizes = (
       245s
-      429s
+      401s
       245s
-      429s
+      401s
       245s
-      429s)
+      401s)
     object TabContatos: TTabItem
       CustomIcon = <
         item
         end>
-      IsSelected = False
+      IsSelected = True
       Size.Width = 68.000000000000000000
-      Size.Height = 26.000000000000000000
+      Size.Height = 49.000000000000000000
       Size.PlatformDefault = False
-      StyleLookup = ''
+      StyleLookup = 'tabitemstyle'
       TabOrder = 0
       Text = 'Contatos'
       ExplicitSize.cx = 68.000000000000000000
@@ -119,15 +120,56 @@ object FrmMainForm: TFrmMainForm
       object LstContatos: TListBox
         Align = Client
         Size.Width = 245.000000000000000000
-        Size.Height = 429.000000000000000000
+        Size.Height = 401.000000000000000000
         Size.PlatformDefault = False
         TabOrder = 0
+        ShowScrollBars = False
+        ShowSizeGrip = True
         DisableFocusEffect = True
         DefaultItemStyles.ItemStyle = ''
         DefaultItemStyles.GroupHeaderStyle = ''
         DefaultItemStyles.GroupFooterStyle = ''
         Viewport.Width = 241.000000000000000000
-        Viewport.Height = 425.000000000000000000
+        Viewport.Height = 337.000000000000000000
+        object SearchBox1: TSearchBox
+          Touch.InteractiveGestures = [LongTap, DoubleTap]
+          Align = Top
+          TabOrder = 0
+          Size.Width = 241.000000000000000000
+          Size.Height = 30.000000000000000000
+          Size.PlatformDefault = False
+        end
+        object ListBoxHeader2: TListBoxHeader
+          Position.Y = 30.000000000000000000
+          Size.Width = 241.000000000000000000
+          Size.Height = 30.000000000000000000
+          Size.PlatformDefault = False
+          TabOrder = 1
+          object SpeedButton5: TSpeedButton
+            Action = ActUpdateContatos
+            Align = MostRight
+            Enabled = True
+            Images = ImgList
+            ImageIndex = -1
+            Position.X = 211.000000000000000000
+            Size.Width = 30.000000000000000000
+            Size.Height = 30.000000000000000000
+            Size.PlatformDefault = False
+            StyleLookup = 'refreshtoolbuttonbordered'
+            TextSettings.HorzAlign = Leading
+          end
+          object Label2: TLabel
+            Align = FitLeft
+            Margins.Left = 3.000000000000000000
+            Position.X = 3.000000000000000000
+            Size.Width = 142.000000000000000000
+            Size.Height = 30.000000000000000000
+            Size.PlatformDefault = False
+            StyleLookup = 'listboxitemlabel'
+            Text = 'Contatos'
+            TabOrder = 1
+          end
+        end
       end
     end
     object TabItem2: TTabItem
@@ -136,7 +178,7 @@ object FrmMainForm: TFrmMainForm
         end>
       IsSelected = False
       Size.Width = 54.000000000000000000
-      Size.Height = 26.000000000000000000
+      Size.Height = 49.000000000000000000
       Size.PlatformDefault = False
       StyleLookup = ''
       TabOrder = 0
@@ -148,9 +190,9 @@ object FrmMainForm: TFrmMainForm
       CustomIcon = <
         item
         end>
-      IsSelected = True
+      IsSelected = False
       Size.Width = 89.000000000000000000
-      Size.Height = 26.000000000000000000
+      Size.Height = 49.000000000000000000
       Size.PlatformDefault = False
       StyleLookup = ''
       TabOrder = 0
@@ -159,32 +201,47 @@ object FrmMainForm: TFrmMainForm
       ExplicitSize.cy = 26.000000000000000000
       object EdtFirstName: TEdit
         Touch.InteractiveGestures = [LongTap, DoubleTap]
+        Anchors = [akLeft, akTop, akRight]
         TabOrder = 0
         MaxLength = 50
         Position.X = 8.000000000000000000
-        Position.Y = 38.000000000000000000
+        Position.Y = 30.000000000000000000
         Size.Width = 233.000000000000000000
-        Size.Height = 22.000000000000000000
+        Size.Height = 30.000000000000000000
         Size.PlatformDefault = False
       end
       object EdtLastName: TEdit
         Touch.InteractiveGestures = [LongTap, DoubleTap]
+        Anchors = [akLeft, akTop, akRight]
         TabOrder = 1
         MaxLength = 50
         Position.X = 8.000000000000000000
-        Position.Y = 86.000000000000000000
+        Position.Y = 78.000000000000000000
         Size.Width = 233.000000000000000000
-        Size.Height = 22.000000000000000000
+        Size.Height = 30.000000000000000000
         Size.PlatformDefault = False
       end
       object Button1: TButton
         Action = ActSaveContatoData
+        Anchors = [akTop, akRight]
         Enabled = True
         Images = ImgList
         ImageIndex = -1
         Position.X = 160.000000000000000000
         Position.Y = 118.000000000000000000
         TabOrder = 2
+      end
+      object Label1: TLabel
+        Position.X = 8.000000000000000000
+        Position.Y = 14.000000000000000000
+        Text = 'Nome'
+        TabOrder = 4
+      end
+      object Label3: TLabel
+        Position.X = 8.000000000000000000
+        Position.Y = 62.000000000000000000
+        Text = 'Sobrenome'
+        TabOrder = 3
       end
     end
   end
@@ -198,15 +255,17 @@ object FrmMainForm: TFrmMainForm
     Size.PlatformDefault = False
     TabOrder = 19
     object SpeedButton2: TSpeedButton
+      Action = ActDeleteContato
       Align = MostTop
-      Position.Y = 30.000000000000000000
+      Enabled = True
+      Images = ImgList
+      ImageIndex = -1
+      Position.Y = 90.000000000000000000
       Size.Width = 30.000000000000000000
-      Size.Height = 33.000000000000000000
+      Size.Height = 30.000000000000000000
       Size.PlatformDefault = False
       StyleLookup = 'trashtoolbutton'
-      Text = 'Voltar'
       TextSettings.HorzAlign = Leading
-      OnClick = ActBackExecute
     end
     object SpeedButton1: TSpeedButton
       Action = ActTabContacts
@@ -226,7 +285,7 @@ object FrmMainForm: TFrmMainForm
       Enabled = True
       Images = ImgList
       ImageIndex = 0
-      Position.Y = 63.000000000000000000
+      Position.Y = 30.000000000000000000
       Size.Width = 30.000000000000000000
       Size.Height = 30.000000000000000000
       Size.PlatformDefault = False
@@ -238,7 +297,7 @@ object FrmMainForm: TFrmMainForm
       Enabled = True
       Images = ImgList
       ImageIndex = -1
-      Position.Y = 93.000000000000000000
+      Position.Y = 60.000000000000000000
       Size.Width = 30.000000000000000000
       Size.Height = 30.000000000000000000
       Size.PlatformDefault = False
@@ -248,8 +307,8 @@ object FrmMainForm: TFrmMainForm
   end
   object ActList: TActionList
     Images = ImgList
-    Left = 224
-    Top = 48
+    Left = 40
+    Top = 160
     object ActConnectService: TAction
       Text = 'Conectar'
       ImageIndex = 0
@@ -288,18 +347,30 @@ object FrmMainForm: TFrmMainForm
       Category = 'View'
       Text = 'Novo contato'
       OnExecute = ActTabNewContactExecute
+      OnUpdate = ActTabNewContactUpdate
     end
     object ActTabContacts: TAction
       Category = 'View'
       Text = 'Contatos'
       ImageIndex = 2
       OnExecute = ActTabContactsExecute
+      OnUpdate = ActTabContactsUpdate
       ImageIndex = 2
     end
     object ActSaveContatoData: TAction
       Text = 'Salvar'
       OnExecute = ActSaveContatoDataExecute
       OnUpdate = ActSaveContatoDataUpdate
+    end
+    object ActUpdateContatos: TAction
+      Text = 'Atualizar contatos'
+      OnExecute = ActUpdateContatosExecute
+      OnUpdate = ActUpdateContatosUpdate
+    end
+    object ActDeleteContato: TAction
+      Text = 'Excluir contato'
+      OnExecute = ActDeleteContatoExecute
+      OnUpdate = ActDeleteContatoUpdate
     end
   end
   object ImgList: TImageList
@@ -630,7 +701,7 @@ object FrmMainForm: TFrmMainForm
             SourceRect.Bottom = 18.000000000000000000
           end>
       end>
-    Left = 224
-    Top = 104
+    Left = 40
+    Top = 216
   end
 end

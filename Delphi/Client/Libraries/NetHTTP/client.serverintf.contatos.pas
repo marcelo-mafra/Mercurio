@@ -35,10 +35,12 @@ type
   // ************************************************************************ //
   TMyContato = class(TRemotable)
   private
+    FContatoId: integer;
     FLastName: UnicodeString;
     FFirstName: UnicodeString;
 
   published
+    property ContatoId: integer read FContatoId write FContatoId;
     property LastName:  UnicodeString  read FLastName write FLastName;
     property FirstName: UnicodeString  read FFirstName write FFirstName;
 

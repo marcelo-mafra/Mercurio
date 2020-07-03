@@ -11,8 +11,9 @@ uses
   FMX.StdActns, FMX.ListView.Types, FMX.ListView.Appearances, classes.logs,
   FMX.ListView.Adapters.Base, FMX.ListView, FMX.ListBox, FMX.Layouts, System.IniFiles,
   client.resources.svcconsts, client.interfaces.contatos, client.classes.contatos,
-  client.serverintf.contatos, client.resources.mercurio, client.resources.consts,
-  FMX.MultiView, FMX.TabControl, FMX.Edit;
+  client.serverintf.contatos, client.classes.listacontatos, client.resources.mercurio,
+  client.resources.consts, FMX.MultiView, FMX.TabControl, FMX.Edit,
+  FMX.SearchBox;
 
 type
   TViewItem = (viContatos, viNovoContato);
@@ -48,6 +49,14 @@ type
     EdtLastName: TEdit;
     ActSaveContatoData: TAction;
     Button1: TButton;
+    ActUpdateContatos: TAction;
+    SearchBox1: TSearchBox;
+    ListBoxHeader2: TListBoxHeader;
+    SpeedButton5: TSpeedButton;
+    Label2: TLabel;
+    Label1: TLabel;
+    Label3: TLabel;
+    ActDeleteContato: TAction;
     procedure ActDisconnectServiceExecute(Sender: TObject);
     procedure ActDisconnectServiceUpdate(Sender: TObject);
     procedure ActConnectServiceUpdate(Sender: TObject);
@@ -64,6 +73,12 @@ type
     procedure ActTabContactsExecute(Sender: TObject);
     procedure ActSaveContatoDataExecute(Sender: TObject);
     procedure ActSaveContatoDataUpdate(Sender: TObject);
+    procedure ActUpdateContatosExecute(Sender: TObject);
+    procedure ActUpdateContatosUpdate(Sender: TObject);
+    procedure ActTabContactsUpdate(Sender: TObject);
+    procedure ActTabNewContactUpdate(Sender: TObject);
+    procedure ActDeleteContatoExecute(Sender: TObject);
+    procedure ActDeleteContatoUpdate(Sender: TObject);
 
   strict private
    Events: TLogEvents;
@@ -132,6 +147,17 @@ begin
  TAction(Sender).Enabled := (Connected = False);
 end;
 
+procedure TFrmMainForm.ActDeleteContatoExecute(Sender: TObject);
+begin
+Tag := 0;
+end;
+
+procedure TFrmMainForm.ActDeleteContatoUpdate(Sender: TObject);
+begin
+ TAction(Sender).Enabled := (Connected) and (TabMain.ActiveTab = TabContatos) and
+   (LstContatos.Selected<> nil);
+end;
+
 procedure TFrmMainForm.ActDisconnectServiceExecute(Sender: TObject);
 begin
  Connected := not RemoteService.DisconnectService;
@@ -173,7 +199,7 @@ begin
              //Item do listbox.
              ItemObj := TListBoxItem.Create(LstServiceInfo);
              ItemObj.Text :=  ListObj.Names[Counter];
-             ItemObj.Height := 40;
+             ItemObj.Height := 35;
              //ItemObj.ItemData.Bitmap := GetBitmap(3);
 
              ItemObj.ItemData.Detail:= ListObj.ValueFromIndex[Counter];
@@ -213,6 +239,7 @@ begin
 
     finally
      FreeAndNil(MyContatoObj);
+     EdtFirstName.SetFocus;
     end;
   end;
 
@@ -228,9 +255,29 @@ begin
  NavegateTo(ViContatos);
 end;
 
+procedure TFrmMainForm.ActTabContactsUpdate(Sender: TObject);
+begin
+TAction(Sender).Enabled := (Connected) and (TabMain.ActiveTab <> TabContatos);
+end;
+
 procedure TFrmMainForm.ActTabNewContactExecute(Sender: TObject);
 begin
  NavegateTo(ViNovoContato);
+end;
+
+procedure TFrmMainForm.ActTabNewContactUpdate(Sender: TObject);
+begin
+TAction(Sender).Enabled := (Connected) and (TabMain.ActiveTab <> TabNewContact);
+end;
+
+procedure TFrmMainForm.ActUpdateContatosExecute(Sender: TObject);
+begin
+ self.ListarContatos;
+end;
+
+procedure TFrmMainForm.ActUpdateContatosUpdate(Sender: TObject);
+begin
+ TAction(sender).Enabled := (Connected) and (TabMain.ActiveTab = TabContatos);
 end;
 
 procedure TFrmMainForm.FormClose(Sender: TObject; var Action: TCloseAction);
@@ -240,11 +287,18 @@ begin
 end;
 
 procedure TFrmMainForm.FormCreate(Sender: TObject);
+var
+ I: integer;
 begin
  LoadLogsParams;
 
  Connected := False; //default
  PnlServiceInfo.Visible := False;
+
+ for I := 0 to TabMain.TabCount - 1 do
+    TabMain.Tabs[I].Visible := True;
+
+ NavegateTo(ViContatos);
 end;
 
 procedure TFrmMainForm.FormDestroy(Sender: TObject);
@@ -304,6 +358,7 @@ var
  ContatosList: TListaContatos;
  MyContatoObj: TMyContato;
  ItemObj: TListBoxItem;
+ FullName: string;
 begin
  if Connected then
   begin
@@ -325,27 +380,23 @@ begin
         if MyContatoObj <> nil then
          begin
           ItemObj := TListBoxItem.Create(LstContatos);
-
-          ItemObj.Text :=  MyContatoObj.FirstName.TrimRight;
+          FullName := '';
+          ItemObj.Text := FullName.Join(' ', [MyContatoObj.FirstName.TrimRight, MyContatoObj.LastName.TrimRight]);
           ItemObj.Height := 40;
           //ItemObj.ItemData.Bitmap := GetBitmap(3);
 
-          ItemObj.ItemData.Detail := MyContatoObj.LastName.TrimRight;
+          ItemObj.ItemData.Detail := MyContatoObj.ContatoId.ToString;
           ItemObj.StyleLookup := 'listboxitembottomdetail';
           ItemObj.ItemData.Accessory := TlistBoxItemData.TAccessory(1);
           ItemObj.WordWrap := True;
           ItemObj.Hint := ItemObj.ItemData.Detail;
 
           LstContatos.AddObject(ItemObj);
-          FreeAndNil(MyContatoObj);
          end;
        end;
 
     finally
      LstContatos.EndUpdate;
-     //Não descomentar. Dá memory leak ao chamar o método FREE da classe.
-     //if Assigned(ContatosList) then
-     //  FreeAndNil(ContatosList);
     end;
 
   end;

@@ -31,36 +31,52 @@ inherited FrmMainForm_Moto360: TFrmMainForm_Moto360
   end
   inherited TabMain: TTabControl
     Size.Width = 210.000000000000000000
-    Size.Height = 193.000000000000000000
+    Size.Height = 188.000000000000000000
     Sizes = (
       210s
-      177s
+      139s
       210s
-      177s
+      139s
       210s
-      177s)
+      139s)
     inherited TabContatos: TTabItem
       Size.Width = 70.000000000000000000
-      Size.Height = 16.000000000000000000
       ExplicitSize.cx = 200.000000000000000000
       ExplicitSize.cy = 49.000000000000000000
       inherited LstContatos: TListBox
         Margins.Left = 30.000000000000000000
         Size.Width = 180.000000000000000000
-        Size.Height = 177.000000000000000000
+        Size.Height = 139.000000000000000000
         Viewport.Width = 180.000000000000000000
-        Viewport.Height = 144.000000000000000000
+        Viewport.Height = 43.000000000000000000
+        inherited SearchBox1: TSearchBox
+          Size.Width = 180.000000000000000000
+          Size.Height = 48.000000000000000000
+        end
+        inherited ListBoxHeader2: TListBoxHeader
+          Position.Y = 48.000000000000000000
+          Size.Width = 180.000000000000000000
+          Size.Height = 48.000000000000000000
+          inherited SpeedButton5: TSpeedButton
+            Position.X = 132.000000000000000000
+            Size.Width = 48.000000000000000000
+            Size.Height = 48.000000000000000000
+          end
+          inherited Label2: TLabel
+            Position.Y = 2.000007629394531000
+            Size.Width = 177.000000000000000000
+            Size.Height = 43.999984741210940000
+          end
+        end
       end
     end
     inherited TabItem2: TTabItem
       Size.Width = 70.000000000000000000
-      Size.Height = 16.000000000000000000
       ExplicitSize.cx = 100.000000000000000000
       ExplicitSize.cy = 49.000000000000000000
     end
     inherited TabNewContact: TTabItem
       Size.Width = 70.000000000000000000
-      Size.Height = 16.000000000000000000
       ExplicitSize.cx = 70.000000000000000000
       ExplicitSize.cy = 49.000000000000000000
       inherited EdtFirstName: TEdit
@@ -75,11 +91,12 @@ inherited FrmMainForm_Moto360: TFrmMainForm_Moto360
     Size.Width = 121.000000000000000000
     Size.Height = 400.000000000000000000
     inherited SpeedButton2: TSpeedButton
+      Position.Y = 96.000000000000000000
       Size.Width = 48.000000000000000000
       Size.Height = 48.000000000000000000
     end
     inherited SpeedButton1: TSpeedButton
-      Position.Y = 96.000000000000000000
+      Position.Y = 48.000000000000000000
       Size.Width = 48.000000000000000000
       Size.Height = 48.000000000000000000
     end
@@ -88,7 +105,6 @@ inherited FrmMainForm_Moto360: TFrmMainForm_Moto360
       Size.Height = 48.000000000000000000
     end
     inherited SpeedButton4: TSpeedButton
-      Position.Y = 48.000000000000000000
       Size.Width = 48.000000000000000000
       Size.Height = 48.000000000000000000
     end
