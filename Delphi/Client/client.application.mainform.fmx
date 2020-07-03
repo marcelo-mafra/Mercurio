@@ -28,6 +28,14 @@ object FrmMainForm: TFrmMainForm
       StyleLookup = 'detailstoolbutton'
       Text = 'BtnMaster'
     end
+    object BtnBack: TSpeedButton
+      Align = MostRight
+      Position.X = 245.000000000000000000
+      Size.Width = 30.000000000000000000
+      Size.Height = 25.000000000000000000
+      Size.PlatformDefault = False
+      StyleLookup = 'backtoolbutton'
+    end
   end
   object PnlServiceInfo: TCalloutPanel
     Action = ActServiceInfoView
@@ -79,31 +87,35 @@ object FrmMainForm: TFrmMainForm
       end
     end
   end
-  object TabControl1: TTabControl
+  object TabMain: TTabControl
     Align = Client
     Margins.Left = 30.000000000000000000
     Size.Width = 245.000000000000000000
     Size.Height = 455.000000000000000000
     Size.PlatformDefault = False
-    TabIndex = 0
+    TabIndex = 2
     TabOrder = 20
     TabPosition = PlatformDefault
     Sizes = (
       245s
       429s
       245s
+      429s
+      245s
       429s)
-    object TabItem1: TTabItem
+    object TabContatos: TTabItem
       CustomIcon = <
         item
         end>
-      IsSelected = True
+      IsSelected = False
       Size.Width = 68.000000000000000000
       Size.Height = 26.000000000000000000
       Size.PlatformDefault = False
       StyleLookup = ''
       TabOrder = 0
       Text = 'Contatos'
+      ExplicitSize.cx = 68.000000000000000000
+      ExplicitSize.cy = 26.000000000000000000
       object LstContatos: TListBox
         Align = Client
         Size.Width = 245.000000000000000000
@@ -129,14 +141,59 @@ object FrmMainForm: TFrmMainForm
       StyleLookup = ''
       TabOrder = 0
       Text = 'Profile'
+      ExplicitSize.cx = 54.000000000000000000
+      ExplicitSize.cy = 26.000000000000000000
+    end
+    object TabNewContact: TTabItem
+      CustomIcon = <
+        item
+        end>
+      IsSelected = True
+      Size.Width = 89.000000000000000000
+      Size.Height = 26.000000000000000000
+      Size.PlatformDefault = False
+      StyleLookup = ''
+      TabOrder = 0
+      Text = 'New Contact'
+      ExplicitSize.cx = 89.000000000000000000
+      ExplicitSize.cy = 26.000000000000000000
+      object EdtFirstName: TEdit
+        Touch.InteractiveGestures = [LongTap, DoubleTap]
+        TabOrder = 0
+        MaxLength = 50
+        Position.X = 8.000000000000000000
+        Position.Y = 38.000000000000000000
+        Size.Width = 233.000000000000000000
+        Size.Height = 22.000000000000000000
+        Size.PlatformDefault = False
+      end
+      object EdtLastName: TEdit
+        Touch.InteractiveGestures = [LongTap, DoubleTap]
+        TabOrder = 1
+        MaxLength = 50
+        Position.X = 8.000000000000000000
+        Position.Y = 86.000000000000000000
+        Size.Width = 233.000000000000000000
+        Size.Height = 22.000000000000000000
+        Size.PlatformDefault = False
+      end
+      object Button1: TButton
+        Action = ActSaveContatoData
+        Enabled = True
+        Images = ImgList
+        ImageIndex = -1
+        Position.X = 160.000000000000000000
+        Position.Y = 118.000000000000000000
+        TabOrder = 2
+      end
     end
   end
   object MultiView1: TMultiView
-    TargetControl = TabControl1
+    TargetControl = TabMain
     MasterButton = BtnMaster
     Mode = NavigationPane
     NavigationPaneOptions.CollapsedWidth = 30.000000000000000000
-    Size.Width = 250.000000000000000000
+    Size.Width = 121.000000000000000000
     Size.Height = 400.000000000000000000
     Size.PlatformDefault = False
     TabOrder = 19
@@ -148,15 +205,20 @@ object FrmMainForm: TFrmMainForm
       Size.PlatformDefault = False
       StyleLookup = 'trashtoolbutton'
       Text = 'Voltar'
+      TextSettings.HorzAlign = Leading
       OnClick = ActBackExecute
     end
     object SpeedButton1: TSpeedButton
+      Action = ActTabContacts
       Align = MostTop
+      Enabled = True
+      Images = ImgList
+      ImageIndex = 2
       Size.Width = 30.000000000000000000
       Size.Height = 30.000000000000000000
       Size.PlatformDefault = False
       StyleLookup = 'addtoolbuttonbordered'
-      Text = 'SpeedButton1'
+      TextSettings.HorzAlign = Leading
     end
     object SpeedButton3: TSpeedButton
       Action = ActProfile
@@ -168,6 +230,20 @@ object FrmMainForm: TFrmMainForm
       Size.Width = 30.000000000000000000
       Size.Height = 30.000000000000000000
       Size.PlatformDefault = False
+      TextSettings.HorzAlign = Leading
+    end
+    object SpeedButton4: TSpeedButton
+      Action = ActTabNewContact
+      Align = MostTop
+      Enabled = True
+      Images = ImgList
+      ImageIndex = -1
+      Position.Y = 93.000000000000000000
+      Size.Width = 30.000000000000000000
+      Size.Height = 30.000000000000000000
+      Size.PlatformDefault = False
+      StyleLookup = 'addtoolbuttonbordered'
+      TextSettings.HorzAlign = Leading
     end
   end
   object ActList: TActionList
@@ -207,6 +283,23 @@ object FrmMainForm: TFrmMainForm
       OnExecute = ActBackExecute
       OnUpdate = ActBackUpdate
       ImageIndex = 4
+    end
+    object ActTabNewContact: TAction
+      Category = 'View'
+      Text = 'Novo contato'
+      OnExecute = ActTabNewContactExecute
+    end
+    object ActTabContacts: TAction
+      Category = 'View'
+      Text = 'Contatos'
+      ImageIndex = 2
+      OnExecute = ActTabContactsExecute
+      ImageIndex = 2
+    end
+    object ActSaveContatoData: TAction
+      Text = 'Salvar'
+      OnExecute = ActSaveContatoDataExecute
+      OnUpdate = ActSaveContatoDataUpdate
     end
   end
   object ImgList: TImageList

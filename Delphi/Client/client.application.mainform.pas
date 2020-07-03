@@ -12,9 +12,11 @@ uses
   FMX.ListView.Adapters.Base, FMX.ListView, FMX.ListBox, FMX.Layouts, System.IniFiles,
   client.resources.svcconsts, client.interfaces.contatos, client.classes.contatos,
   client.serverintf.contatos, client.resources.mercurio, client.resources.consts,
-  FMX.MultiView, FMX.TabControl;
+  FMX.MultiView, FMX.TabControl, FMX.Edit;
 
 type
+  TViewItem = (viContatos, viNovoContato);
+
   TFrmMainForm = class(TForm, IChatApplication, IMercurioLogs)
     ActList: TActionList;
     ActConnectService: TAction;
@@ -31,12 +33,21 @@ type
     ActBack: TAction;
     MultiView1: TMultiView;
     BtnMaster: TSpeedButton;
-    TabControl1: TTabControl;
-    TabItem1: TTabItem;
+    TabMain: TTabControl;
+    TabContatos: TTabItem;
     TabItem2: TTabItem;
     SpeedButton2: TSpeedButton;
     SpeedButton1: TSpeedButton;
     SpeedButton3: TSpeedButton;
+    TabNewContact: TTabItem;
+    ActTabNewContact: TAction;
+    SpeedButton4: TSpeedButton;
+    ActTabContacts: TAction;
+    BtnBack: TSpeedButton;
+    EdtFirstName: TEdit;
+    EdtLastName: TEdit;
+    ActSaveContatoData: TAction;
+    Button1: TButton;
     procedure ActDisconnectServiceExecute(Sender: TObject);
     procedure ActDisconnectServiceUpdate(Sender: TObject);
     procedure ActConnectServiceUpdate(Sender: TObject);
@@ -49,6 +60,10 @@ type
     procedure ActBackUpdate(Sender: TObject);
     procedure ActProfileExecute(Sender: TObject);
     procedure ActProfileUpdate(Sender: TObject);
+    procedure ActTabNewContactExecute(Sender: TObject);
+    procedure ActTabContactsExecute(Sender: TObject);
+    procedure ActSaveContatoDataExecute(Sender: TObject);
+    procedure ActSaveContatoDataUpdate(Sender: TObject);
 
   strict private
    Events: TLogEvents;
@@ -69,6 +84,7 @@ type
     function GetTitle: string;
     procedure ListarContatos;
     procedure LoadLogsParams;
+    procedure NavegateTo(Item: TViewItem);
 
   public
     { Public declarations }
@@ -182,6 +198,41 @@ begin
  TAction(Sender).Enabled := Connected;
 end;
 
+procedure TFrmMainForm.ActSaveContatoDataExecute(Sender: TObject);
+var
+ MyContatoObj: TMyContato;
+begin
+ if Connected then
+  begin
+    MyContatoObj := TMyContato.Create;
+
+    try
+      MyContatoObj.FirstName := EdtFirstName.Text;
+      MyContatoObj.LastName := EdtLastName.Text;
+      MyContatoObj := ContatosService.NewContato(MyContatoObj);
+
+    finally
+     FreeAndNil(MyContatoObj);
+    end;
+  end;
+
+end;
+
+procedure TFrmMainForm.ActSaveContatoDataUpdate(Sender: TObject);
+begin
+ TAction(Sender).Enabled := not (EdtFirstName.Text.IsEmpty) and not (EdtLastName.Text.IsEmpty);
+end;
+
+procedure TFrmMainForm.ActTabContactsExecute(Sender: TObject);
+begin
+ NavegateTo(ViContatos);
+end;
+
+procedure TFrmMainForm.ActTabNewContactExecute(Sender: TObject);
+begin
+ NavegateTo(ViNovoContato);
+end;
+
 procedure TFrmMainForm.FormClose(Sender: TObject; var Action: TCloseAction);
 begin
  if (RemoteService <> nil) then
@@ -267,7 +318,7 @@ begin
       LstContatos.BeginUpdate;
       LstContatos.Clear;
 
-      for I := 0 to ContatosList.Count - 2 do
+      for I := 0 to ContatosList.Count - 1 do
        begin
         MyContatoObj := ContatosList.FindObject(I);
 
@@ -321,6 +372,15 @@ begin
     finally
       ConfigFile.Free;
     end;
+end;
+
+procedure TFrmMainForm.NavegateTo(Item: TViewItem);
+begin
+ case Item of
+   viContatos:   TabMain.ActiveTab := TabContatos;
+   viNovoContato: TabMain.ActiveTab := TabNewContact;
+
+ end;
 end;
 
 procedure TFrmMainForm.SetConnected(const Value: boolean);

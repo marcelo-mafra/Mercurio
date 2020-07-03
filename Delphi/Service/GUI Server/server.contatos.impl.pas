@@ -38,8 +38,6 @@ begin
     begin
      JsonObj := TJsonObject.Create;
      JsonObj.ParseJSONValue(StrData.Strings[I]);
-     {JsonObj.AddPair(TJsonPair.Create('FirstName', 'Marcelo' + Random.ToString));
-     JsonObj.AddPair(TJsonPair.Create('LastName', 'Mafra'));}
 
      if I < StrData.Count - 1 then
       JDocumment.WriteString(JsonObj.Format + ',')
@@ -47,19 +45,6 @@ begin
       JDocumment.WriteString(JsonObj.Format);
     end;
     end;
-
-  {
-   for I := 0 to 10 do
-   begin
-     JsonObj := TJsonObject.Create;
-     JsonObj.AddPair(TJsonPair.Create('FirstName', 'Marcelo' + Random.ToString));
-     JsonObj.AddPair(TJsonPair.Create('LastName', 'Mafra'));
-
-     if I < 10 then
-      JDocumment.WriteString(JsonObj.Format + ',')
-     else
-      JDocumment.WriteString(JsonObj.Format);
-   end;  }
 
   JDocumment.WriteString(']}');
   Result := JDocumment.DataString;
@@ -73,7 +58,7 @@ end;
 function TMercurioContatosServer.NewContato(
   const Value: TMyContato): TMyContato;
 begin
-  Result := Value;
+  Result := TContatosData.NewContato(Value);
 end;
 
 
