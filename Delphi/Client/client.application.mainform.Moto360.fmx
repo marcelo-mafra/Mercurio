@@ -80,15 +80,15 @@ inherited FrmMainForm_Moto360: TFrmMainForm_Moto360
       ExplicitSize.cx = 70.000000000000000000
       ExplicitSize.cy = 49.000000000000000000
       inherited EdtFirstName: TEdit
-        Size.Width = 163.000000000000000000
+        Size.Width = 93.000000000000000000
         Size.Height = 32.000000000000000000
       end
       inherited EdtLastName: TEdit
-        Size.Width = 163.000000000000000000
+        Size.Width = 93.000000000000000000
         Size.Height = 32.000000000000000000
       end
       inherited Button1: TButton
-        Position.X = 90.000000000000000000
+        Position.X = 20.000000000000000000
       end
     end
   end

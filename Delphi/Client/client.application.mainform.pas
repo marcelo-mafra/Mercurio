@@ -99,12 +99,14 @@ type
     procedure LoadLogsParams;
     procedure NavegateTo(Item: TViewItem);
     function GetSelectedContact: TMyContato;
+    procedure DoOnNewFileEvent(var NewFileName: string);
 
 
   public
     { Public declarations }
     property NavegateObj: TNavegateList read FNavList;
     property SelectedContact: TMyContato read GetSelectedContact;
+
     //IChatApplication
     property Connected: boolean read GetConnected write SetConnected;
     property ContatosService: IContatosService read GetContatosService;
@@ -150,7 +152,9 @@ end;
 procedure TFrmMainForm.ActDeleteContatoExecute(Sender: TObject);
 begin
  if ContatosService.ExcluirContato(SelectedContact) then
-  LstContatos.Items.Delete(LstContatos.Selected.Index);
+   LstContatos.Items.Delete(LstContatos.Selected.Index);
+
+ LogsWriter.RegisterInfo(TChatMessagesConst.CallRemoteMethodSucess);
 end;
 
 procedure TFrmMainForm.ActDeleteContatoUpdate(Sender: TObject);
@@ -281,6 +285,26 @@ begin
  TAction(sender).Enabled := (Connected) and (TabMain.ActiveTab = TabContatos);
 end;
 
+procedure TFrmMainForm.DoOnNewFileEvent(var NewFileName: string);
+var
+ ConfigFile: TIniFile;
+ FileName: string;
+begin
+{Aponta para o evento OnNewFile de TMercurioLogsController, disparado sempre que
+ o arquivo de logs atinge otamanho máximo e se cria um novo para ser usado. Nesse
+ caso, é necessário registrar isso no .ini para que na próxima execução do cliente
+ o uso deste arquivo seja retomado até atingir o tamanho máximo definido.}
+  FileName := GetCurrentDir + '\' + TMercurioConst.ConfigFile;
+  ConfigFile := TIniFile.Create(FileName);
+
+    try
+      ConfigFile.WriteString(TMercurioConst.ConfigSection, TMercurioConst.ConfigCurrentFile, NewFileName);
+
+    finally
+      ConfigFile.Free;
+    end;
+end;
+
 procedure TFrmMainForm.FormClose(Sender: TObject; var Action: TCloseAction);
 begin
  if (RemoteService <> nil) then
@@ -339,6 +363,7 @@ begin
  LogsObj.MaxFileSize := FLogMaxFileSize;
  LogsObj.AppName := TChatServiceLabels.ServiceName;
  LogsObj.CurrentFile := FLogCurrentFile;
+ LogsObj.OnNewFile := DoOnNewFileEvent;
 
  Result := LogsObj  as IMercurioLogs;
 end;
@@ -376,6 +401,7 @@ begin
 
     try
       ContatosService.GetMyContatos(ContatosList);
+      LogsWriter.RegisterInfo(TChatMessagesConst.CallRemoteMethodSucess);
 
       if ContatosList.IsEmpty then
        Exit;

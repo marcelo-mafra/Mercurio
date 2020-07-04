@@ -133,6 +133,8 @@ begin
 
   try
     RIO.OnAfterExecute := TSOAPEvents.DoAfterExecuteEvent;
+    RIO.HTTPWebNode.UserName :=  '';
+    RIO.HTTPWebNode.Password := '';
 
     Result := (RIO as IMercurioChatServer);
 

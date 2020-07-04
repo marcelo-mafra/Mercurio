@@ -238,7 +238,6 @@ as mensagens de log.}
    on E: Exception do
     begin
      if Assigned(AList) then FreeAndNil(AList);
-     //MessageDlg(self.ClassName + ': ' + E.Message, mtError, [mbOK],0);
     end;
  end;
 end;

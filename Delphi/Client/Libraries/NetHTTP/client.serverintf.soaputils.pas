@@ -11,6 +11,7 @@ interface
   TSOAPEvents = class
     class procedure DoAfterExecuteEvent(const MethodName: string; SOAPResponse: TStream);
     class function  CreateLogsObject: TMercurioLogsController;
+    class procedure DoOnNewFileEvent(var NewFileName: string);
     class function  StreamToString(aStream: TStream): string;
     class procedure DoOnRequestCompleted(const Sender: TObject; const AResponse: IHTTPResponse);
     class procedure DoOnRequestError(const Sender: TObject; const AError: string);
@@ -41,6 +42,7 @@ begin
       MaxFileSize := ConfigFile.ReadInteger(TMercurioConst.ConfigSection, TMercurioConst.ConfigMaxFileSize, TMercurioConst.DefaultMaxSize);
 
       Result := TMercurioLogsController.Create(Folder, '.log', TEncoding.UTF8, Events);
+      Result.OnNewFile := DoOnNewFileEvent;
       Result.MaxFileSize := MaxFileSize;
       Result.AppName     := TChatServiceLabels.ServiceName;
       Result.CurrentFile := CurrentFile;
@@ -67,6 +69,26 @@ begin
   finally
    if Assigned(LogsObj) then FreeAndNil(LogsObj);
   end;
+end;
+
+class procedure TSOAPEvents.DoOnNewFileEvent(var NewFileName: string);
+var
+ ConfigFile: TIniFile;
+ FileName: string;
+begin
+{Aponta para o evento OnNewFile de TMercurioLogsController, disparado sempre que
+ o arquivo de logs atinge otamanho máximo e se cria um novo para ser usado. Nesse
+ caso, é necessário registrar isso no .ini para que na próxima execução do cliente
+ o uso deste arquivo seja retomado até atingir o tamanho máximo definido.}
+  FileName := GetCurrentDir + '\' + TMercurioConst.ConfigFile;
+  ConfigFile := TIniFile.Create(FileName);
+
+    try
+      ConfigFile.WriteString(TMercurioConst.ConfigSection, TMercurioConst.ConfigCurrentFile, NewFileName);
+
+    finally
+      ConfigFile.Free;
+    end;
 end;
 
 class procedure TSOAPEvents.DoOnRequestCompleted(const Sender: TObject;

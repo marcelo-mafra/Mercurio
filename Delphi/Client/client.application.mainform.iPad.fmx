@@ -78,13 +78,13 @@ inherited FrmMainForm_iPad: TFrmMainForm_iPad
       ExplicitSize.cx = 246.000000000000000000
       ExplicitSize.cy = 49.000000000000000000
       inherited EdtFirstName: TEdit
-        Size.Width = 1219.000000000000000000
+        Size.Width = 2205.000000000000000000
       end
       inherited EdtLastName: TEdit
-        Size.Width = 1219.000000000000000000
+        Size.Width = 2205.000000000000000000
       end
       inherited Button1: TButton
-        Position.X = 1146.000000000000000000
+        Position.X = 2132.000000000000000000
       end
     end
   end

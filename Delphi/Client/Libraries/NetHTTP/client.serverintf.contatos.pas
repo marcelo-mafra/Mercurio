@@ -119,6 +119,8 @@ begin
     RIO := HTTPRIO;
   try
     RIO.OnAfterExecute := TSOAPEvents.DoAfterExecuteEvent;
+    RIO.HTTPWebNode.UserName :=  '';
+    RIO.HTTPWebNode.Password := '';
 
     Result := (RIO as IMercurioContatosServer);
 

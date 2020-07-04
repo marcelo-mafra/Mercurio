@@ -95,11 +95,10 @@ begin
       ANewFile := FSourcePath + Prefix + FormatDateTime('yyyy-mm-dd hh-nn-ss-zzz', Now) + '.' + FileExtension ;
    end;
 
+ Result := ANewFile;
  //Dispara o evento que notifica que o nome do arquivo mudou.
  if Assigned(FOnNewFileEvent) then
-   FOnNewFileEvent(FCurrentFile);
-
- Result := ANewFile;
+   FOnNewFileEvent(ANewFile);
 end;
 
 procedure TTextFileLog.RegisterAuditFailure(const Message: string);

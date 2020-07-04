@@ -79,15 +79,15 @@ inherited FrmMainForm_LgXhdpiPh: TFrmMainForm_LgXhdpiPh
       ExplicitSize.cx = 140.000000000000000000
       ExplicitSize.cy = 49.000000000000000000
       inherited EdtFirstName: TEdit
-        Size.Width = 583.000000000000000000
+        Size.Width = 933.000000000000000000
         Size.Height = 32.000000000000000000
       end
       inherited EdtLastName: TEdit
-        Size.Width = 583.000000000000000000
+        Size.Width = 933.000000000000000000
         Size.Height = 32.000000000000000000
       end
       inherited Button1: TButton
-        Position.X = 510.000000000000000000
+        Position.X = 860.000000000000000000
       end
     end
   end
