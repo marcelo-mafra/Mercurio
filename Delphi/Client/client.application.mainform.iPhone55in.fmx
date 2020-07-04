@@ -63,7 +63,7 @@ inherited FrmMainForm_iPhone55in: TFrmMainForm_iPhone55in
             Size.Height = 44.000000000000000000
           end
           inherited Label2: TLabel
-            Position.Y = 7.000000000000000000
+            Position.Y = 7.000000953674316000
             Size.Width = 337.000000000000000000
           end
         end
@@ -78,6 +78,15 @@ inherited FrmMainForm_iPhone55in: TFrmMainForm_iPhone55in
       Size.Width = 124.000000000000000000
       ExplicitSize.cx = 128.000000000000000000
       ExplicitSize.cy = 49.000000000000000000
+      inherited EdtFirstName: TEdit
+        Size.Width = 483.000000000000000000
+      end
+      inherited EdtLastName: TEdit
+        Size.Width = 483.000000000000000000
+      end
+      inherited Button1: TButton
+        Position.X = 410.000000000000000000
+      end
     end
   end
   inherited MultiView1: TMultiView
@@ -113,9 +122,6 @@ inherited FrmMainForm_iPhone55in: TFrmMainForm_iPhone55in
     end
     inherited ActProfile: TAction
       ImageIndex = 0
-    end
-    inherited ActBack: TAction
-      ImageIndex = 4
     end
     inherited ActTabContacts: TAction
       ImageIndex = 2

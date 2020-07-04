@@ -8,8 +8,6 @@ uses Soap.InvokeRegistry, System.Types, Soap.XSBuiltIns;
 
 type
 
- // TDoubleArray = array of Double;
-
   TMyContato = class(TRemotable)
   private
     FContatoId: integer;
@@ -44,6 +42,7 @@ type
     { calling convention; stdcall is recommended }
     function NewContato(const Value: TMyContato): TMyContato; stdcall;
     function GetMyContatos: UnicodeString; stdcall;
+    function ExcluirContato(const value: TMyContato): boolean; stdcall;
   end;
 
 implementation

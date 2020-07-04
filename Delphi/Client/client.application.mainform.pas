@@ -13,11 +13,9 @@ uses
   client.resources.svcconsts, client.interfaces.contatos, client.classes.contatos,
   client.serverintf.contatos, client.classes.listacontatos, client.resources.mercurio,
   client.resources.consts, FMX.MultiView, FMX.TabControl, FMX.Edit,
-  FMX.SearchBox;
+  FMX.SearchBox, client.classes.viewitems;
 
 type
-  TViewItem = (viContatos, viNovoContato);
-
   TFrmMainForm = class(TForm, IChatApplication, IMercurioLogs)
     ActList: TActionList;
     ActConnectService: TAction;
@@ -85,10 +83,10 @@ type
    FLogFolder, FLogCurrentFile: string;
    FLogMaxFileSize: Int64;
    FConnected: boolean;
+   FNavList: TNavegateList;
 
   private
     { Private declarations }
-    //FLogsFilesPath: string;
     //IChatApplication
     function GetConnected: boolean;
     procedure SetConnected(const Value: boolean);
@@ -100,11 +98,13 @@ type
     procedure ListarContatos;
     procedure LoadLogsParams;
     procedure NavegateTo(Item: TViewItem);
+    function GetSelectedContact: TMyContato;
+
 
   public
     { Public declarations }
-    //property LogsFilesPath: string read FLogsFilesPath;
-
+    property NavegateObj: TNavegateList read FNavList;
+    property SelectedContact: TMyContato read GetSelectedContact;
     //IChatApplication
     property Connected: boolean read GetConnected write SetConnected;
     property ContatosService: IContatosService read GetContatosService;
@@ -127,12 +127,12 @@ implementation
 
 procedure TFrmMainForm.ActBackExecute(Sender: TObject);
 begin
- PnlServiceInfo.Visible := False;
+ NavegateTo(NavegateObj.PreviousItem);
 end;
 
 procedure TFrmMainForm.ActBackUpdate(Sender: TObject);
 begin
- TAction(Sender).Enabled := PnlServiceInfo.Visible;
+ TAction(Sender).Enabled := not (NavegateObj.IsEmpty);
 end;
 
 procedure TFrmMainForm.ActConnectServiceExecute(Sender: TObject);
@@ -149,13 +149,14 @@ end;
 
 procedure TFrmMainForm.ActDeleteContatoExecute(Sender: TObject);
 begin
-Tag := 0;
+ if ContatosService.ExcluirContato(SelectedContact) then
+  LstContatos.Items.Delete(LstContatos.Selected.Index);
 end;
 
 procedure TFrmMainForm.ActDeleteContatoUpdate(Sender: TObject);
 begin
  TAction(Sender).Enabled := (Connected) and (TabMain.ActiveTab = TabContatos) and
-   (LstContatos.Selected<> nil);
+   (LstContatos.Selected <> nil);
 end;
 
 procedure TFrmMainForm.ActDisconnectServiceExecute(Sender: TObject);
@@ -257,7 +258,7 @@ end;
 
 procedure TFrmMainForm.ActTabContactsUpdate(Sender: TObject);
 begin
-TAction(Sender).Enabled := (Connected) and (TabMain.ActiveTab <> TabContatos);
+ TAction(Sender).Enabled := (Connected) and (TabMain.ActiveTab <> TabContatos);
 end;
 
 procedure TFrmMainForm.ActTabNewContactExecute(Sender: TObject);
@@ -267,7 +268,7 @@ end;
 
 procedure TFrmMainForm.ActTabNewContactUpdate(Sender: TObject);
 begin
-TAction(Sender).Enabled := (Connected) and (TabMain.ActiveTab <> TabNewContact);
+ TAction(Sender).Enabled := (Connected) and (TabMain.ActiveTab <> TabNewContact);
 end;
 
 procedure TFrmMainForm.ActUpdateContatosExecute(Sender: TObject);
@@ -290,8 +291,9 @@ procedure TFrmMainForm.FormCreate(Sender: TObject);
 var
  I: integer;
 begin
- LoadLogsParams;
+ FNavList := TNavegateList.Create;
 
+ LoadLogsParams;
  Connected := False; //default
  PnlServiceInfo.Visible := False;
 
@@ -303,8 +305,8 @@ end;
 
 procedure TFrmMainForm.FormDestroy(Sender: TObject);
 begin
-// if Assigned(FLogWriter) then
-  // FreeAndNil(FlogWriter);
+ if Assigned(FNavList) then
+  FreeAndNil(FNavList);
 end;
 
 procedure TFrmMainForm.FormShow(Sender: TObject);
@@ -345,6 +347,14 @@ function TFrmMainForm.GetRemoteService: IChatService;
 begin
   //Interface que abstrai o serviço remoto de chat.
   Result := TChatService.Create as IChatService;
+end;
+
+function TFrmMainForm.GetSelectedContact: TMyContato;
+begin
+ Result := nil;
+
+ if LstContatos.Selected <> nil then
+   Result := TMyContato(LstContatos.Selected.Data);
 end;
 
 function TFrmMainForm.GetTitle: string;
@@ -390,6 +400,7 @@ begin
           ItemObj.ItemData.Accessory := TlistBoxItemData.TAccessory(1);
           ItemObj.WordWrap := True;
           ItemObj.Hint := ItemObj.ItemData.Detail;
+          ItemObj.Data := MyContatoObj;
 
           LstContatos.AddObject(ItemObj);
          end;
@@ -398,9 +409,7 @@ begin
     finally
      LstContatos.EndUpdate;
     end;
-
   end;
-
 end;
 
 procedure TFrmMainForm.LoadLogsParams;
@@ -428,10 +437,12 @@ end;
 procedure TFrmMainForm.NavegateTo(Item: TViewItem);
 begin
  case Item of
-   viContatos:   TabMain.ActiveTab := TabContatos;
+   viContatos:    TabMain.ActiveTab := TabContatos;
    viNovoContato: TabMain.ActiveTab := TabNewContact;
-
+   viNone: Exit;
  end;
+
+ FNavList.AddItem(Item);
 end;
 
 procedure TFrmMainForm.SetConnected(const Value: boolean);

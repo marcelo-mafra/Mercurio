@@ -61,8 +61,9 @@ inherited FrmMainForm_iPad: TFrmMainForm_iPad
             Size.Height = 44.000000000000000000
           end
           inherited Label2: TLabel
-            Position.Y = 7.000000000000000000
+            Position.Y = 6.999988555908203000
             Size.Width = 705.000000000000000000
+            Size.Height = 30.000022888183590000
           end
         end
       end
@@ -76,6 +77,15 @@ inherited FrmMainForm_iPad: TFrmMainForm_iPad
       Size.Width = 246.000000000000000000
       ExplicitSize.cx = 246.000000000000000000
       ExplicitSize.cy = 49.000000000000000000
+      inherited EdtFirstName: TEdit
+        Size.Width = 1219.000000000000000000
+      end
+      inherited EdtLastName: TEdit
+        Size.Width = 1219.000000000000000000
+      end
+      inherited Button1: TButton
+        Position.X = 1146.000000000000000000
+      end
     end
   end
   inherited MultiView1: TMultiView
@@ -109,9 +119,6 @@ inherited FrmMainForm_iPad: TFrmMainForm_iPad
     end
     inherited ActProfile: TAction
       ImageIndex = 0
-    end
-    inherited ActBack: TAction
-      ImageIndex = 4
     end
     inherited ActTabContacts: TAction
       ImageIndex = 2

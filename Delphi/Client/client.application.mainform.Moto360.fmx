@@ -80,10 +80,15 @@ inherited FrmMainForm_Moto360: TFrmMainForm_Moto360
       ExplicitSize.cx = 70.000000000000000000
       ExplicitSize.cy = 49.000000000000000000
       inherited EdtFirstName: TEdit
+        Size.Width = 163.000000000000000000
         Size.Height = 32.000000000000000000
       end
       inherited EdtLastName: TEdit
+        Size.Width = 163.000000000000000000
         Size.Height = 32.000000000000000000
+      end
+      inherited Button1: TButton
+        Position.X = 90.000000000000000000
       end
     end
   end
@@ -96,7 +101,6 @@ inherited FrmMainForm_Moto360: TFrmMainForm_Moto360
       Size.Height = 48.000000000000000000
     end
     inherited SpeedButton1: TSpeedButton
-      Position.Y = 48.000000000000000000
       Size.Width = 48.000000000000000000
       Size.Height = 48.000000000000000000
     end
@@ -105,6 +109,7 @@ inherited FrmMainForm_Moto360: TFrmMainForm_Moto360
       Size.Height = 48.000000000000000000
     end
     inherited SpeedButton4: TSpeedButton
+      Position.Y = 48.000000000000000000
       Size.Width = 48.000000000000000000
       Size.Height = 48.000000000000000000
     end
@@ -118,9 +123,6 @@ inherited FrmMainForm_Moto360: TFrmMainForm_Moto360
     end
     inherited ActProfile: TAction
       ImageIndex = 0
-    end
-    inherited ActBack: TAction
-      ImageIndex = 4
     end
     inherited ActTabContacts: TAction
       ImageIndex = 2

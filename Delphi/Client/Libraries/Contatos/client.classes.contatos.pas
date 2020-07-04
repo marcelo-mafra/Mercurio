@@ -17,8 +17,9 @@ type
        destructor Destroy; override;
 
        //IContatosService
-       function  NewContato(Value: TMyContato): TMyContato;
+       function  NewContato(value: TMyContato): TMyContato;
        procedure GetMyContatos(List: TListaObjetos);
+       function ExcluirContato(value: TMyContato): boolean;
 
    end;
 
@@ -35,6 +36,22 @@ destructor TContatosService.Destroy;
 begin
 
   inherited Destroy;
+end;
+
+function TContatosService.ExcluirContato(value: TMyContato): boolean;
+var
+ IService: IMercurioContatosServer;
+begin
+
+ try
+   IService := GetIMercurioContatosServer();
+   Result := IService.ExcluirContato(value);
+
+ except
+   //to-do: gerar logs.
+
+ end;
+
 end;
 
 procedure TContatosService.GetMyContatos(List: TListaObjetos);
@@ -75,7 +92,7 @@ begin
  end;
 end;
 
-function TContatosService.NewContato(Value: TMyContato): TMyContato;
+function TContatosService.NewContato(value: TMyContato): TMyContato;
 var
  IService: IMercurioContatosServer;
 begin

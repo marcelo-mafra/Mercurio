@@ -29,12 +29,17 @@ object FrmMainForm: TFrmMainForm
       Text = 'BtnMaster'
     end
     object BtnBack: TSpeedButton
+      Action = ActBack
       Align = MostRight
+      Enabled = True
+      Images = ImgList
+      ImageIndex = -1
       Position.X = 245.000000000000000000
       Size.Width = 30.000000000000000000
       Size.Height = 30.000000000000000000
       Size.PlatformDefault = False
       StyleLookup = 'backtoolbutton'
+      TextSettings.HorzAlign = Leading
     end
   end
   object PnlServiceInfo: TCalloutPanel
@@ -162,7 +167,7 @@ object FrmMainForm: TFrmMainForm
             Align = FitLeft
             Margins.Left = 3.000000000000000000
             Position.X = 3.000000000000000000
-            Size.Width = 142.000000000000000000
+            Size.Width = 142.000030517578100000
             Size.Height = 30.000000000000000000
             Size.PlatformDefault = False
             StyleLookup = 'listboxitemlabel'
@@ -338,10 +343,8 @@ object FrmMainForm: TFrmMainForm
     object ActBack: TAction
       Category = 'View'
       Text = 'Voltar'
-      ImageIndex = 4
       OnExecute = ActBackExecute
       OnUpdate = ActBackUpdate
-      ImageIndex = 4
     end
     object ActTabNewContact: TAction
       Category = 'View'

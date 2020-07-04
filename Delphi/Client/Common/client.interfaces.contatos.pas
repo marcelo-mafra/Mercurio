@@ -13,6 +13,7 @@ type
 
   function  NewContato(Value: TMyContato): TMyContato;
   procedure GetMyContatos(List: TListaObjetos);
+  function ExcluirContato(value: TMyContato): boolean;
  end;
 
 implementation

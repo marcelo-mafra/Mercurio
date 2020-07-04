@@ -12,12 +12,18 @@ type
   { TMercurioContatosServer }
   TMercurioContatosServer = class(TInvokableClass, IMercurioContatosServer)
   public
-    function NewContato(const Value: TMyContato): TMyContato; stdcall;
+    function NewContato(const value: TMyContato): TMyContato; stdcall;
     function GetMyContatos: UnicodeString; stdcall;
+    function ExcluirContato(const value: TMyContato): boolean; stdcall;
   end;
 
 implementation
 
+
+function TMercurioContatosServer.ExcluirContato(const value: TMyContato): boolean;
+begin
+ Result := TContatosData.ExcluirContato(Value);
+end;
 
 function TMercurioContatosServer.GetMyContatos: UnicodeString;
 var
@@ -50,7 +56,7 @@ begin
 end;
 
 function TMercurioContatosServer.NewContato(
-  const Value: TMyContato): TMyContato;
+  const value: TMyContato): TMyContato;
 begin
   Result := TContatosData.NewContato(Value);
 end;

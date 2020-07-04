@@ -10,6 +10,7 @@ interface
      class function CreateDataset: TClientDataset;
      class function GetContatos: TStringList;
      class function NewContato(const Value: TMyContato): TMyContato;
+     class function ExcluirContato(value: TMyContato): boolean;
    end;
 
 implementation
@@ -21,6 +22,31 @@ begin
   Result := TClientDataset.Create(nil);
   Result.LoadFromFile('contatos.cds');
   Result.Active := True;
+end;
+
+class function TContatosData.ExcluirContato(value: TMyContato): boolean;
+ var
+  Dataset: TClientDataset;
+begin
+ Result := False;
+
+ if Value = nil then
+  Exit;
+
+ Dataset := self.CreateDataset;
+
+ try
+   if Dataset.Locate('CONTATOID', Value.ContatoId, []) then
+    begin
+     Dataset.Delete;
+     Dataset.SaveToFile('contatos.cds');
+     Result := True;
+    end;
+
+ finally
+  Dataset.Close;
+  Dataset.Free
+ end;
 end;
 
 class function TContatosData.GetContatos: TStringList;
