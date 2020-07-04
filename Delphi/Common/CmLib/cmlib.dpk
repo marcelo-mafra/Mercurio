@@ -29,9 +29,11 @@ package cmlib;
 {$IMPLICITBUILD ON}
 
 requires
-  rtl;
+  rtl,
+  resources;
 
 contains
-  classes.exceptions in 'classes.exceptions.pas';
+  classes.exceptions in 'classes.exceptions.pas',
+  classes.conflogs in 'classes.conflogs.pas';
 
 end.

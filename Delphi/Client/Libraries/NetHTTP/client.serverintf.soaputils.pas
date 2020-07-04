@@ -3,7 +3,7 @@ unit client.serverintf.soaputils;
 interface
  uses
   System.Classes, WinAPI.Windows, classes.logs, classes.logs.controller,
-  System.IniFiles, client.resources.mercurio, client.resources.svcconsts,
+  client.resources.mercurio, client.resources.svcconsts, classes.conflogs,
   System.SysUtils, client.resources.consts, System.Net.HttpClient;
 
  type
@@ -24,31 +24,24 @@ implementation
 
 class function TSOAPEvents.CreateLogsObject: TMercurioLogsController;
 var
- ConfigFile: TIniFile;
- FileName, Folder, CurrentFile: string;
- MaxFileSize: Integer;
+ ConfObj: TLogsConfigurations;
  Events: TLogEvents;
 begin
   Events := [leOnError, leOnAuthenticateSucess, leOnAuthenticateFail, leOnInformation,
              leOnWarning, leOnConnect, leOnConnectError, leOnMethodCall,
              leOnMethodCallError, leUnknown];
 
-  FileName := GetCurrentDir + '\' + TMercurioConst.ConfigFile;
-  ConfigFile := TIniFile.Create(FileName);
+  ConfObj := TLogsConfigurations.Create(GetCurrentDir + '\' + TMercurioConst.ConfigFile);
 
     try
-      Folder := ConfigFile.ReadString(TMercurioConst.ConfigSection, TMercurioConst.ConfigFolder, '');
-      CurrentFile := ConfigFile.ReadString(TMercurioConst.ConfigSection, TMercurioConst.ConfigCurrentFile, '');
-      MaxFileSize := ConfigFile.ReadInteger(TMercurioConst.ConfigSection, TMercurioConst.ConfigMaxFileSize, TMercurioConst.DefaultMaxSize);
-
-      Result := TMercurioLogsController.Create(Folder, '.log', TEncoding.UTF8, Events);
+      Result := TMercurioLogsController.Create(ConfObj.Folder, '.log', TEncoding.UTF8, Events);
       Result.OnNewFile := DoOnNewFileEvent;
-      Result.MaxFileSize := MaxFileSize;
+      Result.MaxFileSize := ConfObj.MaxFileSize;
       Result.AppName     := TChatServiceLabels.ServiceName;
-      Result.CurrentFile := CurrentFile;
+      Result.CurrentFile := ConfObj.CurrentFile;
 
     finally
-      ConfigFile.Free;
+     ConfObj.Free;
     end;
 end;
 
@@ -73,21 +66,19 @@ end;
 
 class procedure TSOAPEvents.DoOnNewFileEvent(var NewFileName: string);
 var
- ConfigFile: TIniFile;
- FileName: string;
+ ConfObj: TLogsConfigurations;
 begin
 {Aponta para o evento OnNewFile de TMercurioLogsController, disparado sempre que
  o arquivo de logs atinge otamanho máximo e se cria um novo para ser usado. Nesse
  caso, é necessário registrar isso no .ini para que na próxima execução do cliente
  o uso deste arquivo seja retomado até atingir o tamanho máximo definido.}
-  FileName := GetCurrentDir + '\' + TMercurioConst.ConfigFile;
-  ConfigFile := TIniFile.Create(FileName);
+  ConfObj := TLogsConfigurations.Create(GetCurrentDir + '\' + TMercurioConst.ConfigFile);
 
     try
-      ConfigFile.WriteString(TMercurioConst.ConfigSection, TMercurioConst.ConfigCurrentFile, NewFileName);
+      ConfObj.CurrentFile := NewFileName;
 
     finally
-      ConfigFile.Free;
+      ConfObj.Free;
     end;
 end;
 
