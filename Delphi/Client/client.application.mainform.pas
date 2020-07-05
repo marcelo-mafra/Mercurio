@@ -156,7 +156,6 @@ begin
  if ContatosService.ExcluirContato(SelectedContact) then
   begin
    LstContatos.Items.Delete(LstContatos.Selected.Index);
-   LogsWriter.RegisterInfo(TChatMessagesConst.CallRemoteMethodSucess);
   end;
 end;
 
@@ -189,7 +188,6 @@ begin
 
     try
       RemoteService.ServiceInfo.GetServiceInfo(ListObj);
-      LogsWriter.RegisterInfo(TChatMessagesConst.CallRemoteMethodSucess);
 
     finally
       if ListObj.Count > 0 then
@@ -305,10 +303,10 @@ begin
   end
   else
   begin
-    BtnContacts.Text :=  '';
-    BtnServiceInfo.Text :=  '';
-    BtnNewContact.Text :=  '';
-    BtnDelContact.Text :=  '';
+    BtnContacts.Text :=  string.Empty;
+    BtnServiceInfo.Text :=  string.Empty;
+    BtnNewContact.Text :=  string.Empty;
+    BtnDelContact.Text :=  string.Empty;
   end;
 {
  for I := 0 to MultiView1.ChildrenCount - 1 do
@@ -444,7 +442,7 @@ begin
         if MyContatoObj <> nil then
          begin
           ItemObj := TListBoxItem.Create(LstContatos);
-          FullName := '';
+          FullName := string.Empty;
           ItemObj.Text := FullName.Join(' ', [MyContatoObj.FirstName.TrimRight, MyContatoObj.LastName.TrimRight]);
           ItemObj.Height := 40;
           //ItemObj.ItemData.Bitmap := GetBitmap(3);

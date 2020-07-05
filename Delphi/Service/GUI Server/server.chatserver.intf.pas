@@ -8,12 +8,12 @@ uses Soap.InvokeRegistry, System.Types, Soap.XSBuiltIns;
 
 type
 
-  TEnumTest = (etNone, etAFew, etSome, etAlot);
+//  TEnumTest = (etNone, etAFew, etSome, etAlot);
 
   //Status de cada mensagem do chat.
   TMessageStatus = (msNew, msRegistered, msEContentInvalid, msESenderUserInvalid,
     msEUnknown);
-
+{
   TDoubleArray = array of Double;
 
   TMyEmployee = class(TRemotable)
@@ -26,7 +26,7 @@ type
     property FirstName: UnicodeString read FFirstName write FFirstName;
     property Salary: Double read FSalary write FSalary;
   end;
-
+}
   TChatMessage = class(TRemotable)
   private
     FContentText, FSenderUser: UnicodeString;
@@ -48,12 +48,12 @@ type
 
     { Methods of Invokable interface must not use the default }
     { calling convention; stdcall is recommended }
-    function echoEnum(const Value: TEnumTest): TEnumTest; stdcall;
+ {   function echoEnum(const Value: TEnumTest): TEnumTest; stdcall;
     function echoDoubleArray(const Value: TDoubleArray): TDoubleArray; stdcall;
     function echoMyEmployee(const Value: TMyEmployee): TMyEmployee; stdcall;
     function echoDouble(const Value: Double): Double; stdcall;
     //------------------------------------
-    function ServiceInfo: UnicodeString; stdcall;
+    function ServiceInfo: UnicodeString; stdcall;  }
     function NewChatMessage(const Value: TChatMessage): TChatMessage; stdcall;
   end;
 

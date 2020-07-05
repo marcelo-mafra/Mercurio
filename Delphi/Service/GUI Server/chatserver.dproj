@@ -140,6 +140,8 @@
         <DCCReference Include="server.contatos.intf.pas"/>
         <DCCReference Include="server.contatos.impl.pas"/>
         <DCCReference Include="server.data.contatos.pas"/>
+        <DCCReference Include="server.serviceinfo.intf.pas"/>
+        <DCCReference Include="server.serviceinfo.impl.pas"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>

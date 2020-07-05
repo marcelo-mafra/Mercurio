@@ -26,15 +26,7 @@ type
   // !:string          - "http://www.w3.org/2001/XMLSchema"[Gbl]
   // !:double          - "http://www.w3.org/2001/XMLSchema"[Gbl]
 
-  TMyEmployee          = class;                 { "urn:server.chatserver.intf"[GblCplx] }
   TChatMessage         = class;                 { "urn:server.chatserver.intf"[GblCplx] }
-
-  {$SCOPEDENUMS ON}
-  { "urn:server.chatserver.intf"[GblSmpl] }
-  TEnumTest = (etNone, etAFew, etSome, etAlot);
-
-  {$SCOPEDENUMS OFF}
-
 
   //Status de cada mensagem do chat.
   {$SCOPEDENUMS ON}
@@ -42,21 +34,6 @@ type
   TMessageStatus = (msNew, msRegistered, msEContentInvalid, msESenderUserInvalid,
     msEUnknown);
   {$SCOPEDENUMS OFF}
-
-  // ************************************************************************ //
-  // XML       : TMyEmployee, global, <complexType>
-  // Namespace : urn:server.chatserver.intf
-  // ************************************************************************ //
-  TMyEmployee = class(TRemotable)
-  private
-    FLastName: string;
-    FFirstName: string;
-    FSalary: Double;
-  published
-    property LastName:  string  read FLastName write FLastName;
-    property FirstName: string  read FFirstName write FFirstName;
-    property Salary:    Double  read FSalary write FSalary;
-  end;
 
   // ************************************************************************ //
   // XML       : TChatMessage, global, <complexType>
@@ -77,8 +54,6 @@ type
     property RegisteredTime: TDateTime read FRegisteredTime write FRegisteredTime;
   end;
 
-  TDoubleArray = array of Double;               { "urn:server.chatserver.intf"[GblCplx] }
-
   // ************************************************************************ //
   // Namespace : urn:server.chatserver.intf-IMercurioChatServer
   // soapAction: urn:server.chatserver.intf-IMercurioChatServer#%operationName%
@@ -92,11 +67,6 @@ type
   // ************************************************************************ //
   IMercurioChatServer = interface(IInvokable)
   ['{7E9EAD9B-368B-78B9-3C05-A051F80AAA56}']
-    function  echoEnum(const Value: TEnumTest): TEnumTest; stdcall;
-    function  echoDoubleArray(const Value: TDoubleArray): TDoubleArray; stdcall;
-    function  echoMyEmployee(const Value: TMyEmployee): TMyEmployee; stdcall;
-    function  echoDouble(const Value: Double): Double; stdcall;
-    function  ServiceInfo: string; stdcall;
     function  NewChatMessage(const Value: TChatMessage): TChatMessage; stdcall;
   end;
 
@@ -158,9 +128,9 @@ initialization
   { IMercurioChatServer }
   InvRegistry.RegisterInterface(TypeInfo(IMercurioChatServer), 'urn:server.chatserver.intf-IMercurioChatServer', '');
   InvRegistry.RegisterDefaultSOAPAction(TypeInfo(IMercurioChatServer), 'urn:server.chatserver.intf-IMercurioChatServer#%operationName%');
-  RemClassRegistry.RegisterXSInfo(TypeInfo(TEnumTest), 'urn:server.chatserver.intf', 'TEnumTest');
-  RemClassRegistry.RegisterXSClass(TMyEmployee, 'urn:server.chatserver.intf', 'TMyEmployee');
-  RemClassRegistry.RegisterXSInfo(TypeInfo(TDoubleArray), 'urn:server.chatserver.intf', 'TDoubleArray');
+//  RemClassRegistry.RegisterXSInfo(TypeInfo(TEnumTest), 'urn:server.chatserver.intf', 'TEnumTest');
+//  RemClassRegistry.RegisterXSClass(TMyEmployee, 'urn:server.chatserver.intf', 'TMyEmployee');
+//  RemClassRegistry.RegisterXSInfo(TypeInfo(TDoubleArray), 'urn:server.chatserver.intf', 'TDoubleArray');
   //-----------
   RemClassRegistry.RegisterXSInfo(TypeInfo(TMessageStatus), 'urn:server.chatserver.intf', 'TMessageStatus');
   RemClassRegistry.RegisterXSClass(TChatMessage, 'urn:server.chatserver.intf', 'TChatMessage');

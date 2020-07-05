@@ -40,6 +40,7 @@ contains
   client.classes.json in 'client.classes.json.pas',
   client.serverintf.chatservice in 'client.serverintf.chatservice.pas',
   client.serverintf.contatos in 'client.serverintf.contatos.pas',
-  client.serverintf.soaputils in 'client.serverintf.soaputils.pas';
+  client.serverintf.soaputils in 'client.serverintf.soaputils.pas',
+  client.serverintf.serviceinfo in 'client.serverintf.serviceinfo.pas';
 
 end.

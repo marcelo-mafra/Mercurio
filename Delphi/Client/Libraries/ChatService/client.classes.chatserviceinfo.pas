@@ -3,11 +3,9 @@ unit client.classes.chatserviceinfo;
 interface
 
 uses
-  System.SysUtils, System.Classes, System.Net.URLClient, System.Net.HttpClient,
-  System.Net.HttpClientComponent, Winapi.Windows, System.NetEncoding, classes.exceptions,
-  client.interfaces.service, client.classes.json, client.resources.svcconsts,
-  client.classes.nethttp, client.resources.httpstatus, client.serverintf.chatservice,
-  client.resources.consts, client.interfaces.baseclasses;
+  System.SysUtils, System.Classes, classes.exceptions, client.interfaces.service,
+  client.resources.svcconsts, client.serverintf.serviceinfo, client.resources.consts,
+  client.interfaces.baseclasses;
 
 type
    {Classe que representa o conjunto de informações sobre o serviço de chat.}
@@ -34,6 +32,7 @@ implementation
 
 constructor TChatServiceInfo.Create;
 begin
+ inherited;
  InfoListObj := TStringList.Create;
 end;
 
@@ -61,29 +60,21 @@ end;
 
 procedure TChatServiceInfo.GetServiceInfo(List: TStringList);
 var
- IChatService: IMercurioChatServer;
- JsonStr: UnicodeString;
- MessageObj: client.serverintf.chatservice.TChatMessage;
+ IService: IMercurioServiceInfo;
+ ServiceInfoObj: TServiceInfo;
 begin
- IChatService := GetIMercurioChatServer();
+ IService := GetIMercurioServiceInfo();
 
  try
-   JsonStr := IChatService.ServiceInfo;
-   MercurioLogs.RegisterRemoteCallSucess(TServiceInfoConst.CallServiceInfoSucess, JsonStr);
+   ServiceInfoObj := IService.ServiceInfo;
 
-   MessageObj := client.serverintf.chatservice.TChatMessage.Create;
-   MessageObj.ContentText := 'essa é a minha mensagem';
-   MessageObj.SenderUser := 'Marcelo';
-   MessageObj.MessageId := Random;
-   MessageObj.StatusMsg := TMessageStatus.msNew;
-
-    MessageObj := IChatService.NewChatMessage(MessageObj);
-
-   if (IChatService <> nil) and not (JsonStr.IsEmpty) then
+   if (IService <> nil) and (ServiceInfoObj <> nil) then
     begin
-      InfoListObj.AddPair(TChatServiceLabels.ServiceHost, TNetJsonUtils.FindValue(JsonStr, 'ServerHost'));
-      InfoListObj.AddPair(TChatServiceLabels.ServiceName, TNetJsonUtils.FindValue(JsonStr, 'ServerName'));
-      InfoListObj.AddPair(TChatServiceLabels.ServiceTime, TNetJsonUtils.FindValue(JsonStr, 'ServerTime'));
+      MercurioLogs.RegisterRemoteCallSucess(TServiceInfoConst.CallServiceInfoSucess, ServiceInfoObj.Host);
+
+      InfoListObj.AddPair(TChatServiceLabels.ServiceHost, ServiceInfoObj.Host);
+      InfoListObj.AddPair(TChatServiceLabels.ServiceName, ServiceInfoObj.ServiceName);
+      InfoListObj.AddPair(TChatServiceLabels.ServiceTime, DateTimeToStr(ServiceInfoObj.ServerTime));
     end;
 
   finally
@@ -91,8 +82,6 @@ begin
     begin
      List.Clear;
      List.CommaText := InfoListObj.CommaText;
-     if Assigned(MessageObj) then FreeAndNil(MessageObj);
-
     end;
  end;
 
