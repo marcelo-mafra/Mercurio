@@ -13,40 +13,27 @@ inherited FrmMainForm_iPad: TFrmMainForm_iPad
       Size.Height = 44.000000000000000000
     end
   end
-  inherited PnlServiceInfo: TCalloutPanel
-    Size.Height = 978.000000000000000000
-    inherited LstServiceInfo: TListBox
-      Size.Height = 974.000000000000000000
-      Viewport.Width = 228.000000000000000000
-      Viewport.Height = 974.000000000000000000
-      inherited ListBoxItem1: TListBoxItem
-        Size.Width = 271.000000000000000000
-      end
-      inherited ListBoxHeader1: TListBoxHeader
-        Size.Width = 228.000000000000000000
-      end
-    end
-  end
   inherited TabMain: TTabControl
     Size.Width = 738.000000000000000000
     Size.Height = 974.000000000000000000
     Sizes = (
       738s
-      925s
+      974s
       738s
-      925s
+      974s
       738s
-      925s)
+      974s)
     inherited TabContatos: TTabItem
-      Size.Width = 246.000000000000000000
+      Size.Width = 11.000000000000000000
+      Size.Height = 11.000000000000000000
       ExplicitSize.cx = 200.000000000000000000
       ExplicitSize.cy = 49.000000000000000000
       inherited LstContatos: TListBox
         Margins.Left = 30.000000000000000000
         Size.Width = 708.000000000000000000
-        Size.Height = 925.000000000000000000
+        Size.Height = 974.000000000000000000
         Viewport.Width = 708.000000000000000000
-        Viewport.Height = 837.000000000000000000
+        Viewport.Height = 886.000000000000000000
         inherited SearchBox1: TSearchBox
           Size.Width = 708.000000000000000000
           Size.Height = 44.000000000000000000
@@ -68,45 +55,60 @@ inherited FrmMainForm_iPad: TFrmMainForm_iPad
         end
       end
     end
-    inherited TabItem2: TTabItem
-      Size.Width = 246.000000000000000000
+    inherited TabServiceInfo: TTabItem
+      Size.Width = 11.000000000000000000
+      Size.Height = 11.000000000000000000
       ExplicitSize.cx = 100.000000000000000000
       ExplicitSize.cy = 49.000000000000000000
+      inherited PnlServiceInfo: TCalloutPanel
+        Size.Width = 738.000000000000000000
+        Size.Height = 973.000000000000000000
+        Visible = True
+        inherited LstServiceInfo: TListBox
+          Size.Width = 734.000000000000000000
+          Size.Height = 958.000000000000000000
+          Viewport.Width = 734.000000000000000000
+          Viewport.Height = 958.000000000000000000
+          inherited ListBoxHeader1: TListBoxHeader
+            Size.Width = 734.000000000000000000
+          end
+        end
+      end
     end
     inherited TabNewContact: TTabItem
-      Size.Width = 246.000000000000000000
+      Size.Width = 11.000000000000000000
+      Size.Height = 11.000000000000000000
       ExplicitSize.cx = 246.000000000000000000
       ExplicitSize.cy = 49.000000000000000000
       inherited EdtFirstName: TEdit
-        Size.Width = 3191.000000000000000000
+        Size.Width = 4177.000000000000000000
+        Size.Height = 30.000000000000000000
       end
       inherited EdtLastName: TEdit
-        Size.Width = 3191.000000000000000000
+        Size.Width = 4177.000000000000000000
+        Size.Height = 30.000000000000000000
       end
       inherited Button1: TButton
-        Position.X = 3118.000000000000000000
+        Position.X = 4104.000000000000000000
       end
     end
   end
   inherited MultiView1: TMultiView
     Size.Width = 121.000000000000000000
     Size.Height = 400.000000000000000000
-    inherited SpeedButton2: TSpeedButton
+    inherited BtnDelContact: TSpeedButton
       Position.Y = 88.000000000000000000
-      Size.Width = 44.000000000000000000
       Size.Height = 44.000000000000000000
     end
-    inherited SpeedButton1: TSpeedButton
-      Size.Width = 44.000000000000000000
+    inherited BtnContacts: TSpeedButton
       Size.Height = 44.000000000000000000
     end
-    inherited SpeedButton3: TSpeedButton
+    inherited BtnServiceInfo: TSpeedButton
       Position.Y = 132.000000000000000000
       Size.Height = 44.000000000000000000
     end
-    inherited SpeedButton4: TSpeedButton
+    inherited BtnNewContact: TSpeedButton
       Position.Y = 44.000000000000000000
-      Size.Width = 44.000000000000000000
       Size.Height = 44.000000000000000000
     end
   end
@@ -117,11 +119,17 @@ inherited FrmMainForm_iPad: TFrmMainForm_iPad
     inherited ActDisconnectService: TAction
       ImageIndex = 1
     end
-    inherited ActProfile: TAction
+    inherited ActServiceInfo: TAction
       ImageIndex = 0
     end
     inherited ActTabContacts: TAction
       ImageIndex = 2
+    end
+    inherited ActTabNewContact: TAction
+      ImageIndex = 5
+    end
+    inherited ActDeleteContato: TAction
+      ImageIndex = 6
     end
   end
   inherited ImgList: TImageList

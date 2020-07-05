@@ -6,12 +6,12 @@ uses
   System.SysUtils, System.Classes, System.Net.URLClient, System.Net.HttpClient,
   System.Net.HttpClientComponent, Winapi.Windows, System.NetEncoding, classes.exceptions,
   client.interfaces.service, client.classes.json, client.resources.svcconsts,
-  client.classes.nethttp, client.resources.httpstatus,client.interfaces.application,
-  client.serverintf.chatservice, FMX.Forms, client.resources.consts;
+  client.classes.nethttp, client.resources.httpstatus, client.serverintf.chatservice,
+  client.resources.consts, client.interfaces.baseclasses;
 
 type
    {Classe que representa o conjunto de informações sobre o serviço de chat.}
-   TChatServiceInfo = class(TInterfacedObject, IChatServiceInfo)
+   TChatServiceInfo = class(TMercurioClass, IChatServiceInfo)
      private
        InfoListObj: TStringList;
        function GetServiceHost: string;
@@ -62,7 +62,6 @@ end;
 procedure TChatServiceInfo.GetServiceInfo(List: TStringList);
 var
  IChatService: IMercurioChatServer;
- IApplication: IChatApplication;
  JsonStr: UnicodeString;
  MessageObj: client.serverintf.chatservice.TChatMessage;
 begin
@@ -70,8 +69,7 @@ begin
 
  try
    JsonStr := IChatService.ServiceInfo;
-   IApplication := Application.MainForm as IChatApplication;
-   IApplication.LogsWriter.RegisterInfo(TChatMessagesConst.CallRemoteMethodSucess);
+   MercurioLogs.RegisterRemoteCallSucess(TServiceInfoConst.CallServiceInfoSucess, JsonStr);
 
    MessageObj := client.serverintf.chatservice.TChatMessage.Create;
    MessageObj.ContentText := 'essa é a minha mensagem';

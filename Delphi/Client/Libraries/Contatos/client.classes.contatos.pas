@@ -4,12 +4,13 @@ interface
 
 uses
   System.SysUtils, System.Classes, client.resources.svcconsts, client.classes.json,
-  client.interfaces.common, client.interfaces.contatos, client.serverintf.contatos,
-  client.interfaces.application, client.classes.listacontatos;
+  client.interfaces.common, client.interfaces.baseclasses, client.interfaces.contatos,
+  client.serverintf.contatos, client.interfaces.application, client.resources.consts,
+  client.classes.listacontatos;
 
 type
    //Encapsula a interface com o serviço remoto para o domínio "CONTATOS".
-   TContatosService = class(TInterfacedObject, IContatosService)
+   TContatosService = class(TMercurioClass, IContatosService)
      private
 
      public
@@ -34,7 +35,6 @@ end;
 
 destructor TContatosService.Destroy;
 begin
-
   inherited Destroy;
 end;
 
@@ -42,16 +42,25 @@ function TContatosService.ExcluirContato(value: TMyContato): boolean;
 var
  IService: IMercurioContatosServer;
 begin
+ Result := False;
 
  try
    IService := GetIMercurioContatosServer();
-   Result := IService.ExcluirContato(value);
+   Result := IService.ExcluirContato(value) ;
+
+   if value <> nil then
+    begin
+     MercurioLogs.RegisterRemoteCallSucess(TContatosConst.CallExcluirContatoSucess,
+       Value.ContatoId.ToString);
+    end;
 
  except
-   //to-do: gerar logs.
-
+  on E: Exception do
+   begin
+     Result := False;
+     MercurioLogs.RegisterRemoteCallFailure(TContatosConst.CallExcluirContatoError, E.Message);
+   end;
  end;
-
 end;
 
 procedure TContatosService.GetMyContatos(List: TListaObjetos);
@@ -81,14 +90,18 @@ begin
 
         TListaContatos(List).AddItem(ContatoObj);
        end;
+
+     MercurioLogs.RegisterRemoteCallSucess(TContatosConst.CallGetContatosSucess, JsonData);
     end;
 
   {Não dar "FreeAndNil" em ContatoObj, uma vez que foi adicionado na lista
    da variável List. FreeAndNil aqui vai eliminar de List o último ponteiro
    associado à variável ContatoObj. }
  except
-   //to-do: gerar logs.
-
+  on E: Exception do
+   begin
+     MercurioLogs.RegisterRemoteCallFailure(TContatosConst.CallGetContatosError, E.Message);
+   end;
  end;
 end;
 
@@ -101,9 +114,16 @@ begin
    IService := GetIMercurioContatosServer();
    Result := IService.NewContato(Value);
 
- except
-   //to-do: gerar logs.
+   if Result <> nil then
+    begin
+     MercurioLogs.RegisterRemoteCallSucess(TContatosConst.CallNewContatoSucess, '');
+    end;
 
+ except
+  on E: Exception do
+   begin
+     MercurioLogs.RegisterRemoteCallFailure(TContatosConst.CallNewContatoError, E.Message);
+   end;
  end;
 end;
 

@@ -14,41 +14,25 @@ inherited FrmMainForm_Moto360: TFrmMainForm_Moto360
       Size.Height = 48.000000000000000000
     end
   end
-  inherited PnlServiceInfo: TCalloutPanel
-    Size.Height = 192.000000000000000000
-    inherited LstServiceInfo: TListBox
-      Size.Height = 188.000000000000000000
-      Viewport.Width = 228.000000000000000000
-      Viewport.Height = 188.000000000000000000
-      inherited ListBoxItem1: TListBoxItem
-        Size.Width = 271.000000000000000000
-      end
-      inherited ListBoxHeader1: TListBoxHeader
-        Size.Width = 228.000000000000000000
-        Size.Height = 48.000000000000000000
-      end
-    end
-  end
   inherited TabMain: TTabControl
     Size.Width = 210.000000000000000000
     Size.Height = 188.000000000000000000
     Sizes = (
       210s
-      139s
+      188s
       210s
-      139s
+      188s
       210s
-      139s)
+      188s)
     inherited TabContatos: TTabItem
-      Size.Width = 70.000000000000000000
       ExplicitSize.cx = 200.000000000000000000
       ExplicitSize.cy = 49.000000000000000000
       inherited LstContatos: TListBox
         Margins.Left = 30.000000000000000000
         Size.Width = 180.000000000000000000
-        Size.Height = 139.000000000000000000
+        Size.Height = 188.000000000000000000
         Viewport.Width = 180.000000000000000000
-        Viewport.Height = 43.000000000000000000
+        Viewport.Height = 92.000000000000000000
         inherited SearchBox1: TSearchBox
           Size.Width = 180.000000000000000000
           Size.Height = 48.000000000000000000
@@ -70,47 +54,57 @@ inherited FrmMainForm_Moto360: TFrmMainForm_Moto360
         end
       end
     end
-    inherited TabItem2: TTabItem
-      Size.Width = 70.000000000000000000
+    inherited TabServiceInfo: TTabItem
       ExplicitSize.cx = 100.000000000000000000
       ExplicitSize.cy = 49.000000000000000000
+      inherited PnlServiceInfo: TCalloutPanel
+        Size.Width = 210.000000000000000000
+        Size.Height = 187.000000000000000000
+        Visible = True
+        inherited LstServiceInfo: TListBox
+          Size.Width = 206.000000000000000000
+          Size.Height = 172.000000000000000000
+          Viewport.Width = 206.000000000000000000
+          Viewport.Height = 172.000000000000000000
+          inherited ListBoxHeader1: TListBoxHeader
+            Size.Width = 206.000000000000000000
+            Size.Height = 48.000000000000000000
+          end
+        end
+      end
     end
     inherited TabNewContact: TTabItem
-      Size.Width = 70.000000000000000000
       ExplicitSize.cx = 70.000000000000000000
       ExplicitSize.cy = 49.000000000000000000
       inherited EdtFirstName: TEdit
-        Size.Width = 23.000000000000000000
+        Size.Width = 0.000000000000000000
         Size.Height = 32.000000000000000000
       end
       inherited EdtLastName: TEdit
-        Size.Width = 23.000000000000000000
+        Size.Width = 0.000000000000000000
         Size.Height = 32.000000000000000000
       end
       inherited Button1: TButton
-        Position.X = -50.000000000000000000
+        Position.X = -120.000000000000000000
       end
     end
   end
   inherited MultiView1: TMultiView
     Size.Width = 121.000000000000000000
     Size.Height = 400.000000000000000000
-    inherited SpeedButton2: TSpeedButton
+    inherited BtnDelContact: TSpeedButton
       Position.Y = 96.000000000000000000
-      Size.Width = 48.000000000000000000
       Size.Height = 48.000000000000000000
     end
-    inherited SpeedButton1: TSpeedButton
-      Size.Width = 48.000000000000000000
+    inherited BtnContacts: TSpeedButton
       Size.Height = 48.000000000000000000
     end
-    inherited SpeedButton3: TSpeedButton
+    inherited BtnServiceInfo: TSpeedButton
       Position.Y = 144.000000000000000000
       Size.Height = 48.000000000000000000
     end
-    inherited SpeedButton4: TSpeedButton
+    inherited BtnNewContact: TSpeedButton
       Position.Y = 48.000000000000000000
-      Size.Width = 48.000000000000000000
       Size.Height = 48.000000000000000000
     end
   end
@@ -121,11 +115,17 @@ inherited FrmMainForm_Moto360: TFrmMainForm_Moto360
     inherited ActDisconnectService: TAction
       ImageIndex = 1
     end
-    inherited ActProfile: TAction
+    inherited ActServiceInfo: TAction
       ImageIndex = 0
     end
     inherited ActTabContacts: TAction
       ImageIndex = 2
+    end
+    inherited ActTabNewContact: TAction
+      ImageIndex = 5
+    end
+    inherited ActDeleteContato: TAction
+      ImageIndex = 6
     end
   end
   inherited ImgList: TImageList

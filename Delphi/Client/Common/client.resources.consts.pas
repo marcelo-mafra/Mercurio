@@ -24,6 +24,26 @@ type
       CallRemoteMethodError = 'A chamada de um procedimento remoto falhou.';
   end;
 
+  TServiceInfoConst = class
+    const
+      CallServiceInfoSucess = 'A chamada do método remoto "ServiceInfo" ' +
+        'foi executada com sucesso.';
+      CallNServiceInfoError = 'A chamada do método remoto "ServiceInfo" falhou.';
+  end;
+
+  TContatosConst = class
+    const
+      CallNewContatoSucess = 'A chamada do método remoto "NewContato" ' +
+        'foi executada com sucesso.';
+      CallNewContatoError = 'A chamada do método remoto "NewContato" falhou.';
+      CallExcluirContatoSucess = 'A chamada do método remoto "ExcluirContato" ' +
+        'foi executada com sucesso.';
+      CallExcluirContatoError = 'A chamada do método remoto "ExcluirContato" falhou.';
+      CallGetContatosSucess = 'A chamada do método remoto "GetContatos" ' +
+        'foi executada com sucesso.';
+      CallGetContatosError = 'A chamada do método remoto "GetContatos" falhou.';
+  end;
+
 implementation
 
 end.

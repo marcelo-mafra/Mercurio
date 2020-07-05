@@ -3,8 +3,9 @@ unit client.classes.chatmessages;
 interface
 
  uses
-   System.SysUtils, client.interfaces.common, client.interfaces.messages,
-   classes.exceptions, client.resources.consts, System.Json;
+   System.SysUtils, client.interfaces.common, client.interfaces.baseclasses,
+   client.interfaces.messages, classes.exceptions, client.resources.consts,
+   System.Json;
 
  type
   TChatMessage = class(TInterfacedObject, IChatMessage)

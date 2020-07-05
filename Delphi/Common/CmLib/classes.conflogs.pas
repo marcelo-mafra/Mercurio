@@ -9,9 +9,9 @@ type
   TLogsConfigurations = class
     strict private
      FConfigurationFile: string;
-     FLogFolder: string;
-     FLogCurrentFile: string;
-     FLogMaxFileSize: integer;
+     FFolder: string;
+     FCurrentFile: string;
+     FMaxFileSize: integer;
 
      procedure LoadParameters;
      procedure SetCurrentFile(const NewFileName: string);
@@ -20,9 +20,9 @@ type
      constructor Create(const ConfigurationFile: string);
      destructor Destroy; override;
 
-     property CurrentFile: string read FLogCurrentFile write SetCurrentFile;
-     property Folder: string read FLogFolder;
-     property MaxFileSize: integer read FLogMaxFileSize;
+     property CurrentFile: string read FCurrentFile write SetCurrentFile;
+     property Folder: string read FFolder;
+     property MaxFileSize: integer read FMaxFileSize;
   end;
 
 implementation
@@ -47,10 +47,10 @@ begin
   ConfigFile := TIniFile.Create(FConfigurationFile);
 
     try
-      FLogFolder := ConfigFile.ReadString(TMercurioConst.ConfigSection, TMercurioConst.ConfigFolder, '');
-      FLogCurrentFile := ConfigFile.ReadString(TMercurioConst.ConfigSection, TMercurioConst.ConfigCurrentFile, '');
-      CurrentFile := FLogCurrentFile;
-      FLogMaxFileSize := ConfigFile.ReadInteger(TMercurioConst.ConfigSection, TMercurioConst.ConfigMaxFileSize, TMercurioConst.DefaultMaxSize);
+      FFolder := ConfigFile.ReadString(TMercurioConst.ConfigSection, TMercurioConst.ConfigFolder, '');
+      FCurrentFile := ConfigFile.ReadString(TMercurioConst.ConfigSection, TMercurioConst.ConfigCurrentFile, '');
+      CurrentFile := FCurrentFile;
+      FMaxFileSize := ConfigFile.ReadInteger(TMercurioConst.ConfigSection, TMercurioConst.ConfigMaxFileSize, TMercurioConst.DefaultMaxSize);
 
     finally
       ConfigFile.Free;
@@ -61,13 +61,13 @@ procedure TLogsConfigurations.SetCurrentFile(const NewFileName: string);
 var
  ConfigFile: TIniFile;
 begin
- if NewFileName.TrimRight = FLogCurrentFile.TrimRight then
+ if NewFileName.TrimRight = FCurrentFile.TrimRight then
   Exit;
 
   ConfigFile := TIniFile.Create(FConfigurationFile);
 
     try
-      FLogCurrentFile := NewFileName;
+      FCurrentFile := NewFileName;
       ConfigFile.WriteString(TMercurioConst.ConfigSection, TMercurioConst.ConfigCurrentFile, NewFileName);
 
     finally

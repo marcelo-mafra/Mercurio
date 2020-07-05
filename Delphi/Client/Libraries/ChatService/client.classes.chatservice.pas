@@ -4,10 +4,10 @@ interface
 
 uses
   System.SysUtils, System.Classes, System.Net.HttpClient, Winapi.Windows,
-  System.NetEncoding, classes.exceptions, client.classes.nethttp, FMX.Forms,
+  System.NetEncoding, classes.exceptions, client.classes.nethttp,
   client.interfaces.security, client.interfaces.service, client.resources.svcconsts,
   client.resources.svccon, client.classes.security, client.resources.httpstatus,
-  client.classes.chatserviceinfo, client.interfaces.application, client.resources.consts ;
+  client.classes.chatserviceinfo, client.resources.consts, client.interfaces.baseclasses ;
 
  type
    TOnConnectServiceEvent = procedure (Sender: TObject) of object;
@@ -15,7 +15,7 @@ uses
    TOnDisconnectServiceEvent = procedure (Sender: TObject) of object;
 
    {Classe que encapsula as funcionalidades de conexão com o serviço remoto de chat.}
-   TChatService = class(TInterfacedObject, IChatService)
+   TChatService = class(TMercurioClass, IChatService)
      private
        FOnConnectService: TOnConnectServiceEvent;
        FOnConnectServiceError: TOnConnectServiceErrorEvent;
@@ -25,6 +25,7 @@ uses
 
        function GetSecurityService: ISecurityService;
        function GetChatServiceInfo: IChatServiceInfo;
+       //Eventos
        procedure DoOnConnectService(Sender: TObject);
        procedure DoOnConnectServiceError(Sender: TObject);
        procedure DoOnDisconnectService(Sender: TObject);
@@ -72,17 +73,10 @@ begin
   Result := (IResponse <> nil) and (IResponse.StatusCode = THTTPStatus.StatusOK)
             and not (IResponse.ContentAsString.IsEmpty);
 
-  if Result then
-   begin //Dispara o evento de OnConnect
-    if Assigned(FOnConnectService) then
-      FOnConnectService(self);
-   end
-  else
-   begin //Dispara o evento OnConnectError
-    if Assigned(FOnConnectServiceError) then
-      FOnConnectServiceError(self);
-   end;
-
+  if Result then  //Dispara o evento de OnConnect
+    if Assigned(FOnConnectService) then FOnConnectService(self)
+  else //Dispara o evento OnConnectError
+    if Assigned(FOnConnectServiceError) then FOnConnectServiceError(self);
 
   {IResponse := self.Execute(self.ServiceHost, vUTF8Data);
   outputdebugstring(PWideChar(TNetEncoding.UrlDecode(vUTF8Data.DataString)));}
@@ -94,6 +88,7 @@ end;
 
 constructor TChatService.Create;
 begin
+ inherited;
  //Service host and name
  FServiceName := TChatServiceLabels.ServiceName;
  FServiceHost := TChatServiceLabels.ServiceHost;
@@ -115,33 +110,25 @@ end;
 function TChatService.DisconnectService: boolean;
 begin
  Result := True;
- if Assigned(FOnDisconnectService) then
-  FOnDisconnectService(Self);
+ if Assigned(FOnDisconnectService) then FOnDisconnectService(Self);
 end;
 
 procedure TChatService.DoOnConnectService(Sender: TObject);
-var
- IApplication: IChatApplication;
 begin
 //Implementa o evento TChatService.OnConnectService
-   IApplication := Application.MainForm as IChatApplication;
-   IApplication.LogsWriter.RegisterInfo(TSecurityConst.ConnectionSucess);
+ MercurioLogs.RegisterInfo(TSecurityConst.ConnectionSucess);
 end;
 
 procedure TChatService.DoOnConnectServiceError(Sender: TObject);
-var
- IApplication: IChatApplication;
 begin
- IApplication := Application.MainForm as IChatApplication;
- IApplication.LogsWriter.RegisterInfo(TSecurityConst.ConnectionFailure);
+ //Implementa o evento TChatService.OnConnectServiceError
+ MercurioLogs.RegisterInfo(TSecurityConst.ConnectionFailure);
 end;
 
 procedure TChatService.DoOnDisconnectService(Sender: TObject);
-var
- IApplication: IChatApplication;
 begin
- IApplication := Application.MainForm as IChatApplication;
- IApplication.LogsWriter.RegisterInfo(TSecurityConst.DisconnectionSucess);
+//Implementa o evento TChatService.OnDisconnectService
+ MercurioLogs.RegisterInfo(TSecurityConst.DisconnectionSucess);
 end;
 
 function TChatService.GetChatServiceInfo: IChatServiceInfo;

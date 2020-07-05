@@ -6,7 +6,7 @@ uses
  System.SysUtils, Generics.Collections;
 
 type
-  TViewItem = (viNone, viContatos, viNovoContato, viProfile);
+  TViewItem = (viNone, viContatos, viNovoContato, viProfile, viServiceInfo);
   {Classe que monta uma lista de "páginas" navegadas durante a sessão de uso
    do Mercúrio.}
   TNavegateList = class

@@ -3,7 +3,8 @@ unit client.interfaces.contatos;
 interface
 
 uses
- System.Classes, client.interfaces.common, client.serverintf.contatos;
+ System.Classes, client.interfaces.common, client.interfaces.baseclasses,
+ client.serverintf.contatos;
 
 type
 

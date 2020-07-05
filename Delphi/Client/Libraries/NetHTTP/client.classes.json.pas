@@ -62,42 +62,42 @@ end;
 class function TNetJsonUtils.FindValue(const JsonString: string; ArrayName,
   ValueName: string; Index: integer): string;
 var
-  jsValue   : TJsonValue;
+  jsValueObj   : TJsonValue;
   originalObject : TJsonObject;
-  jsPair : TJsonPair;
-  jsArray : TJsonArray;
+  jsPairObj : TJsonPair;
+  jsArrayObj : TJsonArray;
   jsObject  : TJsonObject;
 begin
     try
      //parse json string
-     jsValue := TJSONObject.ParseJSONValue(UnicodeString(JsonString));
+     jsValueObj := TJSONObject.ParseJSONValue(UnicodeString(JsonString));
 
      try
        //value as object
-       originalObject := jsValue as TJsonObject;
+       originalObject := jsValueObj as TJsonObject;
 
       //get pair, wich contains Array of objects
-       jsPair := originalObject.Get(ArrayName);
+       jsPairObj := originalObject.Get(ArrayName);
        //pair value as array
 
-       jsArray := jsPair.jsonValue as  TJsonArray;
+       jsArrayObj := jsPairObj.jsonValue as  TJsonArray;
 
       //enumerate objects in array
       // i-th object
-       jsObject := jsArray.Items[Index] as TJsonObject;
+       jsObject := jsArrayObj.Items[Index] as TJsonObject;
 
       //Percorre os campos do objeto json
-      for jsPair in jsObject do
+      for jsPairObj in jsObject do
         begin
-          if UpperCase(jsPair.JsonString.Value.Trim) = UpperCase(ValueName.Trim) then
+          if UpperCase(jsPairObj.JsonString.Value.Trim) = UpperCase(ValueName.Trim) then
             begin
-              Result := jsPair.JsonValue.Value;
+              Result := jsPairObj.JsonValue.Value;
               Break;
             end;
         end;
 
      finally
-      jsValue.Free();
+      jsValueObj.Free();
       {jsObject.Free;
       jsArray.Free;
       jsPair.Free;
@@ -113,29 +113,29 @@ end;
 class function TNetJsonUtils.GetObjectCount(const JsonString: string;
    ArrayName: string): integer;
 var
- jsValue   : TJsonValue;
+ jsValueObj   : TJsonValue;
  jsObject : TJsonObject;
- jsPair : TJsonPair;
- jsArray : TJsonArray;
+ jsPairObj : TJsonPair;
+ jsArrayObj : TJsonArray;
 
 begin
  Result := 0;
  //parse json string
- jsValue := TJSONObject.ParseJSONValue(UnicodeString(JsonString));
+ jsValueObj := TJSONObject.ParseJSONValue(UnicodeString(JsonString));
 
  try
    //value as object
-   jsObject := jsValue as TJsonObject;
+   jsObject := jsValueObj as TJsonObject;
 
    //get pair, wich contains Array of objects
-   jsPair := jsObject.Get(ArrayName);
+   jsPairObj := jsObject.Get(ArrayName);
    //pair value as array
-   jsArray := jsPair.jsonValue as  TJsonArray;
+   jsArrayObj := jsPairObj.jsonValue as  TJsonArray;
 
-   Result := jsArray.Count;
+   Result := jsArrayObj.Count;
 
  finally
-  jsValue.Free();
+  jsValueObj.Free();
  end;
 
 end;

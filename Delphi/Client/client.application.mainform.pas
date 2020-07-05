@@ -22,7 +22,7 @@ type
     ActDisconnectService: TAction;
     ImgList: TImageList;
     Panel1: TPanel;
-    ActProfile: TAction;
+    ActServiceInfo: TAction;
     PnlServiceInfo: TCalloutPanel;
     ActServiceInfoView: TViewAction;
     LstServiceInfo: TListBox;
@@ -34,13 +34,13 @@ type
     BtnMaster: TSpeedButton;
     TabMain: TTabControl;
     TabContatos: TTabItem;
-    TabItem2: TTabItem;
-    SpeedButton2: TSpeedButton;
-    SpeedButton1: TSpeedButton;
-    SpeedButton3: TSpeedButton;
+    TabServiceInfo: TTabItem;
+    BtnDelContact: TSpeedButton;
+    BtnContacts: TSpeedButton;
+    BtnServiceInfo: TSpeedButton;
     TabNewContact: TTabItem;
     ActTabNewContact: TAction;
-    SpeedButton4: TSpeedButton;
+    BtnNewContact: TSpeedButton;
     ActTabContacts: TAction;
     BtnBack: TSpeedButton;
     EdtFirstName: TEdit;
@@ -65,8 +65,8 @@ type
     procedure FormDestroy(Sender: TObject);
     procedure ActBackExecute(Sender: TObject);
     procedure ActBackUpdate(Sender: TObject);
-    procedure ActProfileExecute(Sender: TObject);
-    procedure ActProfileUpdate(Sender: TObject);
+    procedure ActServiceInfoExecute(Sender: TObject);
+    procedure ActServiceInfoUpdate(Sender: TObject);
     procedure ActTabNewContactExecute(Sender: TObject);
     procedure ActTabContactsExecute(Sender: TObject);
     procedure ActSaveContatoDataExecute(Sender: TObject);
@@ -77,15 +77,23 @@ type
     procedure ActTabNewContactUpdate(Sender: TObject);
     procedure ActDeleteContatoExecute(Sender: TObject);
     procedure ActDeleteContatoUpdate(Sender: TObject);
+    procedure MultiView1StartShowing(Sender: TObject);
+    procedure MultiView1StartHiding(Sender: TObject);
 
   strict private
    Events: TLogEvents;
    FConnected: boolean;
-   FNavList: TNavegateList;
-   FLogsConf: TLogsConfigurations;
+   FNavegateObj: TNavegateList;
+   FLogsConfObj: TLogsConfigurations;
 
   private
     { Private declarations }
+    procedure ConfigureElements(const ShowText: boolean);
+    procedure ListarContatos;
+    procedure NavegateTo(Item: TViewItem);
+    function GetSelectedContact: TMyContato;
+    procedure DoOnNewFileEvent(var NewFileName: string);
+
     //IChatApplication
     function GetConnected: boolean;
     procedure SetConnected(const Value: boolean);
@@ -94,16 +102,11 @@ type
     function GetContatosService: IContatosService;
     function GetRemoteService: IChatService;
     function GetTitle: string;
-    procedure ListarContatos;
-    procedure NavegateTo(Item: TViewItem);
-    function GetSelectedContact: TMyContato;
-    procedure DoOnNewFileEvent(var NewFileName: string);
-
 
   public
     { Public declarations }
-    property LogsconfObj: TLogsConfigurations read FLogsConf;
-    property NavegateObj: TNavegateList read FNavList;
+    property LogsConfObj: TLogsConfigurations read FLogsConfObj;
+    property NavegateObj: TNavegateList read FNavegateObj;
     property SelectedContact: TMyContato read GetSelectedContact;
 
     //IChatApplication
@@ -151,9 +154,10 @@ end;
 procedure TFrmMainForm.ActDeleteContatoExecute(Sender: TObject);
 begin
  if ContatosService.ExcluirContato(SelectedContact) then
+  begin
    LstContatos.Items.Delete(LstContatos.Selected.Index);
-
- LogsWriter.RegisterInfo(TChatMessagesConst.CallRemoteMethodSucess);
+   LogsWriter.RegisterInfo(TChatMessagesConst.CallRemoteMethodSucess);
+  end;
 end;
 
 procedure TFrmMainForm.ActDeleteContatoUpdate(Sender: TObject);
@@ -172,7 +176,7 @@ begin
  TAction(Sender).Enabled := (Connected = True);
 end;
 
-procedure TFrmMainForm.ActProfileExecute(Sender: TObject);
+procedure TFrmMainForm.ActServiceInfoExecute(Sender: TObject);
 var
  Counter: integer;
  ListObj: TStringList;
@@ -207,7 +211,7 @@ begin
              //ItemObj.ItemData.Bitmap := GetBitmap(3);
 
              ItemObj.ItemData.Detail:= ListObj.ValueFromIndex[Counter];
-             ItemObj.StyleLookup := 'listboxitembottomdetail';
+             ItemObj.StyleLookup := TMercurioUI.ListBoxItemStyle;
              ItemObj.ItemData.Accessory := TlistBoxItemData.TAccessory(1);
              ItemObj.WordWrap := True;
              ItemObj.Hint := ItemObj.ItemData.Detail;
@@ -215,6 +219,8 @@ begin
           end;
 
          LstServiceInfo.EndUpdate;
+
+         NavegateTo(viServiceInfo);
          ActServiceInfoView.Execute;
        end;
 
@@ -223,7 +229,7 @@ begin
   end;
 end;
 
-procedure TFrmMainForm.ActProfileUpdate(Sender: TObject);
+procedure TFrmMainForm.ActServiceInfoUpdate(Sender: TObject);
 begin
  TAction(Sender).Enabled := Connected;
 end;
@@ -284,6 +290,41 @@ begin
  TAction(sender).Enabled := (Connected) and (TabMain.ActiveTab = TabContatos);
 end;
 
+procedure TFrmMainForm.ConfigureElements(const ShowText: boolean);
+{var
+ I: integer;
+ ButtonObj: TSpeedButton;
+ s: string;}
+begin
+ if ShowText = True then
+  begin
+    BtnContacts.Text :=  TAction(BtnContacts.Action).Text;
+    BtnServiceInfo.Text :=  TAction(BtnServiceInfo.Action).Text;
+    BtnNewContact.Text :=  TAction(BtnNewContact.Action).Text;
+    BtnDelContact.Text :=  TAction(BtnDelContact.Action).Text;
+  end
+  else
+  begin
+    BtnContacts.Text :=  '';
+    BtnServiceInfo.Text :=  '';
+    BtnNewContact.Text :=  '';
+    BtnDelContact.Text :=  '';
+  end;
+{
+ for I := 0 to MultiView1.ChildrenCount - 1 do
+   begin
+     s := MultiView1.Children.Items[I].ClassName;
+     if MultiView1.Children.Items[I] is TSpeedButton then
+      begin
+        ButtonObj := TSpeedButton(MultiView1.Children.Items[I]);
+        if ShowText then
+         ButtonObj.Text := TAction(ButtonObj.Action).Text
+        else
+         ButtonObj.Text := '';
+      end;
+   end;}
+end;
+
 procedure TFrmMainForm.DoOnNewFileEvent(var NewFileName: string);
 begin
 {Método que aponta para o evento TMercurioLogsController.OnNewFile, disparado sempre que
@@ -300,32 +341,25 @@ begin
 end;
 
 procedure TFrmMainForm.FormCreate(Sender: TObject);
-var
- I: integer;
 begin
  Events := [leOnError, leOnAuthenticateSucess, leOnAuthenticateFail, leOnInformation,
             leOnWarning, leOnConnect, leOnConnectError, leOnMethodCall,
             leOnMethodCallError, leUnknown];
 
- FNavList := TNavegateList.Create;
- FLogsConf := TLogsConfigurations.Create(GetCurrentDir + '\' + TMercurioConst.ConfigFile);
+ FNavegateObj := TNavegateList.Create;
+ FLogsConfObj := TLogsConfigurations.Create(GetCurrentDir + '\' + TMercurioConst.ConfigFile);
 
  Connected := False; //default
  PnlServiceInfo.Visible := False;
 
- for I := 0 to TabMain.TabCount - 1 do
-    TabMain.Tabs[I].Visible := True;
-
+ ConfigureElements(False);
  NavegateTo(ViContatos);
 end;
 
 procedure TFrmMainForm.FormDestroy(Sender: TObject);
 begin
- if Assigned(FNavList) then
-  FreeAndNil(FNavList);
-
- if Assigned(FLogsConf) then
-   FreeAndNil(FLogsConf);
+ if Assigned(FNavegateObj) then FreeAndNil(FNavegateObj);
+ if Assigned(FLogsConfObj) then FreeAndNil(FLogsConfObj);
 end;
 
 procedure TFrmMainForm.FormShow(Sender: TObject);
@@ -354,7 +388,7 @@ function TFrmMainForm.GetLogWriter: IMercurioLogs;
 var
  LogsObj: TMercurioLogsController;
 begin
- LogsObj := TMercurioLogsController.Create(LogsConfObj.Folder, '.log', TEncoding.UTF8, Events);
+ LogsObj := TMercurioLogsController.Create(LogsConfObj.Folder, TMercurioLogs.FileExtension, TEncoding.UTF8, Events);
  LogsObj.MaxFileSize := LogsConfObj.MaxFileSize;
  LogsObj.AppName := TChatServiceLabels.ServiceName;
  LogsObj.CurrentFile := LogsConfObj.CurrentFile;
@@ -385,28 +419,27 @@ end;
 procedure TFrmMainForm.ListarContatos;
 var
  I: integer;
- ContatosList: TListaContatos;
+ ListObj: TListaContatos;
  MyContatoObj: TMyContato;
  ItemObj: TListBoxItem;
  FullName: string;
 begin
  if Connected then
   begin
-    ContatosList := TListaContatos.Create;
+    ListObj := TListaContatos.Create;
 
     try
-      ContatosService.GetMyContatos(ContatosList);
-      LogsWriter.RegisterInfo(TChatMessagesConst.CallRemoteMethodSucess);
+      ContatosService.GetMyContatos(ListObj);
 
-      if ContatosList.IsEmpty then
+      if ListObj.IsEmpty then
        Exit;
 
       LstContatos.BeginUpdate;
       LstContatos.Clear;
 
-      for I := 0 to ContatosList.Count - 1 do
+      for I := 0 to ListObj.Count - 1 do
        begin
-        MyContatoObj := ContatosList.FindObject(I);
+        MyContatoObj := ListObj.FindObject(I);
 
         if MyContatoObj <> nil then
          begin
@@ -417,7 +450,7 @@ begin
           //ItemObj.ItemData.Bitmap := GetBitmap(3);
 
           ItemObj.ItemData.Detail := MyContatoObj.ContatoId.ToString;
-          ItemObj.StyleLookup := 'listboxitembottomdetail';
+          ItemObj.StyleLookup := TMercurioUI.ListBoxItemStyle;
           ItemObj.ItemData.Accessory := TlistBoxItemData.TAccessory(1);
           ItemObj.WordWrap := True;
           ItemObj.Hint := ItemObj.ItemData.Detail;
@@ -433,15 +466,26 @@ begin
   end;
 end;
 
+procedure TFrmMainForm.MultiView1StartHiding(Sender: TObject);
+begin
+ ConfigureElements(False);
+end;
+
+procedure TFrmMainForm.MultiView1StartShowing(Sender: TObject);
+begin
+ ConfigureElements(True);
+end;
+
 procedure TFrmMainForm.NavegateTo(Item: TViewItem);
 begin
  case Item of
    viContatos:    TabMain.ActiveTab := TabContatos;
    viNovoContato: TabMain.ActiveTab := TabNewContact;
+   viServiceInfo: TabMain.ActiveTab := TabServiceInfo;
    viNone: Exit;
  end;
 
- FNavList.AddItem(Item);
+ FNavegateObj.AddItem(Item);
 end;
 
 procedure TFrmMainForm.SetConnected(const Value: boolean);

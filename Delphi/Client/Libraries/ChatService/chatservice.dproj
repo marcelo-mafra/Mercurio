@@ -154,7 +154,6 @@
         <DCCReference Include="resources.dcp"/>
         <DCCReference Include="cmlib.dcp"/>
         <DCCReference Include="nethttp.dcp"/>
-        <DCCReference Include="fmx.dcp"/>
         <DCCReference Include="client.classes.chatservice.pas"/>
         <DCCReference Include="client.classes.security.pas"/>
         <DCCReference Include="client.classes.chatserviceinfo.pas"/>
@@ -202,6 +201,12 @@
                 <DeployFile LocalName="..\..\..\BIN\Win64\Debug\chatservice.bpl" Configuration="Debug" Class="ProjectOutput">
                     <Platform Name="Win64">
                         <RemoteName>chatservice.bpl</RemoteName>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
+                <DeployFile LocalName="..\..\..\BIN\Win64\Debug\chatservice.rsm" Configuration="Debug" Class="DebugSymbols">
+                    <Platform Name="Win64">
+                        <RemoteName>chatservice.rsm</RemoteName>
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>

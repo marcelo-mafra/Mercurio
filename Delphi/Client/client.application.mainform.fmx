@@ -42,80 +42,30 @@ object FrmMainForm: TFrmMainForm
       TextSettings.HorzAlign = Leading
     end
   end
-  object PnlServiceInfo: TCalloutPanel
-    Action = ActServiceInfoView
-    Align = MostRight
-    Enabled = True
-    Padding.Left = 11.000000000000000000
-    Margins.Bottom = 1.000000000000000000
-    Position.X = 32.000000000000000000
-    Position.Y = 24.000000000000000000
-    Size.Width = 243.000000000000000000
-    Size.Height = 455.000000000000000000
-    Size.PlatformDefault = False
-    Visible = False
-    TabOrder = 13
-    CalloutWidth = 23.000000000000000000
-    CalloutLength = 11.000000000000000000
-    CalloutPosition = Left
-    object LstServiceInfo: TListBox
-      Align = Client
-      Margins.Left = 2.000000000000000000
-      Margins.Top = 2.000000000000000000
-      Margins.Right = 2.000000000000000000
-      Margins.Bottom = 2.000000000000000000
-      Size.Width = 228.000000000000000000
-      Size.Height = 451.000000000000000000
-      Size.PlatformDefault = False
-      TabOrder = 14
-      DisableFocusEffect = True
-      DefaultItemStyles.ItemStyle = ''
-      DefaultItemStyles.GroupHeaderStyle = 'listboxgroupheader'
-      DefaultItemStyles.GroupFooterStyle = ''
-      Viewport.Width = 224.000000000000000000
-      Viewport.Height = 403.000000000000000000
-      object ListBoxItem1: TListBoxItem
-        ItemData.Detail = 'O detalhe '#233'....'
-        ItemData.Accessory = aMore
-        Size.Width = 224.000000000000000000
-        Size.Height = 41.000000000000000000
-        Size.PlatformDefault = False
-        StyleLookup = 'listboxitembottomdetail'
-        TabOrder = 0
-        Text = 'ListBoxItem1'
-      end
-      object ListBoxHeader1: TListBoxHeader
-        Size.Width = 224.000000000000000000
-        Size.Height = 44.000000000000000000
-        Size.PlatformDefault = False
-        TabOrder = 0
-      end
-    end
-  end
   object TabMain: TTabControl
     Align = Client
     Margins.Left = 30.000000000000000000
     Size.Width = 245.000000000000000000
     Size.Height = 450.000000000000000000
     Size.PlatformDefault = False
-    TabHeight = 49.000000000000000000
+    TabHeight = 30.000000000000000000
     TabIndex = 0
-    TabOrder = 20
-    TabPosition = PlatformDefault
+    TabOrder = 19
+    TabPosition = None
     Sizes = (
       245s
-      401s
+      450s
       245s
-      401s
+      450s
       245s
-      401s)
+      450s)
     object TabContatos: TTabItem
       CustomIcon = <
         item
         end>
       IsSelected = True
-      Size.Width = 68.000000000000000000
-      Size.Height = 49.000000000000000000
+      Size.Width = 8.000000000000000000
+      Size.Height = 8.000000000000000000
       Size.PlatformDefault = False
       StyleLookup = 'tabitemstyle'
       TabOrder = 0
@@ -125,7 +75,7 @@ object FrmMainForm: TFrmMainForm
       object LstContatos: TListBox
         Align = Client
         Size.Width = 245.000000000000000000
-        Size.Height = 401.000000000000000000
+        Size.Height = 450.000000000000000000
         Size.PlatformDefault = False
         TabOrder = 0
         ShowScrollBars = False
@@ -135,17 +85,18 @@ object FrmMainForm: TFrmMainForm
         DefaultItemStyles.GroupHeaderStyle = ''
         DefaultItemStyles.GroupFooterStyle = ''
         Viewport.Width = 241.000000000000000000
-        Viewport.Height = 337.000000000000000000
+        Viewport.Height = 391.000000000000000000
         object SearchBox1: TSearchBox
           Touch.InteractiveGestures = [LongTap, DoubleTap]
           Align = Top
           TabOrder = 0
           Size.Width = 241.000000000000000000
-          Size.Height = 30.000000000000000000
+          Size.Height = 25.000000000000000000
           Size.PlatformDefault = False
+          TextPrompt = 'Contatos...'
         end
         object ListBoxHeader2: TListBoxHeader
-          Position.Y = 30.000000000000000000
+          Position.Y = 25.000000000000000000
           Size.Width = 241.000000000000000000
           Size.Height = 30.000000000000000000
           Size.PlatformDefault = False
@@ -177,27 +128,74 @@ object FrmMainForm: TFrmMainForm
         end
       end
     end
-    object TabItem2: TTabItem
+    object TabServiceInfo: TTabItem
       CustomIcon = <
         item
         end>
       IsSelected = False
-      Size.Width = 54.000000000000000000
-      Size.Height = 49.000000000000000000
+      Size.Width = 8.000000000000000000
+      Size.Height = 8.000000000000000000
       Size.PlatformDefault = False
       StyleLookup = ''
       TabOrder = 0
-      Text = 'Profile'
+      Text = 'Service Info'
       ExplicitSize.cx = 54.000000000000000000
       ExplicitSize.cy = 26.000000000000000000
+      object PnlServiceInfo: TCalloutPanel
+        Action = ActServiceInfoView
+        Align = Client
+        Enabled = True
+        Padding.Top = 11.000000000000000000
+        Margins.Bottom = 1.000000000000000000
+        Size.Width = 243.000000000000000000
+        Size.Height = 455.000000000000000000
+        Size.PlatformDefault = False
+        Visible = False
+        TabOrder = 0
+        CalloutWidth = 23.000000000000000000
+        CalloutLength = 11.000000000000000000
+        object LstServiceInfo: TListBox
+          Align = Client
+          Margins.Left = 2.000000000000000000
+          Margins.Top = 2.000000000000000000
+          Margins.Right = 2.000000000000000000
+          Margins.Bottom = 2.000000000000000000
+          Size.Width = 239.000000000000000000
+          Size.Height = 440.000000000000000000
+          Size.PlatformDefault = False
+          TabOrder = 14
+          DisableFocusEffect = True
+          DefaultItemStyles.ItemStyle = ''
+          DefaultItemStyles.GroupHeaderStyle = 'listboxgroupheader'
+          DefaultItemStyles.GroupFooterStyle = ''
+          Viewport.Width = 235.000000000000000000
+          Viewport.Height = 392.000000000000000000
+          object ListBoxItem1: TListBoxItem
+            ItemData.Detail = 'O detalhe '#233'....'
+            ItemData.Accessory = aMore
+            Size.Width = 235.000000000000000000
+            Size.Height = 41.000000000000000000
+            Size.PlatformDefault = False
+            StyleLookup = 'listboxitembottomdetail'
+            TabOrder = 0
+            Text = 'ListBoxItem1'
+          end
+          object ListBoxHeader1: TListBoxHeader
+            Size.Width = 235.000000000000000000
+            Size.Height = 44.000000000000000000
+            Size.PlatformDefault = False
+            TabOrder = 0
+          end
+        end
+      end
     end
     object TabNewContact: TTabItem
       CustomIcon = <
         item
         end>
       IsSelected = False
-      Size.Width = 89.000000000000000000
-      Size.Height = 49.000000000000000000
+      Size.Width = 8.000000000000000000
+      Size.Height = 8.000000000000000000
       Size.PlatformDefault = False
       StyleLookup = ''
       TabOrder = 0
@@ -212,8 +210,9 @@ object FrmMainForm: TFrmMainForm
         Position.X = 8.000000000000000000
         Position.Y = 30.000000000000000000
         Size.Width = 233.000000000000000000
-        Size.Height = 30.000000000000000000
+        Size.Height = 25.000000000000000000
         Size.PlatformDefault = False
+        TextPrompt = 'Nome do contato...'
       end
       object EdtLastName: TEdit
         Touch.InteractiveGestures = [LongTap, DoubleTap]
@@ -223,8 +222,9 @@ object FrmMainForm: TFrmMainForm
         Position.X = 8.000000000000000000
         Position.Y = 78.000000000000000000
         Size.Width = 233.000000000000000000
-        Size.Height = 30.000000000000000000
+        Size.Height = 25.000000000000000000
         Size.PlatformDefault = False
+        TextPrompt = 'Sobrenome do contato...'
       end
       object Button1: TButton
         Action = ActSaveContatoData
@@ -255,24 +255,25 @@ object FrmMainForm: TFrmMainForm
     MasterButton = BtnMaster
     Mode = NavigationPane
     NavigationPaneOptions.CollapsedWidth = 30.000000000000000000
+    OnStartShowing = MultiView1StartShowing
+    OnStartHiding = MultiView1StartHiding
     Size.Width = 121.000000000000000000
     Size.Height = 400.000000000000000000
     Size.PlatformDefault = False
-    TabOrder = 19
-    object SpeedButton2: TSpeedButton
+    TabOrder = 18
+    object BtnDelContact: TSpeedButton
       Action = ActDeleteContato
       Align = MostTop
       Enabled = True
       Images = ImgList
-      ImageIndex = -1
+      ImageIndex = 6
       Position.Y = 90.000000000000000000
       Size.Width = 30.000000000000000000
       Size.Height = 30.000000000000000000
       Size.PlatformDefault = False
-      StyleLookup = 'trashtoolbutton'
       TextSettings.HorzAlign = Leading
     end
-    object SpeedButton1: TSpeedButton
+    object BtnContacts: TSpeedButton
       Action = ActTabContacts
       Align = MostTop
       Enabled = True
@@ -281,11 +282,10 @@ object FrmMainForm: TFrmMainForm
       Size.Width = 30.000000000000000000
       Size.Height = 30.000000000000000000
       Size.PlatformDefault = False
-      StyleLookup = 'addtoolbuttonbordered'
       TextSettings.HorzAlign = Leading
     end
-    object SpeedButton3: TSpeedButton
-      Action = ActProfile
+    object BtnServiceInfo: TSpeedButton
+      Action = ActServiceInfo
       Align = MostTop
       Enabled = True
       Images = ImgList
@@ -296,17 +296,16 @@ object FrmMainForm: TFrmMainForm
       Size.PlatformDefault = False
       TextSettings.HorzAlign = Leading
     end
-    object SpeedButton4: TSpeedButton
+    object BtnNewContact: TSpeedButton
       Action = ActTabNewContact
       Align = MostTop
       Enabled = True
       Images = ImgList
-      ImageIndex = -1
+      ImageIndex = 5
       Position.Y = 60.000000000000000000
       Size.Width = 30.000000000000000000
       Size.Height = 30.000000000000000000
       Size.PlatformDefault = False
-      StyleLookup = 'addtoolbuttonbordered'
       TextSettings.HorzAlign = Leading
     end
   end
@@ -328,11 +327,11 @@ object FrmMainForm: TFrmMainForm
       OnUpdate = ActDisconnectServiceUpdate
       ImageIndex = 1
     end
-    object ActProfile: TAction
-      Text = 'Profile'
+    object ActServiceInfo: TAction
+      Text = 'Informa'#231#245'es...'
       ImageIndex = 0
-      OnExecute = ActProfileExecute
-      OnUpdate = ActProfileUpdate
+      OnExecute = ActServiceInfoExecute
+      OnUpdate = ActServiceInfoUpdate
       ImageIndex = 0
     end
     object ActServiceInfoView: TViewAction
@@ -342,23 +341,23 @@ object FrmMainForm: TFrmMainForm
     end
     object ActBack: TAction
       Category = 'View'
-      Text = 'Voltar'
       OnExecute = ActBackExecute
       OnUpdate = ActBackUpdate
     end
-    object ActTabNewContact: TAction
-      Category = 'View'
-      Text = 'Novo contato'
-      OnExecute = ActTabNewContactExecute
-      OnUpdate = ActTabNewContactUpdate
-    end
     object ActTabContacts: TAction
       Category = 'View'
-      Text = 'Contatos'
+      Text = 'Meus contatos'
       ImageIndex = 2
       OnExecute = ActTabContactsExecute
       OnUpdate = ActTabContactsUpdate
       ImageIndex = 2
+    end
+    object ActTabNewContact: TAction
+      Text = 'Novo contato'
+      ImageIndex = 5
+      OnExecute = ActTabNewContactExecute
+      OnUpdate = ActTabNewContactUpdate
+      ImageIndex = 5
     end
     object ActSaveContatoData: TAction
       Text = 'Salvar'
@@ -372,8 +371,10 @@ object FrmMainForm: TFrmMainForm
     end
     object ActDeleteContato: TAction
       Text = 'Excluir contato'
+      ImageIndex = 6
       OnExecute = ActDeleteContatoExecute
       OnUpdate = ActDeleteContatoUpdate
+      ImageIndex = 6
     end
   end
   object ImgList: TImageList
@@ -662,6 +663,73 @@ object FrmMainForm: TFrmMainForm
             FileName = 'E:\Marcelo\Mercurio\Resources\Imagens\Data Prior.bmp'
           end>
         Name = 'Back'
+      end
+      item
+        MultiResBitmap.Height = 17
+        MultiResBitmap.Width = 17
+        MultiResBitmap.LoadSize = 0
+        MultiResBitmap.TransparentColor = 536870912
+        MultiResBitmap = <
+          item
+            Width = 17
+            Height = 17
+            PNG = {
+              89504E470D0A1A0A0000000D49484452000000110000001108060000003B6D47
+              FA000000017352474200AECE1CE90000000467414D410000B18F0BFC61050000
+              020349444154384FAD92316814411486FF9320D990E58E44301791496C8C20D9
+              0B084977298434C225042D6C3CC5228DC44E8B801788856871A5E596698277DD
+              A5DB03C108229B54294F8D4904855934E62CC2CB7BB3B3C79D6748117FD8796F
+              76DF7CFBE69FC1FF50CAC696CA7E40368596A169338E1D73ABF2D362CA402A41
+              83321920D30B041B0D2C4E974DC1699A58C820ACF9A91E3B47DE53265618225A
+              F673269EA467C5D0668085487B0AD5FAA66DB7B3E834C510BBB030E5210CABA6
+              4D916C4FDB6F928B9279BB8C277E2DA47B331EEAEF3F999766019B24310169AD
+              51A905283D2E761DC639335A7A7E52219F53181953F086D2CC4903BD1CF91148
+              B81DFBF5B7DA3C41EC8948FE2C6089F6DB08EFB0D1F837C4C85F0DA84B4D222D
+              8FD6147DB84BF4F909D1F715DA5DEB21FAB644B4FF8A7E6D2F9B3B653A49AE4E
+              757D33CE4D279CD96E16E7F338DC5A8033FE10D94B5936E1077E7E7C0E77FC85
+              5427A713630A6CAE28FAC343336A6D09A9B770728F80BEEBC0E541A05FC1BDC1
+              F3A30D294F3C89755227B3E91294E2C5A32E0E8767E0ECAE035FDE60EFEB9E54
+              77420AD31E220120B2207EC93075A104D03EE00CC58001BEDDE76F213BCA60AC
+              B441780BF5506E2C9F470B2040C0BB7911BFB796D077F50EB0F38E8F7D8E3D79
+              0DD77B6996B62013B3F76DD6AD07D71CB8EA367B3368B690BDB2634C3DD007B6
+              E2CC028E0142A4DF8043D13B920000000049454E44AE426082}
+            FileName = 'E:\Marcelo\Mercurio\Resources\Imagens\classificadores - novo.bmp'
+          end>
+        Name = 'Contatos-novo'
+      end
+      item
+        MultiResBitmap.Height = 17
+        MultiResBitmap.Width = 17
+        MultiResBitmap.LoadSize = 0
+        MultiResBitmap.TransparentColor = 536870912
+        MultiResBitmap = <
+          item
+            Width = 17
+            Height = 17
+            PNG = {
+              89504E470D0A1A0A0000000D49484452000000110000001108060000003B6D47
+              FA000000017352474200AECE1CE90000000467414D410000B18F0BFC61050000
+              01D249444154384FAD93BF4BC34014C7BFD5FA63509A4D414A74D22D75D2AD6E
+              828B93385A70D04DC1C54130FA1764720E88A893E9561749074541219D5A41B1
+              E2A208722E5AA170DE7BB9C4D41F38E8075EDEBBE4EE7BEFDEBDE03F48691FE3
+              B8BED421043D1A3A52BE65AC71560B2916F1FCBA340CC0E806FCD33A96261C9E
+              F01BA38B0682929B4AEB31F296C9DE5322C4869B63FF13EB8540478016A1F44C
+              14CB159D6EEBA4DF0845F4C2E9710B4150E434093A9ED0DF2826A27112AE895B
+              0AE4DCA485F2D92DBFE405AA48E423212104BC920F7BB9F0E532DAF8A9D5F363
+              26F23913832326ACFE8CD2C900DDCA2B2391A016D6EB33899A20AC09413B93B0
+              B2DEAB49DCAD3D84EF176D76EAEEB80D96932DE2EEF9F20B0D2985325A20B756
+              6475618A63328A5FE6C739A6F59C49D43AC5C34ADC50A2A1227DCC5AA58AE1BE
+              4E60618AC766F3090747E71CC738AEA7B70FA10C540D64FD3EB4CD6C17EF4E19
+              51063B43E9380B226E36E2A74C225E2F8ED179A9EB96A045647AC2C23309E059
+              0BA9DF60D0C08C3A46F208B3031DD857DEB9694A2AEE87C81B500EA86345D817
+              94059982EAB1BB7D8EC79B268F4F7ADA9155769D6D07EEDEC22BA29AB87B1E4F
+              F88E42C9656FE76C88C04E45F568B9E2BF01BC0366A2F3DFF5BD056C00000000
+              49454E44AE426082}
+            FileName = 
+              'E:\Marcelo\Mercurio\Resources\Imagens\classificadores - delete.b' +
+              'mp'
+          end>
+        Name = 'contato-delete'
       end>
     Destination = <
       item
@@ -702,6 +770,22 @@ object FrmMainForm: TFrmMainForm
             Name = 'Back'
             SourceRect.Right = 18.000000000000000000
             SourceRect.Bottom = 18.000000000000000000
+          end>
+      end
+      item
+        Layers = <
+          item
+            Name = 'Contatos-novo'
+            SourceRect.Right = 17.000000000000000000
+            SourceRect.Bottom = 17.000000000000000000
+          end>
+      end
+      item
+        Layers = <
+          item
+            Name = 'contato-delete'
+            SourceRect.Right = 17.000000000000000000
+            SourceRect.Bottom = 17.000000000000000000
           end>
       end>
     Left = 40

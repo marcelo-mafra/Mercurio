@@ -34,7 +34,7 @@ begin
   ConfObj := TLogsConfigurations.Create(GetCurrentDir + '\' + TMercurioConst.ConfigFile);
 
     try
-      Result := TMercurioLogsController.Create(ConfObj.Folder, '.log', TEncoding.UTF8, Events);
+      Result := TMercurioLogsController.Create(ConfObj.Folder, TMercurioLogs.FileExtension, TEncoding.UTF8, Events);
       Result.OnNewFile := DoOnNewFileEvent;
       Result.MaxFileSize := ConfObj.MaxFileSize;
       Result.AppName     := TChatServiceLabels.ServiceName;

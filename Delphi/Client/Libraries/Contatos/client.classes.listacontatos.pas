@@ -4,7 +4,7 @@ interface
 
 uses
   System.SysUtils, System.Classes, client.interfaces.common, Generics.Collections,
-  client.interfaces.contatos, client.serverintf.contatos ;
+  client.interfaces.baseclasses, client.interfaces.contatos, client.serverintf.contatos ;
 
 type
    {Classe que representa uma lista de contatos.}

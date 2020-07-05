@@ -4,7 +4,7 @@ interface
 {Contém interfaces que abstraem entidades relacionadas às mensagens de chat e
  usuários que enviaram as mensagens.}
 uses
- client.interfaces.common;
+ client.interfaces.common, client.interfaces.baseclasses;
 
 type
 

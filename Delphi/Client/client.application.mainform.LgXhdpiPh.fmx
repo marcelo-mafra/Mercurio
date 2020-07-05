@@ -14,41 +14,25 @@ inherited FrmMainForm_LgXhdpiPh: TFrmMainForm_LgXhdpiPh
       Size.Height = 48.000000000000000000
     end
   end
-  inherited PnlServiceInfo: TCalloutPanel
-    Size.Height = 669.000000000000000000
-    inherited LstServiceInfo: TListBox
-      Size.Height = 665.000000000000000000
-      Viewport.Width = 228.000000000000000000
-      Viewport.Height = 665.000000000000000000
-      inherited ListBoxItem1: TListBoxItem
-        Size.Width = 271.000000000000000000
-      end
-      inherited ListBoxHeader1: TListBoxHeader
-        Size.Width = 228.000000000000000000
-        Size.Height = 48.000000000000000000
-      end
-    end
-  end
   inherited TabMain: TTabControl
     Size.Width = 420.000000000000000000
     Size.Height = 665.000000000000000000
     Sizes = (
       420s
-      616s
+      665s
       420s
-      616s
+      665s
       420s
-      616s)
+      665s)
     inherited TabContatos: TTabItem
-      Size.Width = 140.000000000000000000
       ExplicitSize.cx = 200.000000000000000000
       ExplicitSize.cy = 49.000000000000000000
       inherited LstContatos: TListBox
         Margins.Left = 30.000000000000000000
         Size.Width = 390.000000000000000000
-        Size.Height = 616.000000000000000000
+        Size.Height = 665.000000000000000000
         Viewport.Width = 390.000000000000000000
-        Viewport.Height = 520.000000000000000000
+        Viewport.Height = 569.000000000000000000
         inherited SearchBox1: TSearchBox
           Size.Width = 390.000000000000000000
           Size.Height = 48.000000000000000000
@@ -69,47 +53,57 @@ inherited FrmMainForm_LgXhdpiPh: TFrmMainForm_LgXhdpiPh
         end
       end
     end
-    inherited TabItem2: TTabItem
-      Size.Width = 140.000000000000000000
+    inherited TabServiceInfo: TTabItem
       ExplicitSize.cx = 100.000000000000000000
       ExplicitSize.cy = 49.000000000000000000
+      inherited PnlServiceInfo: TCalloutPanel
+        Size.Width = 420.000000000000000000
+        Size.Height = 664.000000000000000000
+        Visible = True
+        inherited LstServiceInfo: TListBox
+          Size.Width = 416.000000000000000000
+          Size.Height = 649.000000000000000000
+          Viewport.Width = 416.000000000000000000
+          Viewport.Height = 649.000000000000000000
+          inherited ListBoxHeader1: TListBoxHeader
+            Size.Width = 416.000000000000000000
+            Size.Height = 48.000000000000000000
+          end
+        end
+      end
     end
     inherited TabNewContact: TTabItem
-      Size.Width = 140.000000000000000000
       ExplicitSize.cx = 140.000000000000000000
       ExplicitSize.cy = 49.000000000000000000
       inherited EdtFirstName: TEdit
-        Size.Width = 1283.000000000000000000
+        Size.Width = 1633.000000000000000000
         Size.Height = 32.000000000000000000
       end
       inherited EdtLastName: TEdit
-        Size.Width = 1283.000000000000000000
+        Size.Width = 1633.000000000000000000
         Size.Height = 32.000000000000000000
       end
       inherited Button1: TButton
-        Position.X = 1210.000000000000000000
+        Position.X = 1560.000000000000000000
       end
     end
   end
   inherited MultiView1: TMultiView
     Size.Width = 121.000000000000000000
     Size.Height = 400.000000000000000000
-    inherited SpeedButton2: TSpeedButton
+    inherited BtnDelContact: TSpeedButton
       Position.Y = 96.000000000000000000
-      Size.Width = 48.000000000000000000
       Size.Height = 48.000000000000000000
     end
-    inherited SpeedButton1: TSpeedButton
-      Size.Width = 48.000000000000000000
+    inherited BtnContacts: TSpeedButton
       Size.Height = 48.000000000000000000
     end
-    inherited SpeedButton3: TSpeedButton
+    inherited BtnServiceInfo: TSpeedButton
       Position.Y = 144.000000000000000000
       Size.Height = 48.000000000000000000
     end
-    inherited SpeedButton4: TSpeedButton
+    inherited BtnNewContact: TSpeedButton
       Position.Y = 48.000000000000000000
-      Size.Width = 48.000000000000000000
       Size.Height = 48.000000000000000000
     end
   end
@@ -120,11 +114,17 @@ inherited FrmMainForm_LgXhdpiPh: TFrmMainForm_LgXhdpiPh
     inherited ActDisconnectService: TAction
       ImageIndex = 1
     end
-    inherited ActProfile: TAction
+    inherited ActServiceInfo: TAction
       ImageIndex = 0
     end
     inherited ActTabContacts: TAction
       ImageIndex = 2
+    end
+    inherited ActTabNewContact: TAction
+      ImageIndex = 5
+    end
+    inherited ActDeleteContato: TAction
+      ImageIndex = 6
     end
   end
   inherited ImgList: TImageList

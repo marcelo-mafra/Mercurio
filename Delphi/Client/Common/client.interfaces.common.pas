@@ -2,15 +2,10 @@ unit client.interfaces.common;
 
 interface
 
+uses
+ System.SysUtils;
+
 type
- MsgIdentifier = int64;
-
- //Classe abstrata usada como classe-base para diversas listas de objetos.
- TListaObjetos = class
-
-   public
-     procedure AddItem(value: TObject); virtual; abstract;
- end;
 
  //Interface root do Mercúrio. Todas as demais interfaces derivam dela.
  IChatInterface = interface
@@ -19,7 +14,8 @@ type
  end;
 
 
-
 implementation
+
+
 
 end.
