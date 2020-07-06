@@ -153,9 +153,12 @@ end;
 
 procedure TFrmMainForm.ActDeleteContatoExecute(Sender: TObject);
 begin
- if ContatosService.ExcluirContato(SelectedContact) then
+  if Dialogs.ConfirmationMessage(string.Empty, TDialogsConst.ConfDelContact) = TDialogsResult.mrYes then
   begin
-   LstContatos.Items.Delete(LstContatos.Selected.Index);
+   if ContatosService.ExcluirContato(SelectedContact) then
+    begin
+     LstContatos.Items.Delete(LstContatos.Selected.Index);
+    end;
   end;
 end;
 

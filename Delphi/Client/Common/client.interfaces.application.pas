@@ -9,9 +9,9 @@ uses
   IDlgMessage = interface(IChatInterface)
   ['{BE5F2EAF-739E-46BB-A4BC-B153AC7773B0}']
     function ConfirmationMessage(const MessageTitle, MessageText: string): integer;
-    function ErrorMessage(const MessageTitle, MessageText: string): integer;
-    function InfoMessage(const MessageTitle, MessageText: string): integer;
-    function WarningMessage(const MessageTitle, MessageText: string): integer;
+    procedure ErrorMessage(const MessageTitle, MessageText: string);
+    procedure InfoMessage(const MessageTitle, MessageText: string);
+    procedure WarningMessage(const MessageTitle, MessageText: string);
   end;
 
 

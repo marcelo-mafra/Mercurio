@@ -44,6 +44,14 @@ type
       CallGetContatosError = 'A chamada do método remoto "GetContatos" falhou.';
   end;
 
+  TDialogsConst = class
+    const
+      ConfDelContact = 'Confirma a exclusão do contato selecionado?';
+
+  end;
+
+
+
 implementation
 
 end.
