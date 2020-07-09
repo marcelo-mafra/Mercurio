@@ -63,15 +63,15 @@ inherited FrmMainForm_iPhone55in: TFrmMainForm_iPhone55in
       ExplicitSize.cx = 128.000000000000000000
       ExplicitSize.cy = 49.000000000000000000
       inherited EdtFirstName: TEdit
-        Size.Width = 2466.000000000000000000
+        Size.Width = 2574.000000000000000000
         Size.Height = 31.000000000000000000
       end
       inherited EdtLastName: TEdit
-        Size.Width = 2466.000000000000000000
+        Size.Width = 2574.000000000000000000
         Size.Height = 31.000000000000000000
       end
       inherited Button1: TButton
-        Position.X = 2393.000000000000000000
+        Position.X = 2501.000000000000000000
       end
     end
     inherited TabItem1: TTabItem
@@ -98,6 +98,7 @@ inherited FrmMainForm_iPhone55in: TFrmMainForm_iPhone55in
             Size.Height = 44.000000000000000000
           end
           inherited Label2: TLabel
+            Size.Width = 142.000015258789100000
             Size.Height = 44.000000000000000000
           end
         end

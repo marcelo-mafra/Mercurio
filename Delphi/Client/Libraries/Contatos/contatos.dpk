@@ -35,7 +35,8 @@ requires
   resources,
   interfaces,
   cmlib,
-  FireDAC;
+  FireDAC,
+  bindcomp;
 
 contains
   client.model.contatos in 'client.model.contatos.pas',

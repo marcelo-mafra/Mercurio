@@ -3,7 +3,8 @@ unit client.classes.json;
 interface
 
 uses
-  System.SysUtils, System.Json, classes.exceptions, System.Generics.Collections;
+  System.SysUtils, System.Json, classes.exceptions, System.Generics.Collections,
+  Data.DB;
 
  type
    {Classe utilitária para trabalho com dados no´padrão JSON.}
@@ -15,6 +16,7 @@ uses
       class function FindValue(const JsonString: string; ValueName: string): string; overload;
       class function GetObjectCount(const JsonString: string; ArrayName: string): integer;
       class function FindValue(const JsonString: string; ArrayName: string; ValueName: string; Index: integer): string; overload;
+      class procedure ToDataset(const JsonString: string; Dataset: TDataset);
 
    end;
 
@@ -136,6 +138,12 @@ begin
  finally
   jsValueObj.Free();
  end;
+
+end;
+
+class procedure TNetJsonUtils.ToDataset(const JsonString: string;
+  Dataset: TDataset);
+begin
 
 end;
 

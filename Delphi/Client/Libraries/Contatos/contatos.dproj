@@ -144,6 +144,7 @@
         <DCCReference Include="interfaces.dcp"/>
         <DCCReference Include="cmlib.dcp"/>
         <DCCReference Include="FireDAC.dcp"/>
+        <DCCReference Include="bindcomp.dcp"/>
         <DCCReference Include="client.model.contatos.pas"/>
         <DCCReference Include="client.model.listacontatos.pas"/>
         <DCCReference Include="client.data.contatos.pas">

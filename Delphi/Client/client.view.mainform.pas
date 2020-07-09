@@ -94,6 +94,7 @@ type
    FConnected: boolean;
    FNavegateObj: TNavegateList;
    FLogsConfObj: TLogsConfigurations;
+   FContatosData: TContatosData;
 
   private
     { Private declarations }
@@ -149,7 +150,11 @@ end;
 procedure TFrmMainForm.ActConnectServiceExecute(Sender: TObject);
 begin
  FConnected := RemoteService.ConnectService;
- if FConnected then self.ListarContatos;
+ if FConnected then
+  begin
+   if not Assigned(FContatosData) then FContatosData := TContatosData.Create(BindContatos);
+   self.ListarContatos;
+  end;
 end;
 
 procedure TFrmMainForm.ActConnectServiceUpdate(Sender: TObject);
@@ -177,6 +182,8 @@ end;
 procedure TFrmMainForm.ActDisconnectServiceExecute(Sender: TObject);
 begin
  FConnected := not RemoteService.DisconnectService;
+ if not FConnected then
+   if Assigned(FContatosData) then FreeAndNil(FContatosData);
 end;
 
 procedure TFrmMainForm.ActDisconnectServiceUpdate(Sender: TObject);
@@ -426,8 +433,6 @@ var
  FullName: string;
 begin
 {Busca no serviço remoto os contatos do usuário corrente.}
- ContatosService.BindData(BindContatos);
-
  if FConnected then
   begin
     ListObj := TListaContatos.Create;

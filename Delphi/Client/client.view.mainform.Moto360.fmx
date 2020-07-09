@@ -71,7 +71,7 @@ inherited FrmMainForm_Moto360: TFrmMainForm_Moto360
         Size.Height = 32.000000000000000000
       end
       inherited Button1: TButton
-        Position.X = -487.000000000000000000
+        Position.X = -539.000000000000000000
       end
     end
     inherited TabItem1: TTabItem
