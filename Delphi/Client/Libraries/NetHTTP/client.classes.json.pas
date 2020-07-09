@@ -3,8 +3,7 @@ unit client.classes.json;
 interface
 
 uses
-  System.SysUtils, System.Json, classes.exceptions, client.resources.consts,
-  System.Generics.Collections;
+  System.SysUtils, System.Json, classes.exceptions, System.Generics.Collections;
 
  type
    {Classe utilitária para trabalho com dados no´padrão JSON.}
@@ -28,7 +27,7 @@ var
  JsonValueObj: TJsonValue;
 begin
  if JsonString.IsEmpty then
-  raise EMercurioException.Create(TChatMessagesConst.MessageDataInvalid);
+  raise EJsonMessageTransf.Create;
 
  try
    JsonValueObj := TJSONObject.ParseJSONValue(TEncoding.UTF8.GetBytes(JsonString), 0);

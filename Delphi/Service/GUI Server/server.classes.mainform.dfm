@@ -1,8 +1,9 @@
 object Form1: TForm1
   Left = 271
   Top = 114
-  Caption = 'Form1'
-  ClientHeight = 235
+  BorderIcons = [biSystemMenu, biMinimize]
+  Caption = 'Merc'#250'rio'
+  ClientHeight = 158
   ClientWidth = 399
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET

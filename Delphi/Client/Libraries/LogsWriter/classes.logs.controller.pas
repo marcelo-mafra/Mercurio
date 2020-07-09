@@ -39,8 +39,9 @@ uses
     procedure RegisterRemoteCallFailure(const Message, ContextInfo: string);
     procedure RegisterLog(const Info, ContextInfo: string; Event: TLogEvent);
 
+    constructor Create(const SourcePath, FileExtension: string; Encoding: TEncoding); overload;
     constructor Create(const SourcePath, FileExtension: string; Encoding: TEncoding;
-     Events: TLogEvents);
+       Events: TLogEvents); overload;
     destructor Destroy; override;
 
     property AppName: string read FAppName write FAppName;
@@ -69,6 +70,20 @@ begin
  FFileExtension := FileExtension;
  FEncoding := Encoding;
  FEvents := Events;
+end;
+
+constructor TMercurioLogsController.Create(const SourcePath,
+  FileExtension: string; Encoding: TEncoding);
+begin
+ inherited Create;
+ FSourcePath := SourcePath;
+ FFileExtension := FileExtension;
+ FEncoding := Encoding;
+
+ //default events types.
+ FEvents := [leOnError, leOnAuthenticateSucess, leOnAuthenticateFail, leOnInformation,
+            leOnWarning, leOnConnect, leOnConnectError, leOnMethodCall,
+            leOnMethodCallError, leUnknown];
 end;
 
 function TMercurioLogsController.CreateWriter: TTextFileLog;

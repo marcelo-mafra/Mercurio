@@ -143,8 +143,14 @@
         <DCCReference Include="resources.dcp"/>
         <DCCReference Include="interfaces.dcp"/>
         <DCCReference Include="cmlib.dcp"/>
-        <DCCReference Include="client.classes.contatos.pas"/>
-        <DCCReference Include="client.classes.listacontatos.pas"/>
+        <DCCReference Include="FireDAC.dcp"/>
+        <DCCReference Include="client.model.contatos.pas"/>
+        <DCCReference Include="client.model.listacontatos.pas"/>
+        <DCCReference Include="client.data.contatos.pas">
+            <Form>ContatosData</Form>
+            <FormType>dfm</FormType>
+            <DesignClass>TDataModule</DesignClass>
+        </DCCReference>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>

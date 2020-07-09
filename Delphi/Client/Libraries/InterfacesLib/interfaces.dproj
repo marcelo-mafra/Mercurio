@@ -155,12 +155,12 @@
         <DCCReference Include="resources.dcp"/>
         <DCCReference Include="cmlib.dcp"/>
         <DCCReference Include="..\..\Common\client.interfaces.common.pas"/>
-        <DCCReference Include="..\..\Common\client.interfaces.service.pas"/>
         <DCCReference Include="..\..\Common\client.interfaces.messages.pas"/>
         <DCCReference Include="..\..\Common\client.interfaces.security.pas"/>
         <DCCReference Include="..\..\Common\client.interfaces.application.pas"/>
         <DCCReference Include="..\..\Common\client.interfaces.contatos.pas"/>
         <DCCReference Include="..\..\Common\client.interfaces.baseclasses.pas"/>
+        <DCCReference Include="..\..\Common\client.interfaces.connection.pas"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>
@@ -211,6 +211,12 @@
                 <DeployFile LocalName="C:\Users\Public\Documents\Embarcadero\Studio\20.0\Bpl\interfaces.bpl" Configuration="Debug" Class="ProjectOutput">
                     <Platform Name="Win32">
                         <RemoteName>interfaces.bpl</RemoteName>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
+                <DeployFile LocalName="..\..\..\BIN\Win64\Debug\interfaces.rsm" Configuration="Debug" Class="DebugSymbols">
+                    <Platform Name="Win64">
+                        <RemoteName>interfaces.rsm</RemoteName>
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>

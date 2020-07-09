@@ -45,7 +45,7 @@ var
 begin
  {O método "Execute" aciona um webmétodo do serviço remoto.}
  if ServiceUrl.IsEmpty then
-  raise EInvalidURL.Create(TServiceConnectionConst.InvalidUrl);
+  raise EInvalidURL.Create;
 
  HTTPClientObj :=  TNetHTTPClient.Create(nil);
  self.LoadServiceParams(HTTPClientObj);
@@ -60,14 +60,14 @@ begin
       case IResponse.StatusCode of //Respostas tratadas de forma específica: HTTPStatus <> 200
         THTTPStatus.StatusBadRequest:
           begin
-           raise EHTTPBadRequest.Create(TServiceConnectionConst.StatusBadRequest);
+           raise EHTTPBadRequest.Create;
           end;
       end;
    end
    else
     begin
      if Result = nil then //sem resposta do serviço remoto.
-      raise ENoServiceResponse.Create(TServiceConnectionConst.NoServiceResponse);
+      raise ENoServiceResponse.Create;
     end;
    //Isso está errado. O ContentAsString nunca retorna um JSON, mas um HTML.
    Result := TNetJsonUtils.AsJsonObject(IResponse.ContentAsString);
@@ -102,7 +102,7 @@ var
 begin
  {O método "Execute" aciona um webmétodo do serviço remoto.}
  if ServiceUrl.IsEmpty then
-  raise EInvalidURL.Create(TServiceConnectionConst.InvalidUrl);
+  raise EInvalidURL.Create;
 
  HTTPClientObj :=  TNetHTTPClient.Create(nil);
 
@@ -117,14 +117,14 @@ begin
       case Result.StatusCode of //Respostas tratadas de forma específica: HTTPStatus <> 200
         THTTPStatus.StatusBadRequest:
           begin
-           raise EHTTPBadRequest.Create(TServiceConnectionConst.StatusBadRequest);
+           raise EHTTPBadRequest.Create;
           end;
       end;
    end
    else
     begin
      if Result = nil then //Cenário sem resposta do serviço remoto.
-      raise ENoServiceResponse.Create(TServiceConnectionConst.NoServiceResponse);
+      raise ENoServiceResponse.Create;
     end;
 
    if Assigned(HTTPClientObj) then

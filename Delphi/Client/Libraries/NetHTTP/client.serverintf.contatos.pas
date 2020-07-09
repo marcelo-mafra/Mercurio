@@ -81,7 +81,7 @@ type
 
     function  NewContato(const Value: TMyContato): TMyContato; stdcall;
     function  GetMyContatos: UnicodeString; stdcall;
-    function ExcluirContato(value: TMyContato): boolean; stdcall;
+    function  ExcluirContato(value: TMyContato): boolean; stdcall;
 
   end;
 

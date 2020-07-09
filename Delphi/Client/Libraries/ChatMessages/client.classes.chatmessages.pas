@@ -4,8 +4,7 @@ interface
 
  uses
    System.SysUtils, client.interfaces.common, client.interfaces.baseclasses,
-   client.interfaces.messages, classes.exceptions, client.resources.consts,
-   System.Json;
+   client.interfaces.messages, classes.exceptions, System.Json;
 
  type
   TChatMessage = class(TInterfacedObject, IChatMessage)
@@ -35,7 +34,7 @@ implementation
 constructor TChatMessage.Create(const MessageData: string);
 begin
  if MessageData.Empty = '' then
-  raise EMercurioException.Create(TChatMessagesConst.MessageDataInvalid);
+  raise EJsonMessageTransf.Create;
 
  try
    FJsonObj := TJSONObject.ParseJSONValue(TEncoding.UTF8.GetBytes(MessageData), 0) as TJSONObject;

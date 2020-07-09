@@ -9,10 +9,10 @@
         <Projects Include="Client\mercurio.dproj">
             <Dependencies/>
         </Projects>
-        <Projects Include="Common\CmLib\cmlib.dproj">
+        <Projects Include="Client\Libraries\ResourcesLib\resources.dproj">
             <Dependencies/>
         </Projects>
-        <Projects Include="Client\Libraries\ResourcesLib\resources.dproj">
+        <Projects Include="Common\CmLib\cmlib.dproj">
             <Dependencies/>
         </Projects>
         <Projects Include="Client\Libraries\LogsWriter\logwrt.dproj">
@@ -24,10 +24,10 @@
         <Projects Include="Client\Libraries\InterfacesLib\interfaces.dproj">
             <Dependencies/>
         </Projects>
-        <Projects Include="Client\Libraries\DlgMessages\dlgmessages.dproj">
+        <Projects Include="Client\Libraries\ChatService\servicecon.dproj">
             <Dependencies/>
         </Projects>
-        <Projects Include="Client\Libraries\ChatService\chatservice.dproj">
+        <Projects Include="Client\Libraries\DlgMessages\dlgmessages.dproj">
             <Dependencies/>
         </Projects>
         <Projects Include="Client\Libraries\Contatos\contatos.dproj">
@@ -62,15 +62,6 @@
     <Target Name="mercurio:Make">
         <MSBuild Projects="Client\mercurio.dproj" Targets="Make"/>
     </Target>
-    <Target Name="cmlib">
-        <MSBuild Projects="Common\CmLib\cmlib.dproj"/>
-    </Target>
-    <Target Name="cmlib:Clean">
-        <MSBuild Projects="Common\CmLib\cmlib.dproj" Targets="Clean"/>
-    </Target>
-    <Target Name="cmlib:Make">
-        <MSBuild Projects="Common\CmLib\cmlib.dproj" Targets="Make"/>
-    </Target>
     <Target Name="resources">
         <MSBuild Projects="Client\Libraries\ResourcesLib\resources.dproj"/>
     </Target>
@@ -79,6 +70,15 @@
     </Target>
     <Target Name="resources:Make">
         <MSBuild Projects="Client\Libraries\ResourcesLib\resources.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="cmlib">
+        <MSBuild Projects="Common\CmLib\cmlib.dproj"/>
+    </Target>
+    <Target Name="cmlib:Clean">
+        <MSBuild Projects="Common\CmLib\cmlib.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="cmlib:Make">
+        <MSBuild Projects="Common\CmLib\cmlib.dproj" Targets="Make"/>
     </Target>
     <Target Name="logwrt">
         <MSBuild Projects="Client\Libraries\LogsWriter\logwrt.dproj"/>
@@ -107,6 +107,15 @@
     <Target Name="interfaces:Make">
         <MSBuild Projects="Client\Libraries\InterfacesLib\interfaces.dproj" Targets="Make"/>
     </Target>
+    <Target Name="servicecon">
+        <MSBuild Projects="Client\Libraries\ChatService\servicecon.dproj"/>
+    </Target>
+    <Target Name="servicecon:Clean">
+        <MSBuild Projects="Client\Libraries\ChatService\servicecon.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="servicecon:Make">
+        <MSBuild Projects="Client\Libraries\ChatService\servicecon.dproj" Targets="Make"/>
+    </Target>
     <Target Name="dlgmessages">
         <MSBuild Projects="Client\Libraries\DlgMessages\dlgmessages.dproj"/>
     </Target>
@@ -115,15 +124,6 @@
     </Target>
     <Target Name="dlgmessages:Make">
         <MSBuild Projects="Client\Libraries\DlgMessages\dlgmessages.dproj" Targets="Make"/>
-    </Target>
-    <Target Name="chatservice">
-        <MSBuild Projects="Client\Libraries\ChatService\chatservice.dproj"/>
-    </Target>
-    <Target Name="chatservice:Clean">
-        <MSBuild Projects="Client\Libraries\ChatService\chatservice.dproj" Targets="Clean"/>
-    </Target>
-    <Target Name="chatservice:Make">
-        <MSBuild Projects="Client\Libraries\ChatService\chatservice.dproj" Targets="Make"/>
     </Target>
     <Target Name="contatos">
         <MSBuild Projects="Client\Libraries\Contatos\contatos.dproj"/>
@@ -144,13 +144,13 @@
         <MSBuild Projects="Client\Libraries\ChatMessages\chatmessages.dproj" Targets="Make"/>
     </Target>
     <Target Name="Build">
-        <CallTarget Targets="chatserver;mercurio;cmlib;resources;logwrt;nethttp;interfaces;dlgmessages;chatservice;contatos;chatmessages"/>
+        <CallTarget Targets="chatserver;mercurio;resources;cmlib;logwrt;nethttp;interfaces;servicecon;dlgmessages;contatos;chatmessages"/>
     </Target>
     <Target Name="Clean">
-        <CallTarget Targets="chatserver:Clean;mercurio:Clean;cmlib:Clean;resources:Clean;logwrt:Clean;nethttp:Clean;interfaces:Clean;dlgmessages:Clean;chatservice:Clean;contatos:Clean;chatmessages:Clean"/>
+        <CallTarget Targets="chatserver:Clean;mercurio:Clean;resources:Clean;cmlib:Clean;logwrt:Clean;nethttp:Clean;interfaces:Clean;servicecon:Clean;dlgmessages:Clean;contatos:Clean;chatmessages:Clean"/>
     </Target>
     <Target Name="Make">
-        <CallTarget Targets="chatserver:Make;mercurio:Make;cmlib:Make;resources:Make;logwrt:Make;nethttp:Make;interfaces:Make;dlgmessages:Make;chatservice:Make;contatos:Make;chatmessages:Make"/>
+        <CallTarget Targets="chatserver:Make;mercurio:Make;resources:Make;cmlib:Make;logwrt:Make;nethttp:Make;interfaces:Make;servicecon:Make;dlgmessages:Make;contatos:Make;chatmessages:Make"/>
     </Target>
     <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
 </Project>

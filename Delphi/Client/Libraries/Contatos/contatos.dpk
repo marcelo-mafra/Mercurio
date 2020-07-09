@@ -34,10 +34,12 @@ requires
   nethttp,
   resources,
   interfaces,
-  cmlib;
+  cmlib,
+  FireDAC;
 
 contains
-  client.classes.contatos in 'client.classes.contatos.pas',
-  client.classes.listacontatos in 'client.classes.listacontatos.pas';
+  client.model.contatos in 'client.model.contatos.pas',
+  client.model.listacontatos in 'client.model.listacontatos.pas',
+  client.data.contatos in 'client.data.contatos.pas' {ContatosData: TDataModule};
 
 end.
