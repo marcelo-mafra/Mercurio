@@ -65,6 +65,9 @@ type
     ListBoxHeader2: TListBoxHeader;
     SpeedButton5: TSpeedButton;
     Label2: TLabel;
+    TabControl1: TTabControl;
+    TabContatosListView: TTabItem;
+    TabContatosListBox: TTabItem;
     procedure ActDisconnectServiceExecute(Sender: TObject);
     procedure ActDisconnectServiceUpdate(Sender: TObject);
     procedure ActConnectServiceUpdate(Sender: TObject);
@@ -96,6 +99,11 @@ type
    FLogsConfObj: TLogsConfigurations;
    FContatosData: TContatosData;
 
+   procedure DoOnNewContato(value: TMyContato);
+   procedure DoOnConnect(Sender: TObject);
+   procedure DoOnConnectError(Sender: TObject; E: Exception);
+   procedure DoOnDisconnect(Sender: TObject);
+
   private
     { Private declarations }
     procedure ConfigureElements(const ShowText: boolean);
@@ -113,6 +121,7 @@ type
 
   public
     { Public declarations }
+    property Connected: boolean read FConnected;
     property LogsConfObj: TLogsConfigurations read FLogsConfObj;
     property NavegateObj: TNavegateList read FNavegateObj;
     property RemoteService: IServiceConnection read GetRemoteService;
@@ -149,8 +158,7 @@ end;
 
 procedure TFrmMainForm.ActConnectServiceExecute(Sender: TObject);
 begin
- FConnected := RemoteService.ConnectService;
- if FConnected then
+ if RemoteService.ConnectService then
   begin
    if not Assigned(FContatosData) then FContatosData := TContatosData.Create(BindContatos);
    self.ListarContatos;
@@ -181,7 +189,7 @@ end;
 
 procedure TFrmMainForm.ActDisconnectServiceExecute(Sender: TObject);
 begin
- FConnected := not RemoteService.DisconnectService;
+ RemoteService.DisconnectService;
  if not FConnected then
    if Assigned(FContatosData) then FreeAndNil(FContatosData);
 end;
@@ -198,7 +206,7 @@ var
  ItemObj: TListBoxItem;
  HeaderObj: TListBoxGroupHeader;
 begin
- if FConnected then
+ if Connected then
   begin
    ListObj := TStringList.Create;
 
@@ -255,7 +263,7 @@ procedure TFrmMainForm.ActSaveContatoDataExecute(Sender: TObject);
 var
  MyContatoObj: TMyContato;
 begin
- if FConnected then
+ if Connected then
   begin
     MyContatoObj := TMyContato.Create;
 
@@ -342,6 +350,47 @@ begin
    end;}
 end;
 
+procedure TFrmMainForm.DoOnConnect(Sender: TObject);
+begin
+//Implementa o evento TServiceConnection.OnConnect
+ FConnected := True;
+ MercurioLogs.RegisterInfo(TSecurityConst.ConnectionSucess);
+end;
+
+procedure TFrmMainForm.DoOnConnectError(Sender: TObject; E: Exception);
+begin
+ //Implementa o evento TServiceConnection.OnConnectServiceError
+ FConnected := False;
+ MercurioLogs.RegisterError(TSecurityConst.ConnectionFailure, E.Message);
+end;
+
+procedure TFrmMainForm.DoOnDisconnect(Sender: TObject);
+begin
+//Implementa o evento TServiceConnection.OnDisconnectService
+ FConnected := False;
+ MercurioLogs.RegisterInfo(TSecurityConst.DisconnectionSucess);
+end;
+
+procedure TFrmMainForm.DoOnNewContato(value: TMyContato);
+begin
+{Implementa o evento OnNewContato, disparado sempre que a interface IContatosService
+cria um novo contato no serviço remoto. Os dados do novo contato estão no parâmetro
+"value".}
+ if not Assigned(FContatosData) then Exit;
+
+ with FContatosData.dsContatos do
+  begin
+   Append;
+   Fields.FieldByName('CONTACTID').Value := value.ContatoId;
+   Fields.FieldByName('NOME').Value := value.FirstName;
+   Fields.FieldByName('SOBRENOME').Value := value.LastName;
+   Fields.FieldByName('STATUS').Value := value.Status;
+   //Fields.FieldByName('FOTO').Value := to-do;
+   Post;
+  end;
+  //implementar mecanismo de notificação de bandeja ou push
+end;
+
 procedure TFrmMainForm.DoOnNewFileEvent(var NewFileName: string);
 begin
 {Método que aponta para o evento TMercurioLogsController.OnNewFile, disparado sempre que
@@ -358,10 +407,10 @@ end;
 
 procedure TFrmMainForm.FormCreate(Sender: TObject);
 begin
+ FConnected := False; //default
  FNavegateObj := TNavegateList.Create;
  FLogsConfObj := TLogsConfigurations.Create(GetCurrentDir + '\' + TMercurioConst.ConfigFile);
 
- FConnected := False; //default
  PnlServiceInfo.Visible := False;
 
  ConfigureElements(False);
@@ -370,6 +419,7 @@ end;
 
 procedure TFrmMainForm.FormDestroy(Sender: TObject);
 begin
+ if Assigned(FContatosData) then FreeAndNil(FContatosData);
  if Assigned(FNavegateObj) then FreeAndNil(FNavegateObj);
  if Assigned(FLogsConfObj) then FreeAndNil(FLogsConfObj);
 end;
@@ -382,7 +432,7 @@ end;
 function TFrmMainForm.GetContatosService: IContatosService;
 begin
   //Interface que abstrai o serviço remoto de contatos do usuário.
-  Result := TContatosModel.Create as IContatosService;
+  Result := TContatosModel.Create(DoOnNewContato, nil) as IContatosService;
 end;
 
 function TFrmMainForm.GetDialogs: IDlgMessage;
@@ -409,7 +459,7 @@ end;
 function TFrmMainForm.GetRemoteService: IServiceConnection;
 begin
   //Interface que abstrai a conexão com o serviço remoto de chat.
-  Result := TServiceConnection.Create as IServiceConnection;
+  Result := TServiceConnection.Create(DoOnConnect, DoOnConnectError, DoOnDisconnect) as IServiceConnection;
   Result.Connected := FConnected;
 end;
 
@@ -433,7 +483,7 @@ var
  FullName: string;
 begin
 {Busca no serviço remoto os contatos do usuário corrente.}
- if FConnected then
+ if Connected then
   begin
     ListObj := TListaContatos.Create;
 
@@ -458,7 +508,7 @@ begin
           ItemObj.Height := 37;
           //ItemObj.ItemData.Bitmap := GetBitmap(3);
 
-          ItemObj.ItemData.Detail := MyContatoObj.ContatoId.ToString;
+          ItemObj.ItemData.Detail := MyContatoObj.ContatoId;
           ItemObj.StyleLookup := TMercurioUI.ListBoxItemStyle;
           ItemObj.ItemData.Accessory := TlistBoxItemData.TAccessory(1);
           ItemObj.WordWrap := True;

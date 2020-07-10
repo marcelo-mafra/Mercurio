@@ -10,16 +10,12 @@ uses
   client.model.serviceinfo, client.resources.consts, client.interfaces.baseclasses ;
 
  type
-   TOnConnectServiceEvent = procedure (Sender: TObject) of object;
-   TOnConnectServiceErrorEvent = procedure (Sender: TObject) of object;
-   TOnDisconnectServiceEvent = procedure (Sender: TObject) of object;
-
    {Classe que encapsula as funcionalidades de conexão com o serviço remoto de chat.}
    TServiceConnection = class(TMercurioClass, IServiceConnection)
      private
-       FOnConnectService: TOnConnectServiceEvent;
-       FOnConnectServiceError: TOnConnectServiceErrorEvent;
-       FOnDisconnectService: TOnDisconnectServiceEvent;
+       FOnConnect: TOnConnectEvent;
+       FOnConnectError: TOnConnectErrorEvent;
+       FOnDisconnect: TOnDisconnectEvent;
 
        FServiceHost, FServiceName: string;
        FConnected: boolean;
@@ -28,19 +24,15 @@ uses
        procedure SetConnected(const Value: boolean);
        function GetSecurityService: ISecurityService;
        function GetServiceInfo: IServiceInfo;
-       //Eventos
-       procedure DoOnConnectService(Sender: TObject);
-       procedure DoOnConnectServiceError(Sender: TObject);
-       procedure DoOnDisconnectService(Sender: TObject);
-
 
      public
-       constructor Create;
+       constructor Create(OnConnectEvent: TOnConnectEvent; OnConnectErrorEvent:
+          TOnConnectErrorEvent; OnDisconnectEvent: TOnDisconnectEvent);
        destructor Destroy; override;
 
-       property OnConnectService: TOnConnectServiceEvent read FOnConnectService write FOnConnectService;
-       property OnConnectServiceError: TOnConnectServiceErrorEvent read FOnConnectServiceError write FOnConnectServiceError;
-       property OnDisconnectService: TOnDisconnectServiceEvent read FOnDisconnectService write FOnDisconnectService;
+       property OnConnect: TOnConnectEvent read FOnConnect write FOnConnect;
+       property OnConnectError: TOnConnectErrorEvent read FOnConnectError write FOnConnectError;
+       property OnDisconnect: TOnDisconnectEvent read FOnDisconnect write FOnDisconnect;
 
        //IServiceConnection
        function ConnectService: boolean;
@@ -64,33 +56,34 @@ function TServiceConnection.ConnectService: boolean;
 var
  NetHTTPObj: TNetHTTPService;
  IResponse: IHTTPResponse;
- // vUTF8Data: TStringStream;
 begin
  {O método "ConnectService" apenas dá um GET no serviço remoto, sob http e
   verifica se o serviço responde e retorna dados como esperado. Não há conexão
   persistente com o serviço remoto.}
- //vUTF8Data := TStringStream.Create('', TEncoding.GetEncoding(TChatServiceConst.AcceptEncoding.ToInteger));
  NetHTTPObj := TNetHTTPService.Create;
 
  try
   IResponse := NetHTTPObj.Execute(TChatServiceConst.ServiceHost, nil);
-  Result := (IResponse <> nil) and (IResponse.StatusCode = THTTPStatus.StatusOK)
-            and not (IResponse.ContentAsString.IsEmpty);
+  Result := (IResponse <> nil) and (IResponse.StatusCode = THTTPStatus.StatusOK);
 
-  if Result then  //Dispara o evento de OnConnect
-    if Assigned(FOnConnectService) then FOnConnectService(self)
+  if Result then
+   begin //Dispara o evento de OnConnect
+    if Assigned(FOnConnect) then FOnConnect(self);
+   end
   else //Dispara o evento OnConnectError
-    if Assigned(FOnConnectServiceError) then FOnConnectServiceError(self);
+    raise Exception.Create('');
 
-  {IResponse := self.Execute(self.ServiceHost, vUTF8Data);
-  outputdebugstring(PWideChar(TNetEncoding.UrlDecode(vUTF8Data.DataString)));}
- finally
   //if Assigned(vUTF8Data) then FreeAndNil(vUTF8Data);
   if Assigned(NetHTTPObj) then FreeAndNil(NetHTTPObj);
+
+ except
+  on E: Exception do
+    if Assigned(FOnConnectError) then FOnConnectError(self, E);
  end;
 end;
 
-constructor TServiceConnection.Create;
+constructor TServiceConnection.Create(OnConnectEvent: TOnConnectEvent;
+    OnConnectErrorEvent: TOnConnectErrorEvent; OnDisconnectEvent: TOnDisconnectEvent);
 begin
  inherited Create;
  //Service host and name
@@ -98,41 +91,23 @@ begin
  FServiceHost := TChatServiceLabels.ServiceHost;
 
  //Eventos
- FOnConnectService := DoOnConnectService;
- FOnConnectServiceError := DoOnConnectServiceError;
- FOnDisconnectService := DoOnDisconnectService;
+ FOnConnect := OnConnectEvent;
+ FOnConnectError := OnConnectErrorEvent;
+ FOnDisconnect := OnDisconnectEvent;
 end;
 
 destructor TServiceConnection.Destroy;
 begin
-  FOnConnectService := nil;
-  FOnConnectServiceError := nil;
-  FOnDisconnectService := nil;
+  FOnConnect := nil;
+  FOnConnectError := nil;
+  FOnDisconnect := nil;
   inherited;
 end;
 
 function TServiceConnection.DisconnectService: boolean;
 begin
  Result := True;
- if Assigned(FOnDisconnectService) then FOnDisconnectService(Self);
-end;
-
-procedure TServiceConnection.DoOnConnectService(Sender: TObject);
-begin
-//Implementa o evento TChatService.OnConnectService
- MercurioLogs.RegisterInfo(TSecurityConst.ConnectionSucess);
-end;
-
-procedure TServiceConnection.DoOnConnectServiceError(Sender: TObject);
-begin
- //Implementa o evento TChatService.OnConnectServiceError
- MercurioLogs.RegisterInfo(TSecurityConst.ConnectionFailure);
-end;
-
-procedure TServiceConnection.DoOnDisconnectService(Sender: TObject);
-begin
-//Implementa o evento TChatService.OnDisconnectService
- MercurioLogs.RegisterInfo(TSecurityConst.DisconnectionSucess);
+ if Assigned(FOnDisconnect) then FOnDisconnect(Self);
 end;
 
 function TServiceConnection.GetServiceInfo: IServiceInfo;

@@ -7,6 +7,10 @@ uses
  client.serverintf.contatos, Data.DB;
 
 type
+ //Tipo que define um evento de inserção de um novo contato.
+ TNewContatoNotifyEvent = procedure(value: TMyContato) of object;
+ //Define um evento de exclusão de um contato.
+ TDeleteContatoNotifyEvent = procedure of object;
 
  //Abstrai uma entidade de conjunto de contatos.
  IContatosService = interface(IChatInterface)

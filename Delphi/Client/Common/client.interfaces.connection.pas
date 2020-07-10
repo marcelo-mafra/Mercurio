@@ -3,7 +3,7 @@ unit client.interfaces.connection;
 interface
 
 uses
- System.Classes, client.interfaces.common;
+ System.Classes, System.SysUtils, client.interfaces.common;
 
 type
  //Abstrai uma entidade de conjunto de informações sobre o serviço de chat.
@@ -16,6 +16,11 @@ type
    property ServiceName: string read GetServiceName;
    property ServiceHost: string read GetServiceHost;
  end;
+
+ //Abstraem eventos de conexão e desconexão com o serviço remoto.
+ TOnConnectEvent      = procedure (Sender: TObject) of object;
+ TOnConnectErrorEvent = procedure (Sender: TObject; E: Exception) of object;
+ TOnDisconnectEvent   = procedure (Sender: TObject) of object;
 
  //Abstrai o serviço remoto de chat.
  IServiceConnection = interface(IChatInterface)

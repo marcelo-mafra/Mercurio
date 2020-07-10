@@ -6,7 +6,7 @@ uses
   System.SysUtils, System.Classes, client.resources.svcconsts, client.classes.json,
   client.interfaces.common, client.interfaces.baseclasses, client.interfaces.contatos,
   client.serverintf.contatos, client.interfaces.application, client.resources.consts,
-  client.model.listacontatos, client.data.contatos, Data.DB;
+  client.model.listacontatos, client.data.contatos, Data.DB, Variants;
 
 type
    TTransformModel = (tmDataset, tmListObject);
@@ -14,18 +14,21 @@ type
    //Encapsula a interface com o serviço remoto para o domínio "CONTATOS".
    TContatosModel = class(TMercurioClass, IContatosService)
      private
+       FOnNewContatoEvent: TNewContatoNotifyEvent;
+       FOnDeleteContatoEvent: TDeleteContatoNotifyEvent;
        function DoGetMyContatos: string;
        procedure DoJsonToObject(JsonData: string; Obj: TObject; Model: TTransformModel);
 
      public
-       constructor Create;
+       constructor Create(OnNewContato: TNewContatoNotifyEvent;
+          OnDeleteContato: TDeleteContatoNotifyEvent);
        destructor Destroy; override;
 
        //IContatosService
        function  NewContato(value: TMyContato): TMyContato;
        procedure GetMyContatos(List: TListaObjetos); overload;
        procedure GetMyContatos(Dataset: TDataset); overload;
-       function ExcluirContato(value: TMyContato): boolean;
+       function  ExcluirContato(value: TMyContato): boolean;
 
    end;
 
@@ -33,15 +36,16 @@ implementation
 
 { TContatosService }
 
-constructor TContatosModel.Create;
+constructor TContatosModel.Create(OnNewContato: TNewContatoNotifyEvent;
+  OnDeleteContato: TDeleteContatoNotifyEvent);
 begin
- inherited;
-// FContatosData := TContatosData.Create(nil);
+ inherited Create;
+ FOnNewContatoEvent := OnNewContato;
+ FOnDeleteContatoEvent := OnDeleteContato;
 end;
 
 destructor TContatosModel.Destroy;
 begin
-//  FContatosData.Free;
   inherited Destroy;
 end;
 
@@ -74,7 +78,7 @@ procedure TContatosModel.DoJsonToObject(JsonData: string; Obj: TObject;
 var
  I , Counter: integer;
  ContatoObj: TMyContato;
- vContactId, vFirstName, vLastName: variant;
+ vContactId, vFirstName, vLastName, vStatus: variant;
 begin
 
  try
@@ -84,44 +88,42 @@ begin
 
      for I := 0 to Counter - 1 do
        begin
-        vContactId := TNetJsonUtils.FindValue(JsonData, 'ArrayContatos', 'ContatoId', I).ToInteger;
-        vFirstName := TNetJsonUtils.FindValue(JsonData, 'ArrayContatos', 'FirstName', I);
-        vLastName  := TNetJsonUtils.FindValue(JsonData, 'ArrayContatos', 'LastName', I);
+        vContactId := TNetJsonUtils.FindValue(JsonData, 'ArrayContatos', 'CONTACTID', I);
+        vFirstName := TNetJsonUtils.FindValue(JsonData, 'ArrayContatos', 'NOME', I);
+        vLastName  := TNetJsonUtils.FindValue(JsonData, 'ArrayContatos', 'SOBRENOME', I);
+        vStatus    := TNetJsonUtils.FindValue(JsonData, 'ArrayContatos', 'STATUS', I);
 
         case Model of
           tmDataset:
            begin
              TDataset(obj).Append;
-             TDataset(obj).Fields.FieldByName('ContatoId').Value := vContactId;
-             TDataset(obj).Fields.FieldByName('FirstName').Value := vFirstName;
-             TDataset(obj).Fields.FieldByName('LastName').Value := vLastName;
+             TDataset(obj).Fields.FieldByName('CONTACTID').Value := vContactId;
+             TDataset(obj).Fields.FieldByName('NOME').Value := vFirstName;
+             TDataset(obj).Fields.FieldByName('SOBRENOME').Value := vLastName;
+             TDataset(obj).Fields.FieldByName('STATUS').Value := vStatus;
              TDataset(obj).Post;
            end;
           tmListObject:
            begin
               ContatoObj := TMyContato.Create;
-              ContatoObj.ContatoId := vContactId;
+              ContatoObj.ContatoId := Random(97997656).toString;//vContactId;
               ContatoObj.FirstName := vFirstName;
               ContatoObj.LastName :=  vLastName;
+              ContatoObj.Status  := vStatus;
 
               TListaContatos(Obj).AddItem(ContatoObj);
            end;
         end;
-
        end;
-
     end;
-
   {Não dar "FreeAndNil" em ContatoObj, uma vez que foi adicionado na lista
-   da variável List. FreeAndNil aqui vai eliminar de List o último ponteiro
-   associado à variável ContatoObj. }
+   da variável List que gerencia automaticamente o ciclo de vida dos seus objetos. }
  except
-  on E: Exception do
+  on E: EVariantTypeCastError do
    begin
-     //MercurioLogs.RegisterRemoteCallFailure(TContatosConst.CallGetContatosError, E.Message);
+     MercurioLogs.RegisterError(TContatosConst.VariantCastError, E.Message);
    end;
  end;
-
 end;
 
 function TContatosModel.ExcluirContato(value: TMyContato): boolean;
@@ -134,10 +136,11 @@ begin
    IService := GetIMercurioContatosServer();
    Result := IService.ExcluirContato(value) ;
 
-   if value <> nil then
+   if (Result = True) and (value <> nil) then
     begin
      MercurioLogs.RegisterRemoteCallSucess(TContatosConst.CallExcluirContatoSucess,
-       Value.ContatoId.ToString);
+       Value.ContatoId);
+     if Assigned(FOnDeleteContatoEvent) then FOnDeleteContatoEvent;
     end;
 
  except
@@ -178,6 +181,7 @@ function TContatosModel.NewContato(value: TMyContato): TMyContato;
 var
  IService: IMercurioContatosServer;
 begin
+ Result := value;
 
  try
    IService := GetIMercurioContatosServer();
@@ -186,6 +190,7 @@ begin
    if Result <> nil then
     begin
      MercurioLogs.RegisterRemoteCallSucess(TContatosConst.CallNewContatoSucess, '');
+     if Assigned(FOnNewContatoEvent) then FOnNewContatoEvent(Result); //Dispara o evento OnNewContato...
     end;
 
  except

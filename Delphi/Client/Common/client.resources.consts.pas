@@ -42,6 +42,8 @@ type
       CallGetContatosSucess = 'A chamada do método remoto "GetContatos" ' +
         'foi executada com sucesso.';
       CallGetContatosError = 'A chamada do método remoto "GetContatos" falhou.';
+      VariantCastError     = 'A conversão de um tipo de dados obtido do serviço remoto ' +
+        'falhou e a leitura dos dados obtidos foi encerrada.';
   end;
 
   TDialogsConst = class

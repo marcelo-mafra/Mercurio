@@ -10,14 +10,16 @@ type
 
   TMyContato = class(TRemotable)
   private
-    FContatoId: integer;
+    FContatoId: UnicodeString;
     FLastName: UnicodeString;
     FFirstName: UnicodeString;
+    FStatus: integer;
 
   published
-    property ContatoId: integer read FContatoId write FContatoId;
+    property ContatoId: UnicodeString read FContatoId write FContatoId;
     property LastName: UnicodeString read FLastName write FLastName;
     property FirstName: UnicodeString read FFirstName write FFirstName;
+    property Status: integer read FStatus write FStatus;
   end;
 
   TMyContatos = class(TRemotable)

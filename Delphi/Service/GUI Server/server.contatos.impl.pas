@@ -46,7 +46,7 @@ begin
       JDocumment.WriteString(StrData.Strings[I]);
     end;
     end;
-
+ //Escreve o símbolo de fim do conjunto no padrão json.
   JDocumment.WriteString(']}');
   Result := JDocumment.DataString;
 

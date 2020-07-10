@@ -31,7 +31,8 @@ uses
     {IMercurioLogs}
     procedure RegisterAuditFailure(const Message: string);
     procedure RegisterAuditSucess(const Message: string);
-    procedure RegisterError(const Message: string);
+    procedure RegisterError(const Message: string); overload;
+    procedure RegisterError(const Message, ContextInfo: string); overload;
     procedure RegisterInfo(const Message: string);
     procedure RegisterSucess(const Message: string);
     procedure RegisterWarning(const Message: string);
@@ -113,6 +114,13 @@ procedure TMercurioLogsController.RegisterAuditSucess(const Message: string);
 begin
   inherited;
   RegisterLog(Message, '', leOnAuthenticateSucess);
+end;
+
+procedure TMercurioLogsController.RegisterError(const Message,
+  ContextInfo: string);
+begin
+  inherited;
+  RegisterLog(Message, ContextInfo, leOnError);
 end;
 
 procedure TMercurioLogsController.RegisterError(const Message: string);

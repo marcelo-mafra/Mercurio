@@ -36,7 +36,7 @@ implementation
 constructor TContatosData.Create(BindObject: TCustomBindSourceDB);
 begin
  inherited Create(nil);
- BindObject.DataSet := dsContatos;
+ if BindObject <> nil then BindObject.DataSet := dsContatos;
  dsContatos.LoadFromFile('data.json', sfJson);
 end;
 

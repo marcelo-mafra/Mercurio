@@ -107,7 +107,8 @@ uses
     ['{1BA3657F-D67F-4909-8606-70494B2D265C}']
     procedure RegisterAuditFailure(const Message: string);
     procedure RegisterAuditSucess(const Message: string);
-    procedure RegisterError(const Message: string);
+    procedure RegisterError(const Message: string); overload;
+    procedure RegisterError(const Message, ContextInfo: string); overload;
     procedure RegisterInfo(const Message: string);
     procedure RegisterSucess(const Message: string);
     procedure RegisterWarning(const Message: string);

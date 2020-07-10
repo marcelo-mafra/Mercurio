@@ -31,9 +31,54 @@ inherited FrmMainForm_iPad: TFrmMainForm_iPad
       Size.Height = 6.000000000000000000
       ExplicitSize.cx = 200.000000000000000000
       ExplicitSize.cy = 49.000000000000000000
-      inherited ContactsListView: TListView
+      inherited TabControl1: TTabControl
         Size.Width = 738.000000000000000000
         Size.Height = 974.000000000000000000
+        Sizes = (
+          738s
+          974s
+          738s
+          974s)
+        inherited TabContatosListView: TTabItem
+          Size.Width = 6.000000000000000000
+          Size.Height = 6.000000000000000000
+          ExplicitSize.cx = 200.000000000000000000
+          ExplicitSize.cy = 49.000000000000000000
+          inherited ContactsListView: TListView
+            Size.Width = 738.000000000000000000
+            Size.Height = 974.000000000000000000
+          end
+        end
+        inherited TabContatosListBox: TTabItem
+          Size.Width = 6.000000000000000000
+          Size.Height = 6.000000000000000000
+          ExplicitSize.cx = 100.000000000000000000
+          ExplicitSize.cy = 49.000000000000000000
+          inherited LstContatos: TListBox
+            Size.Width = 738.000000000000000000
+            Size.Height = 974.000000000000000000
+            Viewport.Width = 738.000000000000000000
+            Viewport.Height = 974.000000000000000000
+            inherited SearchBox1: TSearchBox
+              Position.Y = 44.000000000000000000
+              Size.Width = 738.000000000000000000
+              Size.Height = 44.000000000000000000
+            end
+            inherited ListBoxHeader2: TListBoxHeader
+              Size.Width = 738.000000000000000000
+              Size.Height = 44.000000000000000000
+              inherited SpeedButton5: TSpeedButton
+                Position.X = 694.000000000000000000
+                Size.Width = 44.000000000000000000
+                Size.Height = 44.000000000000000000
+              end
+              inherited Label2: TLabel
+                Size.Width = 209.666717529296900000
+                Size.Height = 44.000000000000000000
+              end
+            end
+          end
+        end
       end
     end
     inherited TabServiceInfo: TTabItem
@@ -61,15 +106,15 @@ inherited FrmMainForm_iPad: TFrmMainForm_iPad
       ExplicitSize.cx = 246.000000000000000000
       ExplicitSize.cy = 49.000000000000000000
       inherited EdtFirstName: TEdit
-        Size.Width = 9566.000000000000000000
+        Size.Width = 10042.000000000000000000
         Size.Height = 31.000000000000000000
       end
       inherited EdtLastName: TEdit
-        Size.Width = 9566.000000000000000000
+        Size.Width = 10042.000000000000000000
         Size.Height = 31.000000000000000000
       end
       inherited Button1: TButton
-        Position.X = 9493.000000000000000000
+        Position.X = 9969.000000000000000000
       end
     end
     inherited TabItem1: TTabItem
@@ -77,29 +122,6 @@ inherited FrmMainForm_iPad: TFrmMainForm_iPad
       Size.Height = 6.000000000000000000
       ExplicitSize.cx = 8.000000000000000000
       ExplicitSize.cy = 8.000000000000000000
-      inherited LstContatos: TListBox
-        Size.Width = 738.000000000000000000
-        Size.Height = 974.000000000000000000
-        Viewport.Width = 738.000000000000000000
-        Viewport.Height = 974.000000000000000000
-        inherited SearchBox1: TSearchBox
-          Position.Y = 44.000000000000000000
-          Size.Width = 738.000000000000000000
-          Size.Height = 44.000000000000000000
-        end
-        inherited ListBoxHeader2: TListBoxHeader
-          Size.Width = 738.000000000000000000
-          Size.Height = 44.000000000000000000
-          inherited SpeedButton5: TSpeedButton
-            Position.X = 694.000000000000000000
-            Size.Width = 44.000000000000000000
-            Size.Height = 44.000000000000000000
-          end
-          inherited Label2: TLabel
-            Size.Height = 44.000000000000000000
-          end
-        end
-      end
     end
   end
   inherited MultiView1: TMultiView

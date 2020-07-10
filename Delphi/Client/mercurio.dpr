@@ -9,9 +9,10 @@ uses
 {$R *.res}
 
 begin
-  //Exibe um modal com info sobre vazamento de memória a fechar a app.
-  ReportMemoryLeaksOnShutdown := true;
-
+  {$WARNINGS OFF}
+  //Exibe info sobre vazamento de memória ao fechar a app caso em modo debug.
+  ReportMemoryLeaksOnShutdown := (DebugHook <> 0);
+  {$WARNINGS ON}
   Application.Initialize;
   Application.CreateForm(TFrmMainForm, FrmMainForm);
   Application.Run;

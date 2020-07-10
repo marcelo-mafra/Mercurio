@@ -7,7 +7,7 @@ interface
   FireDAC.Stan.Intf, FireDAC.Stan.Option, FireDAC.Stan.Param, FireDAC.Stan.Error,
   FireDAC.DatS, FireDAC.Phys.Intf, FireDAC.DApt.Intf, FireDAC.Comp.DataSet,
   FireDAC.Comp.Client, FireDAC.Stan.StorageJSON, FireDAC.Comp.BatchMove,
-  FireDAC.Comp.BatchMove.JSON;
+  FireDAC.Comp.BatchMove.JSON, System.SysUtils;
 
  type
    TContatosData = class
@@ -60,43 +60,36 @@ end;
 class procedure TContatosData.GetContatos(Stream: TMemoryStream);
  var
   Dataset: TFDMemTable;
-  JsonObj: TJsonObject;
-  BatchMoveObj: TFDBatchMoveJSONWriter;
+//  JsonObj: TJsonObject;
+//  BatchMoveObj: TFDBatchMoveJSONWriter;
 begin
  Dataset := self.CreateDataset;
-
- BatchMoveObj := TFDBatchMoveJSONWriter.Create(nil);
+// BatchMoveObj := TFDBatchMoveJSONWriter.Create(nil);
 
  try
-  BatchMoveObj.Stream := Stream;
-  BatchMoveObj.Execute;
+    Dataset.SaveToStream(Stream, sfJson);
+ // BatchMoveObj.Stream := Stream;
+ // BatchMoveObj.Execute;
 
  finally
   Dataset.Close;
   Dataset.Free
  end;
-
 end;
 
 class function TContatosData.GetContatos: TStringList;
  var
   Dataset: TFDMemTable;
   JsonObj: TJsonObject;
-  StreamObj: TMemoryStream;
-  BatchMoveObj: TFDBatchMoveJSONWriter;
+//  StreamObj: TStringStream;
 begin
  Result := TStringList.Create;
  Dataset := self.CreateDataset;
-
- { StreamObj := TMemoryStream.Create;
-  BatchMoveObj := TFDBatchMoveJSONWriter.Create(nil);
-  AResponse.Body.SetStream(StreamObj,'application/json', True);  }
-
+ //StreamObj := TStringStream.Create('', TEncoding.UTF8);
 
  try
-{  BatchMoveObj.Stream := StreamObj;
-  BatchMoveObj.Execute;
-  Result := StreamObj.ToString;}
+    //Dataset.SaveToStream(StreamObj, sfJson);
+    //Result.LoadFromStream(StreamObj, TEncoding.UTF8);
 
     while not Dataset.Eof do
      begin
@@ -104,11 +97,18 @@ begin
        JsonObj.AddPair(TJsonPair.Create('CONTACTID', Dataset.FieldByName('CONTACTID').AsString));
        JsonObj.AddPair(TJsonPair.Create('NOME', Dataset.FieldByName('NOME').AsString));
        JsonObj.AddPair(TJsonPair.Create('SOBRENOME', Dataset.FieldByName('SOBRENOME').AsString));
-       JsonObj.AddPair(TJsonPair.Create('FOTO', Dataset.FieldByName('FOTO').AsString));
+      { if not Dataset.FieldByName('FOTO').IsNull then
+        begin
+          StreamObj.Clear;
+          TGraphicField(Dataset.FieldByName('FOTO')).SaveToStream(StreamObj);
+          JsonObj.AddPair(TJsonPair.Create('FOTO', StreamObj.DataString));
+        end
+        else }
+          JsonObj.AddPair(TJsonPair.Create('FOTO', ''));
        JsonObj.AddPair(TJsonPair.Create('STATUS', Dataset.FieldByName('STATUS').AsString));
+
        Result.Append(JsonObj.ToString);
        JsonObj.Free;
-
        Dataset.Next;
      end;
 
@@ -123,19 +123,21 @@ class function TContatosData.NewContato(const Value: TMyContato): TMyContato;
   Dataset: TFDMemTable;
 begin
  Result := Value;
+ Result.Status := 1;
+ Result.ContatoId :=  Random(6786578).ToString;
  Dataset := self.CreateDataset;
 
  try
     with Dataset do
      begin
        Insert;
-       Fields.FieldByName('CONTATOID').Value  := Random(6786578);
-       Result.ContatoId := Fields.FieldByName('CONTATOID').Value;
-
-       Fields.FieldByName('FIRSTNAME').Value  := Value.FirstName;
-       Fields.FieldByName('LASTNAME').Value  := Value.LastName;
+       Fields.FieldByName('CONTACTID').Value  := Result.ContatoId;
+       Fields.FieldByName('NOME').Value  := Result.FirstName;
+       Fields.FieldByName('SOBRENOME').Value  := Result.LastName;
+       //Fields.FieldByName('FOTO').Value  := to-do;
+       Fields.FieldByName('STATUS').Value  := Result.Status;
        Post;
-       SaveToFile('contatos.cds');
+       SaveToFile('data.json', sfJson);
      end;
 
  finally
