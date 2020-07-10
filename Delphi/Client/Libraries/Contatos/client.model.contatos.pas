@@ -3,9 +3,9 @@ unit client.model.contatos;
 interface
 
 uses
-  System.SysUtils, System.Classes, client.resources.svcconsts, client.classes.json,
+  System.SysUtils, System.Classes, client.classes.json,
   client.interfaces.common, client.interfaces.baseclasses, client.interfaces.contatos,
-  client.serverintf.contatos, client.interfaces.application, client.resources.consts,
+  client.serverintf.contatos, client.interfaces.application, client.resources.contatos,
   client.model.listacontatos, client.data.contatos, Data.DB, Variants;
 
 type
@@ -58,7 +58,7 @@ begin
  try
    Result := IService.GetMyContatos;
    if (IService <> nil) and not (Result.IsEmpty) then
-     MercurioLogs.RegisterRemoteCallSucess(TContatosConst.CallGetContatosSucess, Result);
+     MercurioLogs.RegisterRemoteCallSucess(TContatosServerMethods.GetContatosSucess, Result);
 
   {Não dar "FreeAndNil" em ContatoObj, uma vez que foi adicionado na lista
    da variável List. FreeAndNil aqui vai eliminar de List o último ponteiro
@@ -67,7 +67,7 @@ begin
   on E: Exception do
    begin
      Result := '';
-     MercurioLogs.RegisterRemoteCallFailure(TContatosConst.CallGetContatosError, E.Message);
+     MercurioLogs.RegisterRemoteCallFailure(TContatosServerMethods.GetContatosError, E.Message);
    end;
  end;
 
@@ -121,7 +121,7 @@ begin
  except
   on E: EVariantTypeCastError do
    begin
-     MercurioLogs.RegisterError(TContatosConst.VariantCastError, E.Message);
+     MercurioLogs.RegisterError(TContatosServerMethods.VariantCastError, E.Message);
    end;
  end;
 end;
@@ -138,7 +138,7 @@ begin
 
    if (Result = True) and (value <> nil) then
     begin
-     MercurioLogs.RegisterRemoteCallSucess(TContatosConst.CallExcluirContatoSucess,
+     MercurioLogs.RegisterRemoteCallSucess(TContatosServerMethods.ExcluirContatoSucess,
        Value.ContatoId);
      if Assigned(FOnDeleteContatoEvent) then FOnDeleteContatoEvent;
     end;
@@ -147,7 +147,7 @@ begin
   on E: Exception do
    begin
      Result := False;
-     MercurioLogs.RegisterRemoteCallFailure(TContatosConst.CallExcluirContatoError, E.Message);
+     MercurioLogs.RegisterRemoteCallFailure(TContatosServerMethods.ExcluirContatoError, E.Message);
    end;
  end;
 end;
@@ -189,14 +189,14 @@ begin
 
    if Result <> nil then
     begin
-     MercurioLogs.RegisterRemoteCallSucess(TContatosConst.CallNewContatoSucess, '');
+     MercurioLogs.RegisterRemoteCallSucess(TContatosServerMethods.NewContatoSucess, '');
      if Assigned(FOnNewContatoEvent) then FOnNewContatoEvent(Result); //Dispara o evento OnNewContato...
     end;
 
  except
   on E: Exception do
    begin
-     MercurioLogs.RegisterRemoteCallFailure(TContatosConst.CallNewContatoError, E.Message);
+     MercurioLogs.RegisterRemoteCallFailure(TContatosServerMethods.NewContatoError, E.Message);
    end;
  end;
 end;

@@ -34,7 +34,6 @@ type
    function DisconnectService: boolean;
 
    property Connected: boolean read GetConnected write SetConnected;
-
   // property Security: ISecurityService read GetSecurityService;
   property ServiceInfo: IServiceInfo read GetServiceInfo;
  end;

@@ -5,7 +5,7 @@ unit server.serviceinfo.impl;
 interface
 
 uses Soap.InvokeRegistry, System.Types, Soap.XSBuiltIns, server.serviceinfo.intf,
- System.SysUtils, client.resources.svcconsts;
+ System.SysUtils, client.resources.serviceparams, client.resources.servicelabels;
 
 type
 
@@ -22,8 +22,8 @@ begin
   Result := TServiceInfo.Create;
 
   try
-   Result.ServiceName := TChatServiceLabels.ServiceName;
-   Result.Host := TChatServiceConst.ServiceHost;
+   Result.ServiceName := TServiceLabels.ServiceName;
+   Result.Host := TServiceParams.ServiceHost;
    Result.ServerTime := Now;
 
   finally

@@ -5,9 +5,9 @@ interface
 uses
   System.SysUtils, System.Classes, System.Net.HttpClient, Winapi.Windows,
   System.NetEncoding, classes.exceptions, client.classes.nethttp,
-  client.interfaces.security, client.interfaces.connection, client.resources.svcconsts,
-  client.resources.svccon, client.classes.security, client.resources.httpstatus,
-  client.model.serviceinfo, client.resources.consts, client.interfaces.baseclasses ;
+  client.interfaces.security, client.interfaces.connection, client.resources.serviceparams,
+  client.resources.servicelabels, client.classes.security, client.resources.httpstatus,
+  client.model.serviceinfo, client.interfaces.baseclasses ;
 
  type
    {Classe que encapsula as funcionalidades de conexão com o serviço remoto de chat.}
@@ -16,7 +16,6 @@ uses
        FOnConnect: TOnConnectEvent;
        FOnConnectError: TOnConnectErrorEvent;
        FOnDisconnect: TOnDisconnectEvent;
-
        FServiceHost, FServiceName: string;
        FConnected: boolean;
 
@@ -30,10 +29,6 @@ uses
           TOnConnectErrorEvent; OnDisconnectEvent: TOnDisconnectEvent);
        destructor Destroy; override;
 
-       property OnConnect: TOnConnectEvent read FOnConnect write FOnConnect;
-       property OnConnectError: TOnConnectErrorEvent read FOnConnectError write FOnConnectError;
-       property OnDisconnect: TOnDisconnectEvent read FOnDisconnect write FOnDisconnect;
-
        //IServiceConnection
        function ConnectService: boolean;
        function DisconnectService: boolean;
@@ -42,7 +37,6 @@ uses
        property Security: ISecurityService read GetSecurityService;
        property ServiceHost: string read FServiceHost;
        property ServiceName: string read FServiceName;
-
        property ServiceInfo: IServiceInfo read GetServiceInfo;
 
    end;
@@ -60,25 +54,27 @@ begin
  {O método "ConnectService" apenas dá um GET no serviço remoto, sob http e
   verifica se o serviço responde e retorna dados como esperado. Não há conexão
   persistente com o serviço remoto.}
+ Result := False;
  NetHTTPObj := TNetHTTPService.Create;
 
  try
-  IResponse := NetHTTPObj.Execute(TChatServiceConst.ServiceHost, nil);
+  IResponse := NetHTTPObj.Execute(TServiceParams.ServiceHost, nil);
   Result := (IResponse <> nil) and (IResponse.StatusCode = THTTPStatus.StatusOK);
 
   if Result then
    begin //Dispara o evento de OnConnect
     if Assigned(FOnConnect) then FOnConnect(self);
    end
-  else //Dispara o evento OnConnectError
+  else
     raise Exception.Create('');
 
-  //if Assigned(vUTF8Data) then FreeAndNil(vUTF8Data);
   if Assigned(NetHTTPObj) then FreeAndNil(NetHTTPObj);
 
  except
   on E: Exception do
+   begin //Dispara o evento OnConnectError
     if Assigned(FOnConnectError) then FOnConnectError(self, E);
+   end;
  end;
 end;
 
@@ -87,8 +83,8 @@ constructor TServiceConnection.Create(OnConnectEvent: TOnConnectEvent;
 begin
  inherited Create;
  //Service host and name
- FServiceName := TChatServiceLabels.ServiceName;
- FServiceHost := TChatServiceLabels.ServiceHost;
+ FServiceName := TServiceLabels.ServiceName;
+ FServiceHost := TServiceLabels.ServiceHost;
 
  //Eventos
  FOnConnect := OnConnectEvent;

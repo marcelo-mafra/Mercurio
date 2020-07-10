@@ -35,6 +35,7 @@ inherited FrmMainForm_LgXhdpiPh: TFrmMainForm_LgXhdpiPh
       inherited TabControl1: TTabControl
         Size.Width = 420.000000000000000000
         Size.Height = 665.000000000000000000
+        TabHeight = 49.000000000000000000
         Sizes = (
           420s
           665s
@@ -74,7 +75,7 @@ inherited FrmMainForm_LgXhdpiPh: TFrmMainForm_LgXhdpiPh
                 Size.Height = 48.000000000000000000
               end
               inherited Label2: TLabel
-                Size.Width = 229.000061035156300000
+                Size.Width = 229.000000000000000000
                 Size.Height = 48.000000000000000000
               end
             end
@@ -108,15 +109,15 @@ inherited FrmMainForm_LgXhdpiPh: TFrmMainForm_LgXhdpiPh
       ExplicitSize.cx = 140.000000000000000000
       ExplicitSize.cy = 49.000000000000000000
       inherited EdtFirstName: TEdit
-        Size.Width = 3682.000000000000000000
+        Size.Width = 4472.000000000000000000
         Size.Height = 32.000000000000000000
       end
       inherited EdtLastName: TEdit
-        Size.Width = 3682.000000000000000000
+        Size.Width = 4472.000000000000000000
         Size.Height = 32.000000000000000000
       end
       inherited Button1: TButton
-        Position.X = 3609.000000000000000000
+        Position.X = 4399.000000000000000000
       end
     end
     inherited TabItem1: TTabItem
@@ -144,11 +145,13 @@ inherited FrmMainForm_LgXhdpiPh: TFrmMainForm_LgXhdpiPh
       Position.Y = 48.000000000000000000
       Size.Height = 48.000000000000000000
     end
+    inherited BtnConnect: TSpeedButton
+      Position.Y = 617.000000000000000000
+      Size.Width = 48.000000000000000000
+      Size.Height = 48.000000000000000000
+    end
   end
   inherited ActList: TActionList
-    inherited ActConnectService: TAction
-      ImageIndex = 0
-    end
     inherited ActDisconnectService: TAction
       ImageIndex = 1
     end

@@ -4,18 +4,20 @@ interface
 
 uses
   System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants,
-  FMX.Types, FMX.Controls, FMX.Forms, FMX.Graphics, FMX.Dialogs, classes.logs.controller,
-  client.interfaces.connection, client.model.connection, System.Actions, FMX.ActnList,
-  System.ImageList, FMX.ImgList, FMX.Controls.Presentation, FMX.StdCtrls,
-  client.interfaces.application, client.classes.dlgmessages, FMX.Objects,
-  FMX.StdActns, FMX.ListView.Types, FMX.ListView.Appearances, classes.logs,
+  FMX.Types, FMX.Controls, FMX.Forms, FMX.Graphics, FMX.Dialogs, System.Actions,
+  FMX.ActnList, System.ImageList, FMX.ImgList, FMX.Controls.Presentation, FMX.StdCtrls,
+  FMX.Objects, FMX.StdActns, FMX.ListView.Types, FMX.ListView.Appearances,
   FMX.ListView.Adapters.Base, FMX.ListView, FMX.ListBox, FMX.Layouts,
-  client.resources.svcconsts, client.interfaces.contatos, client.model.contatos,
-  client.serverintf.contatos, client.model.listacontatos, client.resources.mercurio,
-  client.resources.consts, FMX.MultiView, FMX.TabControl, FMX.Edit, classes.conflogs,
-  FMX.SearchBox, client.view.navegatelist, client.data.contatos,
+  FMX.MultiView, FMX.TabControl, FMX.Edit, classes.conflogs, FMX.SearchBox,
   Data.Bind.EngExt, Fmx.Bind.DBEngExt, System.Rtti, System.Bindings.Outputs,
-  Fmx.Bind.Editors, Data.Bind.Components, Data.Bind.DBScope;
+  Fmx.Bind.Editors, Data.Bind.Components, Data.Bind.DBScope,
+  //---------------------------
+  client.interfaces.connection, client.model.connection,classes.logs.controller,
+  client.interfaces.application, client.classes.dlgmessages, classes.logs,
+  client.resources.servicelabels, client.interfaces.contatos, client.model.contatos,
+  client.serverintf.contatos, client.model.listacontatos, client.resources.mercurio,
+  client.resources.contatos,  client.view.navegatelist, client.data.contatos,
+  client.resources.logs, client.resources.connection;
 
 type
   TFrmMainForm = class(TForm, IChatApplication, IMercurioLogs)
@@ -68,13 +70,13 @@ type
     TabControl1: TTabControl;
     TabContatosListView: TTabItem;
     TabContatosListBox: TTabItem;
+    BtnConnect: TSpeedButton;
     procedure ActDisconnectServiceExecute(Sender: TObject);
     procedure ActDisconnectServiceUpdate(Sender: TObject);
     procedure ActConnectServiceUpdate(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure ActConnectServiceExecute(Sender: TObject);
-    procedure FormShow(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure ActBackExecute(Sender: TObject);
     procedure ActBackUpdate(Sender: TObject);
@@ -131,7 +133,6 @@ type
     property ContatosService: IContatosService read GetContatosService;
     property Dialogs: IDlgMessage read GetDialogs;
     property MercurioLogs: IMercurioLogs read GetMercurioLogs implements IMercurioLogs;
-
     property Title: string read GetTitle;
   end;
 
@@ -145,6 +146,60 @@ implementation
 {$R *.iPhone55in.fmx IOS}
 {$R *.Moto360.fmx ANDROID}
 {$R *.LgXhdpiPh.fmx ANDROID}
+
+{Implementação de TFrmMainForm para uma série de eventos disponibilizados por
+meio de interfaces implementadas em classes de módulos externos.}
+procedure TFrmMainForm.DoOnConnect(Sender: TObject);
+begin
+//Implementa o evento TServiceConnection.OnConnect
+ FConnected := True;
+ MercurioLogs.RegisterInfo(TConnectionSucess.ConnectionSucess);
+ self.ListarContatos;
+end;
+
+procedure TFrmMainForm.DoOnConnectError(Sender: TObject; E: Exception);
+begin
+ //Implementa o evento TServiceConnection.OnConnectServiceError
+ FConnected := False;
+ MercurioLogs.RegisterError(TConnectionError.ConnectionFailure, E.Message);
+end;
+
+procedure TFrmMainForm.DoOnDisconnect(Sender: TObject);
+begin
+//Implementa o evento TServiceConnection.OnDisconnectService
+ FConnected := False;
+ MercurioLogs.RegisterInfo(TConnectionSucess.DisconnectionSucess);
+end;
+
+procedure TFrmMainForm.DoOnNewContato(value: TMyContato);
+begin
+{Implementa o evento OnNewContato, disparado sempre que a interface IContatosService
+cria um novo contato no serviço remoto. Os dados do novo contato estão no parâmetro
+"value".}
+ if not Assigned(FContatosData) then Exit;
+
+ with FContatosData.dsContatos do
+  begin
+   Append;
+   Fields.FieldByName('CONTACTID').Value := value.ContatoId;
+   Fields.FieldByName('NOME').Value := value.FirstName;
+   Fields.FieldByName('SOBRENOME').Value := value.LastName;
+   Fields.FieldByName('STATUS').Value := value.Status;
+   //Fields.FieldByName('FOTO').Value := to-do;
+   Post;
+  end;
+  //implementar mecanismo de notificação de bandeja ou push
+end;
+
+procedure TFrmMainForm.DoOnNewFileEvent(var NewFileName: string);
+begin
+{Método que aponta para o evento TMercurioLogsController.OnNewFile, disparado sempre que
+ o arquivo de logs atinge o tamanho máximo e se cria um novo para ser usado. Nesse
+ caso, é necessário registrar isso no .ini para que na próxima execução do cliente
+ o uso deste arquivo seja retomado (até atingir o tamanho máximo definido).}
+  LogsConfObj.CurrentFile := NewFileName;
+end;
+//Fim da "seção" que implementa eventos de interfaces externas.
 
 procedure TFrmMainForm.ActBackExecute(Sender: TObject);
 begin
@@ -161,18 +216,17 @@ begin
  if RemoteService.ConnectService then
   begin
    if not Assigned(FContatosData) then FContatosData := TContatosData.Create(BindContatos);
-   self.ListarContatos;
   end;
 end;
 
 procedure TFrmMainForm.ActConnectServiceUpdate(Sender: TObject);
 begin
- TAction(Sender).Enabled := (FConnected = False);
+ TAction(Sender).Enabled := (Connected = False);
 end;
 
 procedure TFrmMainForm.ActDeleteContatoExecute(Sender: TObject);
 begin
-  if Dialogs.ConfirmationMessage(string.Empty, TDialogsConst.ConfDelContact) = TDialogsResult.mrYes then
+  if Dialogs.ConfirmationMessage(string.Empty, TContatosDialogs.ConfDelContact) = TDialogsResult.mrYes then
   begin
    if ContatosService.ExcluirContato(SelectedContact) then
     begin
@@ -183,20 +237,22 @@ end;
 
 procedure TFrmMainForm.ActDeleteContatoUpdate(Sender: TObject);
 begin
- TAction(Sender).Enabled := (FConnected) and (TabMain.ActiveTab = TabContatos) and
+ TAction(Sender).Enabled := (Connected) and (TabMain.ActiveTab = TabContatos) and
    (LstContatos.Selected <> nil);
 end;
 
 procedure TFrmMainForm.ActDisconnectServiceExecute(Sender: TObject);
 begin
  RemoteService.DisconnectService;
- if not FConnected then
+ if not Connected then
+  begin
    if Assigned(FContatosData) then FreeAndNil(FContatosData);
+  end;
 end;
 
 procedure TFrmMainForm.ActDisconnectServiceUpdate(Sender: TObject);
 begin
- TAction(Sender).Enabled := (FConnected = True);
+ TAction(Sender).Enabled := (Connected = True);
 end;
 
 procedure TFrmMainForm.ActServiceInfoExecute(Sender: TObject);
@@ -256,7 +312,7 @@ end;
 
 procedure TFrmMainForm.ActServiceInfoUpdate(Sender: TObject);
 begin
- TAction(Sender).Enabled := FConnected;
+ TAction(Sender).Enabled := Connected;
 end;
 
 procedure TFrmMainForm.ActSaveContatoDataExecute(Sender: TObject);
@@ -292,7 +348,7 @@ end;
 
 procedure TFrmMainForm.ActTabContactsUpdate(Sender: TObject);
 begin
- TAction(Sender).Enabled := (FConnected) and (TabMain.ActiveTab <> TabContatos);
+ TAction(Sender).Enabled := (Connected) and (TabMain.ActiveTab <> TabContatos);
 end;
 
 procedure TFrmMainForm.ActTabNewContactExecute(Sender: TObject);
@@ -302,7 +358,7 @@ end;
 
 procedure TFrmMainForm.ActTabNewContactUpdate(Sender: TObject);
 begin
- TAction(Sender).Enabled := (FConnected) and (TabMain.ActiveTab <> TabNewContact);
+ TAction(Sender).Enabled := (Connected) and (TabMain.ActiveTab <> TabNewContact);
 end;
 
 procedure TFrmMainForm.ActUpdateContatosExecute(Sender: TObject);
@@ -312,7 +368,7 @@ end;
 
 procedure TFrmMainForm.ActUpdateContatosUpdate(Sender: TObject);
 begin
- TAction(sender).Enabled := (FConnected) and (TabMain.ActiveTab = TabContatos);
+ TAction(sender).Enabled := (Connected) and (TabMain.ActiveTab = TabContatos);
 end;
 
 procedure TFrmMainForm.ConfigureElements(const ShowText: boolean);
@@ -350,56 +406,6 @@ begin
    end;}
 end;
 
-procedure TFrmMainForm.DoOnConnect(Sender: TObject);
-begin
-//Implementa o evento TServiceConnection.OnConnect
- FConnected := True;
- MercurioLogs.RegisterInfo(TSecurityConst.ConnectionSucess);
-end;
-
-procedure TFrmMainForm.DoOnConnectError(Sender: TObject; E: Exception);
-begin
- //Implementa o evento TServiceConnection.OnConnectServiceError
- FConnected := False;
- MercurioLogs.RegisterError(TSecurityConst.ConnectionFailure, E.Message);
-end;
-
-procedure TFrmMainForm.DoOnDisconnect(Sender: TObject);
-begin
-//Implementa o evento TServiceConnection.OnDisconnectService
- FConnected := False;
- MercurioLogs.RegisterInfo(TSecurityConst.DisconnectionSucess);
-end;
-
-procedure TFrmMainForm.DoOnNewContato(value: TMyContato);
-begin
-{Implementa o evento OnNewContato, disparado sempre que a interface IContatosService
-cria um novo contato no serviço remoto. Os dados do novo contato estão no parâmetro
-"value".}
- if not Assigned(FContatosData) then Exit;
-
- with FContatosData.dsContatos do
-  begin
-   Append;
-   Fields.FieldByName('CONTACTID').Value := value.ContatoId;
-   Fields.FieldByName('NOME').Value := value.FirstName;
-   Fields.FieldByName('SOBRENOME').Value := value.LastName;
-   Fields.FieldByName('STATUS').Value := value.Status;
-   //Fields.FieldByName('FOTO').Value := to-do;
-   Post;
-  end;
-  //implementar mecanismo de notificação de bandeja ou push
-end;
-
-procedure TFrmMainForm.DoOnNewFileEvent(var NewFileName: string);
-begin
-{Método que aponta para o evento TMercurioLogsController.OnNewFile, disparado sempre que
- o arquivo de logs atinge o tamanho máximo e se cria um novo para ser usado. Nesse
- caso, é necessário registrar isso no .ini para que na próxima execução do cliente
- o uso deste arquivo seja retomado (até atingir o tamanho máximo definido).}
-  LogsConfObj.CurrentFile := NewFileName;
-end;
-
 procedure TFrmMainForm.FormClose(Sender: TObject; var Action: TCloseAction);
 begin
  if (RemoteService <> nil) then RemoteService.DisconnectService;
@@ -409,7 +415,7 @@ procedure TFrmMainForm.FormCreate(Sender: TObject);
 begin
  FConnected := False; //default
  FNavegateObj := TNavegateList.Create;
- FLogsConfObj := TLogsConfigurations.Create(GetCurrentDir + '\' + TMercurioConst.ConfigFile);
+ FLogsConfObj := TLogsConfigurations.Create(GetCurrentDir + '\' + TMercurioIniFile.ConfigFile);
 
  PnlServiceInfo.Visible := False;
 
@@ -422,11 +428,6 @@ begin
  if Assigned(FContatosData) then FreeAndNil(FContatosData);
  if Assigned(FNavegateObj) then FreeAndNil(FNavegateObj);
  if Assigned(FLogsConfObj) then FreeAndNil(FLogsConfObj);
-end;
-
-procedure TFrmMainForm.FormShow(Sender: TObject);
-begin
- ActConnectService.Execute;
 end;
 
 function TFrmMainForm.GetContatosService: IContatosService;
@@ -444,12 +445,14 @@ end;
 function TFrmMainForm.GetMercurioLogs: IMercurioLogs;
 var
  LogsObj: TMercurioLogsController;
+ FileExt: string;
 begin
 {Retorna uma interface que abstrai recursos de geração de registros de logs para
  toda a aplicação.}
- LogsObj := TMercurioLogsController.Create(LogsConfObj.Folder, TMercurioLogs.FileExtension, TEncoding.UTF8);
+ FileExt := client.resources.logs.TMercurioLogs.FileExtension;
+ LogsObj := TMercurioLogsController.Create(LogsConfObj.Folder, FileExt, TEncoding.UTF8);
  LogsObj.MaxFileSize := LogsConfObj.MaxFileSize;
- LogsObj.AppName := TChatServiceLabels.ServiceName;
+ LogsObj.AppName := TServiceLabels.ServiceName;
  LogsObj.CurrentFile := LogsConfObj.CurrentFile;
  LogsObj.OnNewFile := DoOnNewFileEvent;
 
@@ -460,7 +463,7 @@ function TFrmMainForm.GetRemoteService: IServiceConnection;
 begin
   //Interface que abstrai a conexão com o serviço remoto de chat.
   Result := TServiceConnection.Create(DoOnConnect, DoOnConnectError, DoOnDisconnect) as IServiceConnection;
-  Result.Connected := FConnected;
+  Result.Connected := self.Connected;
 end;
 
 function TFrmMainForm.GetSelectedContact: TMyContato;

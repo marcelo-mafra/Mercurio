@@ -7,7 +7,13 @@ uses
 
 type
   //General consts
-  TMercurioConst = class
+  TMercurioApp = class
+    const
+      AppName           = 'Mercúrio';
+  end;
+
+  //Mercurio inifile consts
+  TMercurioIniFile = class
     const
       ConfigFile        = 'mercurio.ini';
       ConfigSection     = 'LOGS';
@@ -15,12 +21,6 @@ type
       ConfigCurrentFile = 'CurrentFile';
       ConfigMaxFileSize = 'MaxSize';
       DefaultMaxSize    = 524288;
-  end;
-
-  //Logs consts
-  TMercurioLogs = class
-    const
-      FileExtension = '.log';
   end;
 
   //User interface consts

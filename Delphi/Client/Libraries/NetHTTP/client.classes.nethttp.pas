@@ -5,8 +5,8 @@ interface
 uses
   System.SysUtils, System.Classes, System.Net.URLClient, System.Net.HttpClient,
   System.Net.HttpClientComponent, Winapi.Windows, System.NetEncoding, classes.exceptions,
-  client.resources.httpstatus, client.resources.svccon, client.resources.svcconsts,
-  System.Json, client.classes.json, client.serverintf.soaputils;
+  client.resources.httpstatus, client.resources.serviceparams, System.Json,
+  client.classes.json, client.serverintf.soaputils;
 
  type
    {Classe que encapsula as a comunicação http com o serviço remoto de chat.}
@@ -154,15 +154,15 @@ procedure TNetHTTPService.LoadServiceParams(ClientObj: TNetHTTPClient);
 begin
  with ClientObj do
   begin
-    AcceptCharSet := TChatServiceConst.ServiceCharSet;
-    AcceptEncoding := TChatServiceConst.AcceptEncoding;
-    AcceptLanguage := TChatServiceConst.AcceptLanguage;
-    ContentType := TChatServiceConst.ContentType;
-    UserAgent := TChatServiceConst.UserAgent;
+    AcceptCharSet := TServiceParams.ServiceCharSet;
+    AcceptEncoding := TServiceParams.AcceptEncoding;
+    AcceptLanguage := TServiceParams.AcceptLanguage;
+    ContentType := TServiceParams.ContentType;
+    UserAgent := TServiceParams.UserAgent;
 
     //Timeouts
-    ConnectionTimeout := TChatServiceConst.ConnectionTimeout;
-    ResponseTimeout := TChatServiceConst.ResponseTimeout;
+    ConnectionTimeout := TServiceParams.ConnectionTimeout;
+    ResponseTimeout := TServiceParams.ResponseTimeout;
   end;
 end;
 

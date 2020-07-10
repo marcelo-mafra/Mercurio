@@ -3,8 +3,8 @@ unit classes.exceptions;
 interface
 
 uses
- System.SysUtils, client.resources.svccon, client.resources.httpstatus,
- client.resources.consts;
+ System.SysUtils, client.resources.connection, client.resources.httpstatus,
+ client.resources.chatmessages;
 
 type
  //Classe base de exceções do Mercúrio.
@@ -51,7 +51,7 @@ implementation
 constructor EHTTPBadRequest.Create;
 begin
   inherited;
-  Message := TServiceConnectionConst.StatusBadRequest;
+  Message := TConnectionError.StatusBadRequest;
 end;
 
 { ENoServiceResponse }
@@ -59,7 +59,7 @@ end;
 constructor ENoServiceResponse.Create;
 begin
   inherited;
-  Message := TServiceConnectionConst.NoServiceResponse;
+  Message := TConnectionError.NoServiceResponse;
 end;
 
 
@@ -71,7 +71,7 @@ HttpMessage: string;
 begin
   inherited;
   HttpMessage := THTTPStatus.ToText(StatusCode);
-  Message := string.Format(TServiceConnectionConst.HttpStatus, [StatusCode, HttpMessage]);
+  Message := string.Format(TConnectionError.HttpStatus, [StatusCode, HttpMessage]);
 end;
 
 { EJsonMessageTransf }
@@ -79,7 +79,7 @@ end;
 constructor EJsonMessageTransf.Create;
 begin
   inherited;
-  Message := TChatMessagesConst.MessageDataInvalid;
+  Message := TChatMessages.MessageDataInvalid;
 end;
 
 { EInvalidURL }
@@ -87,7 +87,7 @@ end;
 constructor EInvalidURL.Create;
 begin
    inherited;
-  Message := TServiceConnectionConst.InvalidUrl;
+  Message := TConnectionError.InvalidUrl;
 end;
 
 end.

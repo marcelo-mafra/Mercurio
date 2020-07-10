@@ -4,7 +4,8 @@ interface
 
 uses
  System.SysUtils, classes.logs, classes.logs.controller, classes.conflogs,
- client.resources.mercurio, client.resources.svcconsts;
+ client.resources.mercurio, client.resources.servicelabels,
+ client.resources.logs;
 
 type
  MsgIdentifier = int64;
@@ -39,7 +40,7 @@ implementation
 constructor TMercurioClass.Create;
 begin
  inherited;
- FConfObj := TLogsConfigurations.Create(GetCurrentDir + '\' + TMercurioConst.ConfigFile);
+ FConfObj := TLogsConfigurations.Create(GetCurrentDir + '\' + TMercurioIniFile.ConfigFile);
 end;
 
 destructor TMercurioClass.Destroy;
@@ -52,15 +53,16 @@ function TMercurioClass.GetMercurioLogs: IMercurioLogs;
 var
  LogsObj: TMercurioLogsController;
  Events: TLogEvents;
+ FileExt: string;
 begin
  Events := [leOnError, leOnAuthenticateSucess, leOnAuthenticateFail, leOnInformation,
             leOnWarning, leOnConnect, leOnConnectError, leOnMethodCall,
             leOnMethodCallError, leUnknown];
-
- LogsObj := TMercurioLogsController.Create(ConfObj.Folder, TMercurioLogs.FileExtension, TEncoding.UTF8, Events);
+ FileExt := client.resources.logs.TMercurioLogs.FileExtension;
+ LogsObj := TMercurioLogsController.Create(ConfObj.Folder, FileExt, TEncoding.UTF8, Events);
 
  LogsObj.MaxFileSize := ConfObj.MaxFileSize;
- LogsObj.AppName := TChatServiceLabels.ServiceName;
+ LogsObj.AppName := TServiceLabels.ServiceName;
  LogsObj.CurrentFile := ConfObj.CurrentFile;
  LogsObj.OnNewFile := DoOnNewFileEvent;
 

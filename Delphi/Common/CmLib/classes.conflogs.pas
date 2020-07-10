@@ -2,7 +2,8 @@ unit classes.conflogs;
 
 interface
 
-uses system.SysUtils, System.IniFiles, client.resources.mercurio;
+uses system.SysUtils, System.IniFiles, client.resources.mercurio,
+ client.resources.logs;
 
 type
 
@@ -47,10 +48,10 @@ begin
   ConfigFile := TIniFile.Create(FConfigurationFile);
 
     try
-      FFolder := ConfigFile.ReadString(TMercurioConst.ConfigSection, TMercurioConst.ConfigFolder, '');
-      FCurrentFile := ConfigFile.ReadString(TMercurioConst.ConfigSection, TMercurioConst.ConfigCurrentFile, '');
+      FFolder := ConfigFile.ReadString(TMercurioIniFile.ConfigSection, TMercurioIniFile.ConfigFolder, '');
+      FCurrentFile := ConfigFile.ReadString(TMercurioIniFile.ConfigSection, TMercurioIniFile.ConfigCurrentFile, '');
       CurrentFile := FCurrentFile;
-      FMaxFileSize := ConfigFile.ReadInteger(TMercurioConst.ConfigSection, TMercurioConst.ConfigMaxFileSize, TMercurioConst.DefaultMaxSize);
+      FMaxFileSize := ConfigFile.ReadInteger(TMercurioIniFile.ConfigSection, TMercurioIniFile.ConfigMaxFileSize, TMercurioIniFile.DefaultMaxSize);
 
     finally
       ConfigFile.Free;
@@ -68,7 +69,7 @@ begin
 
     try
       FCurrentFile := NewFileName;
-      ConfigFile.WriteString(TMercurioConst.ConfigSection, TMercurioConst.ConfigCurrentFile, NewFileName);
+      ConfigFile.WriteString(TMercurioIniFile.ConfigSection, TMercurioIniFile.ConfigCurrentFile, NewFileName);
 
     finally
       ConfigFile.Free;

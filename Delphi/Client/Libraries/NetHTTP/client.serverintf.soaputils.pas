@@ -3,8 +3,8 @@ unit client.serverintf.soaputils;
 interface
  uses
   System.Classes, WinAPI.Windows, classes.logs, classes.logs.controller,
-  client.resources.mercurio, client.resources.svcconsts, classes.conflogs,
-  System.SysUtils, client.resources.consts, System.Net.HttpClient;
+  client.resources.mercurio, client.resources.servicelabels, classes.conflogs,
+  System.SysUtils, client.resources.logs, client.resources.methods, System.Net.HttpClient;
 
  type
   //Classe utilitária que mapeia eventos de THTTPRIO e exibe métodos utilitários.
@@ -31,13 +31,13 @@ begin
              leOnWarning, leOnConnect, leOnConnectError, leOnMethodCall,
              leOnMethodCallError, leUnknown];
 
-  ConfObj := TLogsConfigurations.Create(GetCurrentDir + '\' + TMercurioConst.ConfigFile);
+  ConfObj := TLogsConfigurations.Create(GetCurrentDir + '\' + TMercurioIniFile.ConfigFile);
 
     try
       Result := TMercurioLogsController.Create(ConfObj.Folder, TMercurioLogs.FileExtension, TEncoding.UTF8, Events);
       Result.OnNewFile := DoOnNewFileEvent;
       Result.MaxFileSize := ConfObj.MaxFileSize;
-      Result.AppName     := TChatServiceLabels.ServiceName;
+      Result.AppName     := TServiceLabels.ServiceName;
       Result.CurrentFile := ConfObj.CurrentFile;
 
     finally
@@ -57,7 +57,7 @@ begin
    ContextInfo := MethodName + #13; //do not localize!
    ContextInfo := ContextInfo + self.StreamToString(SOAPResponse);
 
-   LogsObj.RegisterRemoteCallSucess(TChatMessagesConst.CallRemoteMethodSucess, ContextInfo);
+   LogsObj.RegisterRemoteCallSucess(Format(TServerMethodsCall.RemoteMethodSucess, [MethodName]), ContextInfo);
 
   finally
    if Assigned(LogsObj) then FreeAndNil(LogsObj);
@@ -72,7 +72,7 @@ begin
  o arquivo de logs atinge otamanho máximo e se cria um novo para ser usado. Nesse
  caso, é necessário registrar isso no .ini para que na próxima execução do cliente
  o uso deste arquivo seja retomado até atingir o tamanho máximo definido.}
-  ConfObj := TLogsConfigurations.Create(GetCurrentDir + '\' + TMercurioConst.ConfigFile);
+  ConfObj := TLogsConfigurations.Create(GetCurrentDir + '\' + TMercurioIniFile.ConfigFile);
 
     try
       ConfObj.CurrentFile := NewFileName;
@@ -94,7 +94,7 @@ begin
    ContextInfo := AResponse.StatusText;// AResponse.ContentAsString(TEncoding.UTF8);
    ContextInfo := ContextInfo + self.StreamToString(AResponse.ContentStream);
 
-   LogsObj.RegisterRemoteCallSucess(TChatMessagesConst.CallRemoteMethodSucess, ContextInfo);
+   LogsObj.RegisterRemoteCallSucess(TServerMethodsCall.RemoteMethodsSucess, ContextInfo);
 
   finally
    if Assigned(LogsObj) then FreeAndNil(LogsObj);
@@ -114,7 +114,7 @@ begin
    ContextInfo := AError;
    //ContextInfo := ContextInfo + self.StreamToString(AResponse.ContentStream);
 
-   LogsObj.RegisterRemoteCallSucess(TChatMessagesConst.CallRemoteMethodError, ContextInfo);
+   LogsObj.RegisterRemoteCallSucess(TServerMethodsCall.RemoteMethodError, ContextInfo);
 
   finally
    if Assigned(LogsObj) then FreeAndNil(LogsObj);
@@ -136,7 +136,7 @@ begin
    if E <> nil then
     LogsObj.RegisterRemoteCallFailure(E.Message, ContextInfo)
    else
-    LogsObj.RegisterRemoteCallFailure(TChatMessagesConst.CallRemoteMethodError, ContextInfo);
+    LogsObj.RegisterRemoteCallFailure(TServerMethodsCall.RemoteMethodError, ContextInfo);
 
   finally
    if Assigned(LogsObj) then FreeAndNil(LogsObj);

@@ -35,6 +35,7 @@ inherited FrmMainForm_Moto360: TFrmMainForm_Moto360
       inherited TabControl1: TTabControl
         Size.Width = 210.000000000000000000
         Size.Height = 188.000000000000000000
+        TabHeight = 49.000000000000000000
         Sizes = (
           210s
           188s
@@ -74,9 +75,9 @@ inherited FrmMainForm_Moto360: TFrmMainForm_Moto360
                 Size.Height = 48.000000000000000000
               end
               inherited Label2: TLabel
-                Position.Y = 2.275865554809570000
+                Position.Y = 2.275861740112305000
                 Size.Width = 207.000000000000000000
-                Size.Height = 43.448272705078120000
+                Size.Height = 43.448272705078130000
               end
             end
           end
@@ -117,7 +118,7 @@ inherited FrmMainForm_Moto360: TFrmMainForm_Moto360
         Size.Height = 32.000000000000000000
       end
       inherited Button1: TButton
-        Position.X = -591.000000000000000000
+        Position.X = -851.000000000000000000
       end
     end
     inherited TabItem1: TTabItem
@@ -145,11 +146,13 @@ inherited FrmMainForm_Moto360: TFrmMainForm_Moto360
       Position.Y = 48.000000000000000000
       Size.Height = 48.000000000000000000
     end
+    inherited BtnConnect: TSpeedButton
+      Position.Y = 140.000000000000000000
+      Size.Width = 48.000000000000000000
+      Size.Height = 48.000000000000000000
+    end
   end
   inherited ActList: TActionList
-    inherited ActConnectService: TAction
-      ImageIndex = 0
-    end
     inherited ActDisconnectService: TAction
       ImageIndex = 1
     end

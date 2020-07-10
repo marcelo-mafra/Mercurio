@@ -34,6 +34,7 @@ inherited FrmMainForm_iPad: TFrmMainForm_iPad
       inherited TabControl1: TTabControl
         Size.Width = 738.000000000000000000
         Size.Height = 974.000000000000000000
+        TabHeight = 49.000000000000000000
         Sizes = (
           738s
           974s
@@ -73,7 +74,7 @@ inherited FrmMainForm_iPad: TFrmMainForm_iPad
                 Size.Height = 44.000000000000000000
               end
               inherited Label2: TLabel
-                Size.Width = 209.666717529296900000
+                Size.Width = 209.666748046875000000
                 Size.Height = 44.000000000000000000
               end
             end
@@ -106,15 +107,15 @@ inherited FrmMainForm_iPad: TFrmMainForm_iPad
       ExplicitSize.cx = 246.000000000000000000
       ExplicitSize.cy = 49.000000000000000000
       inherited EdtFirstName: TEdit
-        Size.Width = 10042.000000000000000000
+        Size.Width = 12422.000000000000000000
         Size.Height = 31.000000000000000000
       end
       inherited EdtLastName: TEdit
-        Size.Width = 10042.000000000000000000
+        Size.Width = 12422.000000000000000000
         Size.Height = 31.000000000000000000
       end
       inherited Button1: TButton
-        Position.X = 9969.000000000000000000
+        Position.X = 12349.000000000000000000
       end
     end
     inherited TabItem1: TTabItem
@@ -142,11 +143,13 @@ inherited FrmMainForm_iPad: TFrmMainForm_iPad
       Position.Y = 44.000000000000000000
       Size.Height = 44.000000000000000000
     end
+    inherited BtnConnect: TSpeedButton
+      Position.Y = 930.000000000000000000
+      Size.Width = 44.000000000000000000
+      Size.Height = 44.000000000000000000
+    end
   end
   inherited ActList: TActionList
-    inherited ActConnectService: TAction
-      ImageIndex = 0
-    end
     inherited ActDisconnectService: TAction
       ImageIndex = 1
     end

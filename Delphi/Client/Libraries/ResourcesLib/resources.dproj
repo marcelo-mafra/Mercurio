@@ -150,11 +150,17 @@
             <MainSource>MainSource</MainSource>
         </DelphiCompile>
         <DCCReference Include="rtl.dcp"/>
-        <DCCReference Include="..\..\Common\client.resources.consts.pas"/>
-        <DCCReference Include="..\..\Common\client.resources.svcconsts.pas"/>
+        <DCCReference Include="..\..\Common\client.resources.chatmessages.pas"/>
+        <DCCReference Include="..\..\Common\client.resources.serviceparams.pas"/>
         <DCCReference Include="..\..\Common\client.resources.httpstatus.pas"/>
-        <DCCReference Include="..\..\Common\client.resources.svccon.pas"/>
+        <DCCReference Include="..\..\Common\client.resources.connection.pas"/>
         <DCCReference Include="..\..\Common\client.resources.mercurio.pas"/>
+        <DCCReference Include="..\..\Common\client.resources.servicelabels.pas"/>
+        <DCCReference Include="..\..\Common\client.resources.logs.pas"/>
+        <DCCReference Include="..\..\Common\client.resources.contatos.pas"/>
+        <DCCReference Include="..\..\Common\client.resources.security.pas"/>
+        <DCCReference Include="..\..\Common\client.resources.methods.pas"/>
+        <DCCReference Include="..\..\Common\client.resources.serviceinfo.pas"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>

@@ -5,7 +5,7 @@ unit server.chatserver.impl;
 interface
 
 uses Soap.InvokeRegistry, System.Types, Soap.XSBuiltIns, server.chatserver.intf,
- System.SysUtils, System.Json, client.resources.svcconsts;
+ System.SysUtils, System.Json;
 
 type
 

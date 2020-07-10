@@ -4,7 +4,8 @@ interface
 
 uses
   System.SysUtils, System.Classes, client.interfaces.connection,
-  client.resources.svcconsts, client.serverintf.serviceinfo, client.interfaces.baseclasses;
+  client.serverintf.serviceinfo, client.resources.servicelabels,
+  client.interfaces.baseclasses;
 
 type
    {Classe que representa o conjunto de informações sobre o serviço de chat.}
@@ -69,9 +70,9 @@ begin
 
    if (IService <> nil) and (ServiceInfoObj <> nil) then
     begin
-      InfoListObj.AddPair(TChatServiceLabels.ServiceHost, ServiceInfoObj.Host);
-      InfoListObj.AddPair(TChatServiceLabels.ServiceName, ServiceInfoObj.ServiceName);
-      InfoListObj.AddPair(TChatServiceLabels.ServiceTime, DateTimeToStr(ServiceInfoObj.ServerTime));
+      InfoListObj.AddPair(TServiceLabels.ServiceHost, ServiceInfoObj.Host);
+      InfoListObj.AddPair(TServiceLabels.ServiceName, ServiceInfoObj.ServiceName);
+      InfoListObj.AddPair(TServiceLabels.ServiceTime, DateTimeToStr(ServiceInfoObj.ServerTime));
     end;
 
   finally

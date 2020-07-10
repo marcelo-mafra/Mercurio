@@ -36,6 +36,7 @@ inherited FrmMainForm_iPhone55in: TFrmMainForm_iPhone55in
       inherited TabControl1: TTabControl
         Size.Width = 370.000000000000000000
         Size.Height = 672.000000000000000000
+        TabHeight = 49.000000000000000000
         Sizes = (
           370s
           672s
@@ -75,7 +76,7 @@ inherited FrmMainForm_iPhone55in: TFrmMainForm_iPhone55in
                 Size.Height = 44.000000000000000000
               end
               inherited Label2: TLabel
-                Size.Width = 209.666687011718800000
+                Size.Width = 209.666748046875000000
                 Size.Height = 44.000000000000000000
               end
             end
@@ -108,15 +109,15 @@ inherited FrmMainForm_iPhone55in: TFrmMainForm_iPhone55in
       ExplicitSize.cx = 128.000000000000000000
       ExplicitSize.cy = 49.000000000000000000
       inherited EdtFirstName: TEdit
-        Size.Width = 2682.000000000000000000
+        Size.Width = 3222.000000000000000000
         Size.Height = 31.000000000000000000
       end
       inherited EdtLastName: TEdit
-        Size.Width = 2682.000000000000000000
+        Size.Width = 3222.000000000000000000
         Size.Height = 31.000000000000000000
       end
       inherited Button1: TButton
-        Position.X = 2609.000000000000000000
+        Position.X = 3149.000000000000000000
       end
     end
     inherited TabItem1: TTabItem
@@ -149,11 +150,13 @@ inherited FrmMainForm_iPhone55in: TFrmMainForm_iPhone55in
       Size.Width = 44.000000000000000000
       Size.Height = 44.000000000000000000
     end
+    inherited BtnConnect: TSpeedButton
+      Position.Y = 628.000000000000000000
+      Size.Width = 44.000000000000000000
+      Size.Height = 44.000000000000000000
+    end
   end
   inherited ActList: TActionList
-    inherited ActConnectService: TAction
-      ImageIndex = 0
-    end
     inherited ActDisconnectService: TAction
       ImageIndex = 1
     end
