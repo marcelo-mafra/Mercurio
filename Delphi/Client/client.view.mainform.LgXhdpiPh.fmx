@@ -75,7 +75,7 @@ inherited FrmMainForm_LgXhdpiPh: TFrmMainForm_LgXhdpiPh
                 Size.Height = 48.000000000000000000
               end
               inherited Label2: TLabel
-                Size.Width = 229.000000000000000000
+                Size.Width = 229.000061035156300000
                 Size.Height = 48.000000000000000000
               end
             end
@@ -109,15 +109,15 @@ inherited FrmMainForm_LgXhdpiPh: TFrmMainForm_LgXhdpiPh
       ExplicitSize.cx = 140.000000000000000000
       ExplicitSize.cy = 49.000000000000000000
       inherited EdtFirstName: TEdit
-        Size.Width = 4472.000000000000000000
+        Size.Width = 4630.000000000000000000
         Size.Height = 32.000000000000000000
       end
       inherited EdtLastName: TEdit
-        Size.Width = 4472.000000000000000000
+        Size.Width = 4630.000000000000000000
         Size.Height = 32.000000000000000000
       end
       inherited Button1: TButton
-        Position.X = 4399.000000000000000000
+        Position.X = 4557.000000000000000000
       end
     end
     inherited TabItem1: TTabItem

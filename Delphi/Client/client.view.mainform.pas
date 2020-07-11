@@ -12,12 +12,12 @@ uses
   Data.Bind.EngExt, Fmx.Bind.DBEngExt, System.Rtti, System.Bindings.Outputs,
   Fmx.Bind.Editors, Data.Bind.Components, Data.Bind.DBScope,
   //---------------------------
-  client.interfaces.connection, client.model.connection,classes.logs.controller,
+  client.interfaces.connection, client.model.connection,//classes.logs.controller,
   client.interfaces.application, client.classes.dlgmessages, classes.logs,
   client.resources.servicelabels, client.interfaces.contatos, client.model.contatos,
   client.serverintf.contatos, client.model.listacontatos, client.resources.mercurio,
   client.resources.contatos,  client.view.navegatelist, client.data.contatos,
-  client.resources.logs, client.resources.connection;
+  client.resources.logs, client.resources.connection, classes.logs.factory;
 
 type
   TFrmMainForm = class(TForm, IChatApplication, IMercurioLogs)
@@ -98,7 +98,7 @@ type
   strict private
    FConnected: boolean;
    FNavegateObj: TNavegateList;
-   FLogsConfObj: TLogsConfigurations;
+   FConfObj: TLogsConfigurations;
    FContatosData: TContatosData;
 
    procedure DoOnNewContato(value: TMyContato);
@@ -113,7 +113,6 @@ type
     procedure NavegateTo(Item: TViewItem);
     function GetRemoteService: IServiceConnection;
     function GetSelectedContact: TMyContato;
-    procedure DoOnNewFileEvent(var NewFileName: string); //***
 
     //IChatApplication
     function GetDialogs: IDlgMessage;
@@ -123,8 +122,8 @@ type
 
   public
     { Public declarations }
+    property ConfObj: TLogsConfigurations read FConfObj;
     property Connected: boolean read FConnected;
-    property LogsConfObj: TLogsConfigurations read FLogsConfObj;
     property NavegateObj: TNavegateList read FNavegateObj;
     property RemoteService: IServiceConnection read GetRemoteService;
     property SelectedContact: TMyContato read GetSelectedContact;
@@ -136,12 +135,16 @@ type
     property Title: string read GetTitle;
   end;
 
+
 var
   FrmMainForm: TFrmMainForm;
 
 implementation
 
 {$R *.fmx}
+
+uses client.view.mainform.helpers;
+
 {$R *.iPad.fmx IOS}
 {$R *.iPhone55in.fmx IOS}
 {$R *.Moto360.fmx ANDROID}
@@ -191,14 +194,6 @@ cria um novo contato no serviço remoto. Os dados do novo contato estão no parâme
   //implementar mecanismo de notificação de bandeja ou push
 end;
 
-procedure TFrmMainForm.DoOnNewFileEvent(var NewFileName: string);
-begin
-{Método que aponta para o evento TMercurioLogsController.OnNewFile, disparado sempre que
- o arquivo de logs atinge o tamanho máximo e se cria um novo para ser usado. Nesse
- caso, é necessário registrar isso no .ini para que na próxima execução do cliente
- o uso deste arquivo seja retomado (até atingir o tamanho máximo definido).}
-  LogsConfObj.CurrentFile := NewFileName;
-end;
 //Fim da "seção" que implementa eventos de interfaces externas.
 
 procedure TFrmMainForm.ActBackExecute(Sender: TObject);
@@ -372,10 +367,6 @@ begin
 end;
 
 procedure TFrmMainForm.ConfigureElements(const ShowText: boolean);
-{var
- I: integer;
- ButtonObj: TSpeedButton;
- s: string;}
 begin
  if ShowText = True then
   begin
@@ -391,19 +382,6 @@ begin
     BtnNewContact.Text :=  string.Empty;
     BtnDelContact.Text :=  string.Empty;
   end;
-{
- for I := 0 to MultiView1.ChildrenCount - 1 do
-   begin
-     s := MultiView1.Children.Items[I].ClassName;
-     if MultiView1.Children.Items[I] is TSpeedButton then
-      begin
-        ButtonObj := TSpeedButton(MultiView1.Children.Items[I]);
-        if ShowText then
-         ButtonObj.Text := TAction(ButtonObj.Action).Text
-        else
-         ButtonObj.Text := '';
-      end;
-   end;}
 end;
 
 procedure TFrmMainForm.FormClose(Sender: TObject; var Action: TCloseAction);
@@ -415,7 +393,7 @@ procedure TFrmMainForm.FormCreate(Sender: TObject);
 begin
  FConnected := False; //default
  FNavegateObj := TNavegateList.Create;
- FLogsConfObj := TLogsConfigurations.Create(GetCurrentDir + '\' + TMercurioIniFile.ConfigFile);
+ FConfObj := TLogsConfigurations.Create(ParamsFile);
 
  PnlServiceInfo.Visible := False;
 
@@ -427,7 +405,7 @@ procedure TFrmMainForm.FormDestroy(Sender: TObject);
 begin
  if Assigned(FContatosData) then FreeAndNil(FContatosData);
  if Assigned(FNavegateObj) then FreeAndNil(FNavegateObj);
- if Assigned(FLogsConfObj) then FreeAndNil(FLogsConfObj);
+ if Assigned(FConfObj) then FreeAndNil(FConfObj);
 end;
 
 function TFrmMainForm.GetContatosService: IContatosService;
@@ -443,20 +421,11 @@ begin
 end;
 
 function TFrmMainForm.GetMercurioLogs: IMercurioLogs;
-var
- LogsObj: TMercurioLogsController;
- FileExt: string;
 begin
 {Retorna uma interface que abstrai recursos de geração de registros de logs para
  toda a aplicação.}
- FileExt := client.resources.logs.TMercurioLogs.FileExtension;
- LogsObj := TMercurioLogsController.Create(LogsConfObj.Folder, FileExt, TEncoding.UTF8);
- LogsObj.MaxFileSize := LogsConfObj.MaxFileSize;
- LogsObj.AppName := TServiceLabels.ServiceName;
- LogsObj.CurrentFile := LogsConfObj.CurrentFile;
- LogsObj.OnNewFile := DoOnNewFileEvent;
-
- Result := LogsObj as IMercurioLogs;
+ Result := TFactoryLogs.New(ParamsFile, ConfObj.Folder, ConfObj.CurrentFile,
+    TServiceLabels.ServiceName, ConfObj.MaxFileSize);
 end;
 
 function TFrmMainForm.GetRemoteService: IServiceConnection;
@@ -549,7 +518,6 @@ begin
 
  FNavegateObj.AddItem(Item);
 end;
-
 
 
 end.

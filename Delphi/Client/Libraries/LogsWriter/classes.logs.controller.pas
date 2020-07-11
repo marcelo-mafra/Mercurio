@@ -15,6 +15,7 @@ uses
    private
     AWriter: TTextFileLog;
     FAppName, FCurrentFile: string;
+    FDefaultFileExt: string;
     FEncoding: TEncoding;
     FEvents: TLogEvents;
     FFileExtension: string;
@@ -40,6 +41,7 @@ uses
     procedure RegisterRemoteCallFailure(const Message, ContextInfo: string);
     procedure RegisterLog(const Info, ContextInfo: string; Event: TLogEvent);
 
+    constructor Create(const SourcePath: string); overload;
     constructor Create(const SourcePath, FileExtension: string; Encoding: TEncoding); overload;
     constructor Create(const SourcePath, FileExtension: string; Encoding: TEncoding;
        Events: TLogEvents); overload;
@@ -80,6 +82,20 @@ begin
  FSourcePath := SourcePath;
  FFileExtension := FileExtension;
  FEncoding := Encoding;
+
+ //default events types.
+ FEvents := [leOnError, leOnAuthenticateSucess, leOnAuthenticateFail, leOnInformation,
+            leOnWarning, leOnConnect, leOnConnectError, leOnMethodCall,
+            leOnMethodCallError, leUnknown];
+end;
+
+constructor TMercurioLogsController.Create(const SourcePath: string);
+begin
+ inherited Create;
+ FSourcePath := SourcePath;
+ FDefaultFileExt := '.log'; //default file extension
+ FFileExtension := FDefaultFileExt;
+ FEncoding := TEncoding.UTF8; //default
 
  //default events types.
  FEvents := [leOnError, leOnAuthenticateSucess, leOnAuthenticateFail, leOnInformation,
@@ -195,7 +211,6 @@ as mensagens de log.}
        begin
          AList.Append(Format(TLogInfo.LOGTYPE, [TMercurioLogs.ErrorLogType]));
          AWriter.RegisterError(AList.CommaText);
-         outputdebugstring(PWideChar(AContextInfo));
        end;
      leOnPrepare:
        begin
@@ -292,8 +307,7 @@ end;
 procedure TMercurioLogsController.SetCurrentFile(const CurrentFile: string);
 begin
  FCurrentFile := CurrentFile;
- if Assigned(AWriter) then
-  AWriter.CurrentFile := CurrentFile;
+ if Assigned(AWriter) then AWriter.CurrentFile := CurrentFile;
 end;
 
 

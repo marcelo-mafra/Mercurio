@@ -3,7 +3,7 @@ unit client.model.contatos;
 interface
 
 uses
-  System.SysUtils, System.Classes, client.classes.json,
+  System.SysUtils, System.Classes, Soap.InvokeRegistry, client.classes.json,
   client.interfaces.common, client.interfaces.baseclasses, client.interfaces.contatos,
   client.serverintf.contatos, client.interfaces.application, client.resources.contatos,
   client.model.listacontatos, client.data.contatos, Data.DB, Variants;
@@ -130,10 +130,8 @@ function TContatosModel.ExcluirContato(value: TMyContato): boolean;
 var
  IService: IMercurioContatosServer;
 begin
- Result := False;
-
+ IService := GetIMercurioContatosServer();
  try
-   IService := GetIMercurioContatosServer();
    Result := IService.ExcluirContato(value) ;
 
    if (Result = True) and (value <> nil) then
@@ -144,11 +142,16 @@ begin
     end;
 
  except
-  on E: Exception do
+  on E: ERemotableException do
    begin
      Result := False;
      MercurioLogs.RegisterRemoteCallFailure(TContatosServerMethods.ExcluirContatoError, E.Message);
    end;
+  on E: Exception do
+    begin
+     Result := False;
+     MercurioLogs.RegisterError(TContatosServerMethods.ExcluirContatoError, E.Message);
+    end;
  end;
 end;
 
@@ -194,9 +197,13 @@ begin
     end;
 
  except
-  on E: Exception do
+  on E: ERemotableException do
    begin
      MercurioLogs.RegisterRemoteCallFailure(TContatosServerMethods.NewContatoError, E.Message);
+   end;
+  on E: Exception do
+   begin
+     MercurioLogs.RegisterError(TContatosServerMethods.NewContatoError, E.Message);
    end;
  end;
 end;

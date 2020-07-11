@@ -30,12 +30,15 @@ package logwrt;
 {$IMPLICITBUILD ON}
 
 requires
-  rtl;
+  rtl,
+  resources,
+  cmlib;
 
 contains
   classes.logs.controller in 'classes.logs.controller.pas',
   classes.logs in 'classes.logs.pas',
   classes.logs.textfile in 'classes.logs.textfile.pas',
-  System.FastStreams in 'System.FastStreams.pas';
+  System.FastStreams in 'System.FastStreams.pas',
+  classes.logs.factory in 'classes.logs.factory.pas';
 
 end.

@@ -5,8 +5,8 @@ interface
 uses
   System.SysUtils, System.Classes, System.Net.URLClient, System.Net.HttpClient,
   System.Net.HttpClientComponent, Winapi.Windows, System.NetEncoding, classes.exceptions,
-  client.resources.httpstatus, client.resources.serviceparams, System.Json,
-  client.classes.json, client.serverintf.soaputils;
+  classes.exceptions.connection, client.resources.httpstatus, client.resources.serviceparams,
+  System.Json, client.classes.json, client.serverintf.soaputils;
 
  type
    {Classe que encapsula as a comunicação http com o serviço remoto de chat.}

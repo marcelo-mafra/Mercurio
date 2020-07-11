@@ -18,7 +18,7 @@ type
      procedure SetCurrentFile(const NewFileName: string);
 
     public
-     constructor Create(const ConfigurationFile: string);
+     constructor Create(const ConfigurationFile: string; LoadParams: boolean = True);
      destructor Destroy; override;
 
      property CurrentFile: string read FCurrentFile write SetCurrentFile;
@@ -30,10 +30,11 @@ implementation
 
 { TLogsConfigurations }
 
-constructor TLogsConfigurations.Create(const ConfigurationFile: string);
+constructor TLogsConfigurations.Create(const ConfigurationFile: string;
+   LoadParams: boolean = True);
 begin
  FConfigurationFile := ConfigurationFile;
- LoadParameters;
+ if LoadParams then LoadParameters;
 end;
 
 destructor TLogsConfigurations.Destroy;

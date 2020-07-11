@@ -4,7 +4,8 @@ uses
   System.StartUpCopy,
   FMX.Forms,
   client.view.mainform in 'client.view.mainform.pas' {FrmMainForm},
-  client.view.navegatelist in 'client.view.navegatelist.pas';
+  client.view.navegatelist in 'client.view.navegatelist.pas',
+  client.view.mainform.helpers in 'client.view.mainform.helpers.pas';
 
 {$R *.res}
 

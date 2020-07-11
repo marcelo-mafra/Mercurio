@@ -151,10 +151,13 @@
             <MainSource>MainSource</MainSource>
         </DelphiCompile>
         <DCCReference Include="rtl.dcp"/>
+        <DCCReference Include="resources.dcp"/>
+        <DCCReference Include="cmlib.dcp"/>
         <DCCReference Include="classes.logs.controller.pas"/>
         <DCCReference Include="classes.logs.pas"/>
         <DCCReference Include="classes.logs.textfile.pas"/>
         <DCCReference Include="System.FastStreams.pas"/>
+        <DCCReference Include="classes.logs.factory.pas"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>
@@ -196,7 +199,7 @@
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
-                <DeployFile LocalName="C:\Users\Public\Documents\Embarcadero\Studio\20.0\Bpl\Win64\logwrt.bpl" Configuration="Debug" Class="ProjectOutput">
+                <DeployFile LocalName="..\..\..\BIN\Win64\Debug\logwrt.bpl" Configuration="Debug" Class="ProjectOutput">
                     <Platform Name="Win64">
                         <RemoteName>logwrt.bpl</RemoteName>
                         <Overwrite>true</Overwrite>

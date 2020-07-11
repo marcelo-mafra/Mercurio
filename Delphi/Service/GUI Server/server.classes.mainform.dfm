@@ -3,8 +3,8 @@ object Form1: TForm1
   Top = 114
   BorderIcons = [biSystemMenu, biMinimize]
   Caption = 'Merc'#250'rio'
-  ClientHeight = 158
-  ClientWidth = 399
+  ClientHeight = 142
+  ClientWidth = 207
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -59,7 +59,7 @@ object Form1: TForm1
   end
   object ApplicationEvents1: TApplicationEvents
     OnIdle = ApplicationEvents1Idle
-    Left = 288
-    Top = 24
+    Left = 144
+    Top = 88
   end
 end
