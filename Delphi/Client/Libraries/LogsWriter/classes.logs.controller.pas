@@ -8,6 +8,7 @@ uses
 
 
  type
+{ Evento disparado quando um novo arquivo delogs passa a ser usado.}
   TOnNewFileEvent = procedure(var NewFileName: string) of object;
 
   TMercurioLogsController = class(TInterfacedObject, IMercurioLogs)

@@ -3,15 +3,16 @@ unit server.data.contatos;
 interface
  uses
   System.Classes, Data.DB, Datasnap.DBClient, System.Json,
-  server.contatos.intf,
+
   FireDAC.Stan.Intf, FireDAC.Stan.Option, FireDAC.Stan.Param, FireDAC.Stan.Error,
   FireDAC.DatS, FireDAC.Phys.Intf, FireDAC.DApt.Intf, FireDAC.Comp.DataSet,
   FireDAC.Comp.Client, FireDAC.Stan.StorageJSON, FireDAC.Comp.BatchMove,
-  FireDAC.Comp.BatchMove.JSON, System.SysUtils;
+  FireDAC.Comp.BatchMove.JSON, System.SysUtils,
+  server.contatos.intf, classes.contatos.types;
 
  type
+
    TContatosData = class
-     class function CreateDataset: TFDMemTable;
      class function GetContatos: TStringList; overload;
      class procedure GetContatos(Stream: TMemoryStream); overload;
      class function NewContato(const Value: TMyContato): TMyContato;
@@ -20,31 +21,38 @@ interface
 
 implementation
 
-{ TContatosData }
+type
 
-class function TContatosData.CreateDataset: TFDMemTable;
-var
- DataLink: TFDStanStorageJSONLink;
-begin
-  DataLink := TFDStanStorageJSONLink.Create(nil);
-  Result := TFDMemTable.Create(nil);
-  Result.LoadFromFile('data.json', sfJson);
-  Result.Active := True;
-end;
+ TContatosDataUtils = class
+   strict private
+    function GetNewId: string;
+
+   public
+     constructor Create;
+     destructor Destroy; override;
+     function CreateDataset: TFDMemTable;
+     function SerializeGraphic(Field: TGraphicField): string;
+
+     property NewId: string read GetNewId;
+ end;
+
+{ TContatosData }
 
 class function TContatosData.ExcluirContato(value: TMyContato): boolean;
  var
   Dataset: TFDMemTable;
+  UtilsObj: TContatosDataUtils;
 begin
  Result := False;
 
  if Value = nil then
   Exit;
 
- Dataset := self.CreateDataset;
+ UtilsObj := TContatosDataUtils.Create;
 
  try
-   if Dataset.Locate('CONTATOID', Value.ContatoId, []) then
+   Dataset := UtilsObj.CreateDataset;
+   if Dataset.Locate('CONTACTID', Value.ContatoId, []) then
     begin
      Dataset.Delete;
      Dataset.SaveToFile('data.json', sfJson);
@@ -52,18 +60,24 @@ begin
     end;
 
  finally
-  Dataset.Close;
-  Dataset.Free
+  if Assigned(UtilsObj) then FreeAndNil(UtilsObj);
+  if Assigned(Dataset) then
+   begin
+    Dataset.Close;
+    FreeAndNil(UtilsObj);
+   end;
  end;
 end;
 
 class procedure TContatosData.GetContatos(Stream: TMemoryStream);
  var
   Dataset: TFDMemTable;
+  UtilsObj: TContatosDataUtils;
 //  JsonObj: TJsonObject;
 //  BatchMoveObj: TFDBatchMoveJSONWriter;
 begin
- Dataset := self.CreateDataset;
+ UtilsObj := TContatosDataUtils.Create;
+ Dataset := UtilsObj.CreateDataset;
 // BatchMoveObj := TFDBatchMoveJSONWriter.Create(nil);
 
  try
@@ -72,8 +86,12 @@ begin
  // BatchMoveObj.Execute;
 
  finally
-  Dataset.Close;
-  Dataset.Free
+  if Assigned(UtilsObj) then FreeAndNil(UtilsObj);
+  if Assigned(Dataset) then
+   begin
+    Dataset.Close;
+    FreeAndNil(Dataset);
+   end;
  end;
 end;
 
@@ -81,13 +99,15 @@ class function TContatosData.GetContatos: TStringList;
  var
   Dataset: TFDMemTable;
   JsonObj: TJsonObject;
+  UtilsObj: TContatosDataUtils;
 //  StreamObj: TStringStream;
 begin
  Result := TStringList.Create;
- Dataset := self.CreateDataset;
+ UtilsObj := TContatosDataUtils.Create;
  //StreamObj := TStringStream.Create('', TEncoding.UTF8);
 
  try
+    Dataset := UtilsObj.CreateDataset;
     //Dataset.SaveToStream(StreamObj, sfJson);
     //Result.LoadFromStream(StreamObj, TEncoding.UTF8);
 
@@ -113,21 +133,27 @@ begin
      end;
 
  finally
-  Dataset.Close;
-  Dataset.Free
+  if Assigned(UtilsObj) then FreeAndNil(UtilsObj);
+  if Assigned(Dataset) then
+   begin
+    Dataset.Close;
+    FreeAndNil(Dataset);
+   end;
  end;
 end;
 
 class function TContatosData.NewContato(const Value: TMyContato): TMyContato;
  var
   Dataset: TFDMemTable;
+  UtilsObj: TContatosDataUtils;
 begin
  Result := Value;
- Result.Status := 1;
- Result.ContatoId :=  Random(6786578).ToString;
- Dataset := self.CreateDataset;
+ Result.Status := TContatoStatus.Active;
+ UtilsObj := TContatosDataUtils.Create;
+ Result.ContatoId := UtilsObj.NewId;
 
  try
+   Dataset := UtilsObj.CreateDataset;
     with Dataset do
      begin
        Insert;
@@ -141,9 +167,48 @@ begin
      end;
 
  finally
-  Dataset.Close;
-  Dataset.Free
+  if Assigned(UtilsObj) then FreeAndNil(UtilsObj);
+  if Assigned(Dataset) then
+    begin
+     Dataset.Close;
+     FreeAndNil(Dataset);
+    end;
  end;
+
+
+end;
+
+{ TContatosDataUtils }
+
+constructor TContatosDataUtils.Create;
+begin
+ inherited Create;
+end;
+
+destructor TContatosDataUtils.Destroy;
+begin
+
+  inherited;
+end;
+
+function TContatosDataUtils.GetNewId: string;
+begin
+ Result := Random(MaxInt).ToString;
+end;
+
+function TContatosDataUtils.SerializeGraphic(Field: TGraphicField): string;
+begin
+ Result := '';
+end;
+
+function TContatosDataUtils.CreateDataset: TFDMemTable;
+var
+ DataLink: TFDStanStorageJSONLink;
+begin
+  DataLink := TFDStanStorageJSONLink.Create(nil);
+  Result := TFDMemTable.Create(nil);
+  Result.LoadFromFile('data.json', sfJson);
+  Result.Active := True;
 end;
 
 end.

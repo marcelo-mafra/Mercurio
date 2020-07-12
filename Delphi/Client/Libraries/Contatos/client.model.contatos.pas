@@ -6,7 +6,8 @@ uses
   System.SysUtils, System.Classes, Soap.InvokeRegistry, client.classes.json,
   client.interfaces.common, client.interfaces.baseclasses, client.interfaces.contatos,
   client.serverintf.contatos, client.interfaces.application, client.resources.contatos,
-  client.model.listacontatos, client.data.contatos, Data.DB, Variants;
+  client.model.listacontatos, client.data.contatos, Data.DB, Variants,
+  classes.contatos.types;
 
 type
    TTransformModel = (tmDataset, tmListObject);
@@ -106,7 +107,7 @@ begin
           tmListObject:
            begin
               ContatoObj := TMyContato.Create;
-              ContatoObj.ContatoId := Random(97997656).toString;//vContactId;
+              ContatoObj.ContatoId := vContactId;
               ContatoObj.FirstName := vFirstName;
               ContatoObj.LastName :=  vLastName;
               ContatoObj.Status  := vStatus;
@@ -184,6 +185,10 @@ function TContatosModel.NewContato(value: TMyContato): TMyContato;
 var
  IService: IMercurioContatosServer;
 begin
+ if Value = nil then
+  exit;
+
+ value.Status := TContatoStatus.Unknown; //Nasce com esse status
  Result := value;
 
  try

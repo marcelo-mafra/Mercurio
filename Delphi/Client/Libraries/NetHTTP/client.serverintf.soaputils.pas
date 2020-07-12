@@ -2,17 +2,15 @@ unit client.serverintf.soaputils;
 
 interface
  uses
-  System.Classes, WinAPI.Windows, classes.logs, classes.logs.controller,
-  client.resources.mercurio, client.resources.servicelabels, classes.conflogs,
-  System.SysUtils, client.resources.logs, client.resources.methods, System.Net.HttpClient;
+  System.Classes, System.Net.HttpClient, System.SysUtils, classes.logs,
+  client.resources.mercurio, client.resources.logs, client.resources.methods,
+  classes.logs.factory;
 
  type
-  //Classe utilitária que mapeia eventos de THTTPRIO e exibe métodos utilitários.
+{Classe que mapeia eventos de THTTPRIO. Ela utiliza métodos utilitários
+  definidos em TSOAPEventsUtils.}
   TSOAPEvents = class
     class procedure DoAfterExecuteEvent(const MethodName: string; SOAPResponse: TStream);
-    class function  CreateLogsObject: TMercurioLogsController;
-    class procedure DoOnNewFileEvent(var NewFileName: string);
-    class function  StreamToString(aStream: TStream): string;
     class procedure DoOnRequestCompleted(const Sender: TObject; const AResponse: IHTTPResponse);
     class procedure DoOnRequestError(const Sender: TObject; const AError: string);
     class procedure DoOnSOAPError(const ServiceUrl: string; Stream: TStream; E: Exception);
@@ -20,84 +18,63 @@ interface
 
 implementation
 
+{TSOAPEventsUtils é definido apenas na seção "implementation" de forma a ficar
+inacessível mesmo a partir de outras units que acessam essa.}
+type
+  TSOAPEventsUtils = class
+    strict private
+     function GetMercurioLogs: IMercurioLogs;
+
+    private
+     FParamsFile: string;
+
+    public
+     constructor Create;
+     destructor Destroy; override;
+     function StreamToString(aStream: TStream): string;
+
+     property ParamsFile: string read FParamsFile;
+     property MercurioLogs: IMercurioLogs read GetMercurioLogs;
+  end;
+
+
 { TSOAPEvents }
-
-class function TSOAPEvents.CreateLogsObject: TMercurioLogsController;
-var
- ConfObj: TLogsConfigurations;
- Events: TLogEvents;
-begin
-  Events := [leOnError, leOnAuthenticateSucess, leOnAuthenticateFail, leOnInformation,
-             leOnWarning, leOnConnect, leOnConnectError, leOnMethodCall,
-             leOnMethodCallError, leUnknown];
-
-  ConfObj := TLogsConfigurations.Create(GetCurrentDir + '\' + TMercurioIniFile.ConfigFile);
-
-    try
-      Result := TMercurioLogsController.Create(ConfObj.Folder, TMercurioLogs.FileExtension, TEncoding.UTF8, Events);
-      Result.OnNewFile := DoOnNewFileEvent;
-      Result.MaxFileSize := ConfObj.MaxFileSize;
-      Result.AppName     := TServiceLabels.ServiceName;
-      Result.CurrentFile := ConfObj.CurrentFile;
-
-    finally
-     ConfObj.Free;
-    end;
-end;
 
 class procedure TSOAPEvents.DoAfterExecuteEvent(const MethodName: string;
   SOAPResponse: TStream);
 var
- LogsObj: TMercurioLogsController;
+ UtilsObj: TSOAPEventsUtils;
  ContextInfo: string;
 begin
-  LogsObj := TSOAPEvents.CreateLogsObject;
+  UtilsObj := TSOAPEventsUtils.Create;
 
   try
    ContextInfo := MethodName + #13; //do not localize!
-   ContextInfo := ContextInfo + self.StreamToString(SOAPResponse);
+   ContextInfo := ContextInfo + UtilsObj.StreamToString(SOAPResponse);
 
-   LogsObj.RegisterRemoteCallSucess(Format(TServerMethodsCall.RemoteMethodSucess, [MethodName]), ContextInfo);
+   UtilsObj.MercurioLogs.RegisterRemoteCallSucess(Format(TSOAPEventsMsg.AfterExecute, [MethodName]), ContextInfo);
 
   finally
-   if Assigned(LogsObj) then FreeAndNil(LogsObj);
+   if Assigned(UtilsObj) then FreeAndNil(UtilsObj);
   end;
-end;
-
-class procedure TSOAPEvents.DoOnNewFileEvent(var NewFileName: string);
-var
- ConfObj: TLogsConfigurations;
-begin
-{Aponta para o evento OnNewFile de TMercurioLogsController, disparado sempre que
- o arquivo de logs atinge otamanho máximo e se cria um novo para ser usado. Nesse
- caso, é necessário registrar isso no .ini para que na próxima execução do cliente
- o uso deste arquivo seja retomado até atingir o tamanho máximo definido.}
-  ConfObj := TLogsConfigurations.Create(GetCurrentDir + '\' + TMercurioIniFile.ConfigFile);
-
-    try
-      ConfObj.CurrentFile := NewFileName;
-
-    finally
-      ConfObj.Free;
-    end;
 end;
 
 class procedure TSOAPEvents.DoOnRequestCompleted(const Sender: TObject;
   const AResponse: IHTTPResponse);
 var
- LogsObj: TMercurioLogsController;
+ UtilsObj: TSOAPEventsUtils;
  ContextInfo: string;
 begin
-  LogsObj := TSOAPEvents.CreateLogsObject;
+  UtilsObj := TSOAPEventsUtils.Create;
 
   try
    ContextInfo := AResponse.StatusText;// AResponse.ContentAsString(TEncoding.UTF8);
-   ContextInfo := ContextInfo + self.StreamToString(AResponse.ContentStream);
+   ContextInfo := ContextInfo + UtilsObj.StreamToString(AResponse.ContentStream);
 
-   LogsObj.RegisterRemoteCallSucess(TServerMethodsCall.RemoteMethodsSucess, ContextInfo);
+   UtilsObj.MercurioLogs.RegisterRemoteCallSucess(TSOAPEventsMsg.RequestCompleted, ContextInfo);
 
   finally
-   if Assigned(LogsObj) then FreeAndNil(LogsObj);
+   if Assigned(UtilsObj) then FreeAndNil(UtilsObj);
   end;
 
 end;
@@ -105,46 +82,67 @@ end;
 class procedure TSOAPEvents.DoOnRequestError(const Sender: TObject;
   const AError: string);
 var
- LogsObj: TMercurioLogsController;
+ UtilsObj: TSOAPEventsUtils;
  ContextInfo: string;
 begin
-  LogsObj := TSOAPEvents.CreateLogsObject;
+  UtilsObj := TSOAPEventsUtils.Create;
 
   try
    ContextInfo := AError;
-   //ContextInfo := ContextInfo + self.StreamToString(AResponse.ContentStream);
-
-   LogsObj.RegisterRemoteCallSucess(TServerMethodsCall.RemoteMethodError, ContextInfo);
+   UtilsObj.MercurioLogs.RegisterRemoteCallSucess(TSOAPEventsMsg.RequestError, ContextInfo);
 
   finally
-   if Assigned(LogsObj) then FreeAndNil(LogsObj);
+   if Assigned(UtilsObj) then FreeAndNil(UtilsObj);
   end;
 end;
 
 class procedure TSOAPEvents.DoOnSOAPError(const ServiceUrl: string;
   Stream: TStream; E: Exception);
 var
- LogsObj: TMercurioLogsController;
+ UtilsObj: TSOAPEventsUtils;
  ContextInfo: string;
 begin
-  LogsObj := TSOAPEvents.CreateLogsObject;
+  UtilsObj := TSOAPEventsUtils.Create;
 
   try
    ContextInfo := ServiceUrl + #13; //do not localize!
-   ContextInfo := ContextInfo + self.StreamToString(Stream);
+   ContextInfo := ContextInfo + UtilsObj.StreamToString(Stream);
 
    if E <> nil then
-    LogsObj.RegisterRemoteCallFailure(E.Message, ContextInfo)
+    UtilsObj.MercurioLogs.RegisterRemoteCallFailure(E.Message, ContextInfo)
    else
-    LogsObj.RegisterRemoteCallFailure(TServerMethodsCall.RemoteMethodError, ContextInfo);
+    UtilsObj.MercurioLogs.RegisterRemoteCallFailure(TServerMethodsCall.RemoteMethodError, ContextInfo);
 
   finally
-   if Assigned(LogsObj) then FreeAndNil(LogsObj);
+   if Assigned(UtilsObj) then FreeAndNil(UtilsObj);
   end;
 
 end;
 
-class function TSOAPEvents.StreamToString(aStream: TStream): string;
+{******************************************************************************
+******************************************************************************}
+
+{ TSOAPEventsUtils }
+
+constructor TSOAPEventsUtils.Create;
+begin
+ inherited;
+ FParamsFile := GetCurrentDir + '\' + TMercurioIniFile.ConfigFile;
+end;
+
+destructor TSOAPEventsUtils.Destroy;
+begin
+  inherited;
+end;
+
+function TSOAPEventsUtils.GetMercurioLogs: IMercurioLogs;
+begin
+{Retorna uma interface que abstrai recursos de geração de registros de logs para
+ toda a aplicação.}
+  Result := TFactoryLogs.New(ParamsFile);
+end;
+
+function TSOAPEventsUtils.StreamToString(aStream: TStream): string;
 var
   StrStream: TStringStream;
 begin
@@ -163,5 +161,7 @@ begin
   else
     Result := '';
 end;
+
+
 
 end.

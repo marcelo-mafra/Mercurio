@@ -99,7 +99,7 @@ Coordinates=60,500,110,33
 Coordinates=759,1,116,33
 
 []
-Coordinates=545,87,92,51
+Coordinates=680,490,100,231
 Visible=True
 ExplicitSubNodes=ItemData.Bitmap;ItemData.Detail;ItemData.Text
 LayerNames=
@@ -118,12 +118,10 @@ Coordinates=367,191,140,33
 
 [BindingsList1]
 Coordinates=302,87,82,33
+Visible=True
 
 [TabItem1]
 Coordinates=302,139,59,33
-
-[ContactsListView]
-Coordinates=680,490,100,231
 
 [LstContatos]
 Coordinates=134,1,116,177
@@ -144,6 +142,21 @@ Coordinates=288,1,46,51
 Coordinates=288,309,84,51
 
 [BindContatos]
-Coordinates=460,480,124,159
+Coordinates=460,480,124,231
 Visible=True
+
+[TabControl1]
+Coordinates=258,427,74,33
+
+[TabContatosListBox]
+Coordinates=119,427,115,33
+
+[TabContatosListView]
+Coordinates=781,56,119,33
+
+[BtnConnect]
+Coordinates=533,94,72,51
+
+[ContactsListview]
+Coordinates=300,480,89,231
 

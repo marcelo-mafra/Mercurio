@@ -17,7 +17,7 @@ implementation
 
 type
 {TFactoryLogsEvents é definido apenas na seção "implementation" de forma a ficar
-inacessível mesmo para outras units que acessam essa.}
+inacessível mesmo a partir de outras units que acessam essa.}
   TFactoryLogsEvents = class
     private
       FConfigurationFile: string;
@@ -34,7 +34,8 @@ var
  ConfObj: TLogsConfigurations;
 begin
 {Retorna uma interface que abstrai recursos de geração de registros de logs para
- toda a aplicação.}
+ toda a aplicação. Será necessário ler os parâmetros no arquivo
+ ini recebido em IniFile.}
  ConfObj := TLogsConfigurations.Create(IniFile);
  Result := self.New(IniFile, ConfObj.Folder, ConfObj.CurrentFile, TServiceLabels.ServiceName,
    ConfObj.MaxFileSize);
@@ -49,18 +50,16 @@ var
  FileExt: string;
 begin
 {Retorna uma interface que abstrai recursos de geração de registros de logs para
- toda a aplicação.}
+ toda a aplicação. Nessa versão do método não é necessário ler os parâmetros
+ pois todas as infos são recebidas pelo método.}
  FileExt := client.resources.logs.TMercurioLogs.FileExtension;
  LogsEvents := TFactoryLogsEvents.Create(IniFile);
  LogsObj := TMercurioLogsController.Create(Folder, FileExt, TEncoding.UTF8);
 
- with LogsObj do
-  begin
-   MaxFileSize := MaxSize;
-   LogsObj.AppName := AppName;
-   LogsObj.CurrentFile := CurrentFile;
-   OnNewFile := LogsEvents.DoOnNewFileEvent;
-  end;
+ LogsObj.MaxFileSize := MaxSize;
+ LogsObj.AppName := AppName;
+ LogsObj.CurrentFile := CurrentFile;
+ LogsObj.OnNewFile := LogsEvents.DoOnNewFileEvent;
 
  Result := LogsObj as IMercurioLogs;
 end;

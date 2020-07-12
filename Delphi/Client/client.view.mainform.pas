@@ -3,21 +3,25 @@ unit client.view.mainform;
 interface
 
 uses
+  //RTL units
   System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants,
-  FMX.Types, FMX.Controls, FMX.Forms, FMX.Graphics, FMX.Dialogs, System.Actions,
-  FMX.ActnList, System.ImageList, FMX.ImgList, FMX.Controls.Presentation, FMX.StdCtrls,
+  System.Rtti, System.Actions, System.Bindings.Outputs, System.ImageList,
+  Data.Bind.EngExt,  Data.Bind.Components, Data.Bind.DBScope,
+  //FMX units
+  FMX.Types, FMX.Controls, FMX.Forms, FMX.Graphics, FMX.Dialogs,
+  FMX.ActnList, FMX.ImgList, FMX.Controls.Presentation, FMX.StdCtrls,
   FMX.Objects, FMX.StdActns, FMX.ListView.Types, FMX.ListView.Appearances,
   FMX.ListView.Adapters.Base, FMX.ListView, FMX.ListBox, FMX.Layouts,
-  FMX.MultiView, FMX.TabControl, FMX.Edit, classes.conflogs, FMX.SearchBox,
-  Data.Bind.EngExt, Fmx.Bind.DBEngExt, System.Rtti, System.Bindings.Outputs,
-  Fmx.Bind.Editors, Data.Bind.Components, Data.Bind.DBScope,
-  //---------------------------
-  client.interfaces.connection, client.model.connection,//classes.logs.controller,
+  FMX.MultiView, FMX.TabControl, FMX.Edit, FMX.SearchBox, Fmx.Bind.DBEngExt,
+  Fmx.Bind.Editors,
+  //Mercúrio units
+  client.interfaces.connection, client.model.connection, classes.conflogs,
   client.interfaces.application, client.classes.dlgmessages, classes.logs,
   client.resources.servicelabels, client.interfaces.contatos, client.model.contatos,
   client.serverintf.contatos, client.model.listacontatos, client.resources.mercurio,
-  client.resources.contatos,  client.view.navegatelist, client.data.contatos,
-  client.resources.logs, client.resources.connection, classes.logs.factory;
+  client.resources.contatos, client.view.navegatelist, client.data.contatos,
+  client.resources.logs, client.resources.connection, classes.logs.factory,
+  classes.contatos.types;
 
 type
   TFrmMainForm = class(TForm, IChatApplication, IMercurioLogs)
@@ -59,7 +63,6 @@ type
     BindingsList1: TBindingsList;
     TabItem1: TTabItem;
     LinkFillControlToField1: TLinkFillControlToField;
-    ContactsListView: TListView;
     LinkFillControlToField2: TLinkFillControlToField;
     LstContatos: TListBox;
     ListBoxItem2: TListBoxItem;
@@ -71,6 +74,8 @@ type
     TabContatosListView: TTabItem;
     TabContatosListBox: TTabItem;
     BtnConnect: TSpeedButton;
+    ContactsListview: TListView;
+    LinkFillControlToField3: TLinkFillControlToField;
     procedure ActDisconnectServiceExecute(Sender: TObject);
     procedure ActDisconnectServiceUpdate(Sender: TObject);
     procedure ActConnectServiceUpdate(Sender: TObject);
@@ -100,6 +105,7 @@ type
    FNavegateObj: TNavegateList;
    FConfObj: TLogsConfigurations;
    FContatosData: TContatosData;
+   FContatosStyle: TContatosListStyle;
 
    procedure DoOnNewContato(value: TMyContato);
    procedure DoOnConnect(Sender: TObject);
@@ -113,6 +119,7 @@ type
     procedure NavegateTo(Item: TViewItem);
     function GetRemoteService: IServiceConnection;
     function GetSelectedContact: TMyContato;
+    procedure SetContatosStyle(value: TContatosListStyle);
 
     //IChatApplication
     function GetDialogs: IDlgMessage;
@@ -127,6 +134,7 @@ type
     property NavegateObj: TNavegateList read FNavegateObj;
     property RemoteService: IServiceConnection read GetRemoteService;
     property SelectedContact: TMyContato read GetSelectedContact;
+    property ContatosStyle: TContatosListStyle read FContatosStyle write SetContatosStyle;
 
     //IChatApplication
     property ContatosService: IContatosService read GetContatosService;
@@ -233,7 +241,7 @@ end;
 procedure TFrmMainForm.ActDeleteContatoUpdate(Sender: TObject);
 begin
  TAction(Sender).Enabled := (Connected) and (TabMain.ActiveTab = TabContatos) and
-   (LstContatos.Selected <> nil);
+    (SelectedContact <> nil);
 end;
 
 procedure TFrmMainForm.ActDisconnectServiceExecute(Sender: TObject);
@@ -252,10 +260,10 @@ end;
 
 procedure TFrmMainForm.ActServiceInfoExecute(Sender: TObject);
 var
- Counter: integer;
+ //Counter: integer;
  ListObj: TStringList;
- ItemObj: TListBoxItem;
- HeaderObj: TListBoxGroupHeader;
+ //ItemObj: TListBoxItem;
+// HeaderObj: TListBoxGroupHeader;
 begin
  if Connected then
   begin
@@ -437,8 +445,23 @@ end;
 
 function TFrmMainForm.GetSelectedContact: TMyContato;
 begin
- Result := nil;
- if LstContatos.Selected <> nil then Result := TMyContato(LstContatos.Selected.Data);
+ case ContatosStyle of
+   ltSample:
+     begin
+       if (LstContatos.Selected <> nil) then
+         Result := TMyContato(LstContatos.Selected.Data)
+       else
+         Result := nil;                                                                                                          ;
+     end;
+   ltDetailed:
+     begin
+       if (ContactsListView.Selected <> nil) then
+         Result := nil//TMyContato(ContactsListView.Selected.TagObject)
+       else
+         Result := nil;                                                                                                          ;
+     end;
+   ltFull: Result := nil;
+ end;
 end;
 
 function TFrmMainForm.GetTitle: string;
@@ -519,5 +542,10 @@ begin
  FNavegateObj.AddItem(Item);
 end;
 
+
+procedure TFrmMainForm.SetContatosStyle(value: TContatosListStyle);
+begin
+ FContatosStyle := value;
+end;
 
 end.

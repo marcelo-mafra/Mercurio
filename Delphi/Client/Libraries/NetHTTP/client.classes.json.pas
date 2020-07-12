@@ -120,7 +120,6 @@ var
  jsArrayObj : TJsonArray;
 
 begin
- Result := 0;
  //parse json string
  jsValueObj := TJSONObject.ParseJSONValue(UnicodeString(JsonString));
 

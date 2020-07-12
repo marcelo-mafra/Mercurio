@@ -95,8 +95,6 @@ implementation
 
   uses System.SysUtils;
 
-
-
 function GetIMercurioContatosServer(UseWSDL: Boolean; Addr: string;
     HTTPRIO: THTTPRIO): IMercurioContatosServer;
 const

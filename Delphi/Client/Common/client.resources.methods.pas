@@ -7,6 +7,14 @@ uses
 
   type
 {    Constantes relacionadas à execução de métodos remotos de "domínios" gerais.}
+    TSOAPEventsMsg = class
+      const
+        AfterExecute = 'SOAP protocol: AfterExecute event. Method name: %s';
+        RequestCompleted = 'SOAP protocol: RequestCompleted event';
+        RequestError  = 'SOAP protocol: RequestError event';
+    end;
+
+{    Constantes relacionadas à execução de métodos remotos de "domínios" gerais.}
     TServerMethodsCall = class
       const
         RemoteMethodsSucess = 'A execução de um método remoto foi feita com sucesso!';
