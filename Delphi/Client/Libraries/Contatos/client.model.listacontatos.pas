@@ -13,6 +13,7 @@ type
        FList: TObjectList<TMyContato>;
        function GetCount: integer;
        function GetIsEmpty: boolean;
+
     public
        constructor Create;
        destructor Destroy; override;

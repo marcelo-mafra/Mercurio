@@ -43,6 +43,7 @@ contains
   client.resources.contatos in '..\..\Common\client.resources.contatos.pas',
   client.resources.security in '..\..\Common\client.resources.security.pas',
   client.resources.methods in '..\..\Common\client.resources.methods.pas',
-  client.resources.serviceinfo in '..\..\Common\client.resources.serviceinfo.pas';
+  client.resources.serviceinfo in '..\..\Common\client.resources.serviceinfo.pas',
+  client.resources.contatos.dataobjects in '..\..\Common\client.resources.contatos.dataobjects.pas';
 
 end.

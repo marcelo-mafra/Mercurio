@@ -1,0 +1,5 @@
+object FmeContatosDetailedView: TFmeContatosDetailedView
+  Size.Width = 287.000000000000000000
+  Size.Height = 394.000000000000000000
+  Size.PlatformDefault = False
+end

@@ -7,29 +7,33 @@ uses
   client.interfaces.common, client.interfaces.baseclasses, client.interfaces.contatos,
   client.serverintf.contatos, client.interfaces.application, client.resources.contatos,
   client.model.listacontatos, client.data.contatos, Data.DB, Variants,
-  classes.contatos.types;
+  classes.contatos.types, client.resources.contatos.dataobjects;
 
 type
-   TTransformModel = (tmDataset, tmListObject);
-
    //Encapsula a interface com o serviço remoto para o domínio "CONTATOS".
-   TContatosModel = class(TMercurioClass, IContatosService)
+   TContatosModel = class(TMercurioClass, IContatoService, IContatosService)
      private
        FOnNewContatoEvent: TNewContatoNotifyEvent;
        FOnDeleteContatoEvent: TDeleteContatoNotifyEvent;
        function DoGetMyContatos: string;
        procedure DoJsonToObject(JsonData: string; Obj: TObject; Model: TTransformModel);
+       //IContatosService
+       function GetIContato: IContatoService;
 
      public
        constructor Create(OnNewContato: TNewContatoNotifyEvent;
           OnDeleteContato: TDeleteContatoNotifyEvent);
        destructor Destroy; override;
 
-       //IContatosService
+       //IContatoService
        function  NewContato(value: TMyContato): TMyContato;
+       function  ExcluirContato(value: TMyContato): boolean;
+
+       //IContatosService
        procedure GetMyContatos(List: TListaObjetos); overload;
        procedure GetMyContatos(Dataset: TDataset); overload;
-       function  ExcluirContato(value: TMyContato): boolean;
+       property IContato: IContatoService read GetIContato;
+
 
    end;
 
@@ -85,23 +89,23 @@ begin
  try
    if not (JsonData.IsEmpty) then
     begin
-     Counter := TNetJsonUtils.GetObjectCount(JsonData, 'ArrayContatos');
+     Counter := TNetJsonUtils.GetObjectCount(JsonData, TContatosJosonData.ArrayName);
 
      for I := 0 to Counter - 1 do
        begin
-        vContactId := TNetJsonUtils.FindValue(JsonData, 'ArrayContatos', 'CONTACTID', I);
-        vFirstName := TNetJsonUtils.FindValue(JsonData, 'ArrayContatos', 'NOME', I);
-        vLastName  := TNetJsonUtils.FindValue(JsonData, 'ArrayContatos', 'SOBRENOME', I);
-        vStatus    := TNetJsonUtils.FindValue(JsonData, 'ArrayContatos', 'STATUS', I);
+        vContactId := TNetJsonUtils.FindValue(JsonData, TContatosJosonData.ArrayName, TContatosJosonData.ContactId, I);
+        vFirstName := TNetJsonUtils.FindValue(JsonData, TContatosJosonData.ArrayName, TContatosJosonData.Nome, I);
+        vLastName  := TNetJsonUtils.FindValue(JsonData, TContatosJosonData.ArrayName, TContatosJosonData.Sobrenome, I);
+        vStatus    := TNetJsonUtils.FindValue(JsonData, TContatosJosonData.ArrayName, TContatosJosonData.Status, I);
 
         case Model of
           tmDataset:
            begin
              TDataset(obj).Append;
-             TDataset(obj).Fields.FieldByName('CONTACTID').Value := vContactId;
-             TDataset(obj).Fields.FieldByName('NOME').Value := vFirstName;
-             TDataset(obj).Fields.FieldByName('SOBRENOME').Value := vLastName;
-             TDataset(obj).Fields.FieldByName('STATUS').Value := vStatus;
+             TDataset(obj).Fields.FieldByName(TContatosFieldsNames.ContactId).Value := vContactId;
+             TDataset(obj).Fields.FieldByName(TContatosFieldsNames.Nome).Value := vFirstName;
+             TDataset(obj).Fields.FieldByName(TContatosFieldsNames.Sobrenome).Value := vLastName;
+             TDataset(obj).Fields.FieldByName(TContatosFieldsNames.Status).Value := vStatus;
              TDataset(obj).Post;
            end;
           tmListObject:
@@ -154,6 +158,11 @@ begin
      MercurioLogs.RegisterError(TContatosServerMethods.ExcluirContatoError, E.Message);
     end;
  end;
+end;
+
+function TContatosModel.GetIContato: IContatoService;
+begin
+ Result := self as IContatoService;
 end;
 
 procedure TContatosModel.GetMyContatos(Dataset: TDataset);

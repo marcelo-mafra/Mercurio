@@ -36,11 +36,14 @@ requires
   interfaces,
   cmlib,
   FireDAC,
-  bindcomp;
+  bindcomp,
+  fmx;
 
 contains
   client.model.contatos in 'client.model.contatos.pas',
   client.model.listacontatos in 'client.model.listacontatos.pas',
-  client.data.contatos in 'client.data.contatos.pas' {ContatosData: TDataModule};
+  client.data.contatos in 'client.data.contatos.pas' {ContatosData: TDataModule},
+  client.view.contatos.fmedetailed in 'client.view.contatos.fmedetailed.pas' {FmeContatosDetailedView: TFrame},
+  client.view.contatos.fmesample in 'client.view.contatos.fmesample.pas' {FmeContatosSampleView: TFrame};
 
 end.

@@ -21,7 +21,7 @@ uses
   client.serverintf.contatos, client.model.listacontatos, client.resources.mercurio,
   client.resources.contatos, client.view.navegatelist, client.data.contatos,
   client.resources.logs, client.resources.connection, classes.logs.factory,
-  classes.contatos.types;
+  classes.contatos.types, client.resources.contatos.dataobjects;
 
 type
   TFrmMainForm = class(TForm, IChatApplication, IMercurioLogs)
@@ -115,7 +115,7 @@ type
   private
     { Private declarations }
     procedure ConfigureElements(const ShowText: boolean);
-    procedure ListarContatos; //***
+    procedure ListarContatos; //***Levar para TFmeContatosSampleView
     procedure NavegateTo(Item: TViewItem);
     function GetRemoteService: IServiceConnection;
     function GetSelectedContact: TMyContato;
@@ -192,11 +192,11 @@ cria um novo contato no serviço remoto. Os dados do novo contato estão no parâme
  with FContatosData.dsContatos do
   begin
    Append;
-   Fields.FieldByName('CONTACTID').Value := value.ContatoId;
-   Fields.FieldByName('NOME').Value := value.FirstName;
-   Fields.FieldByName('SOBRENOME').Value := value.LastName;
-   Fields.FieldByName('STATUS').Value := value.Status;
-   //Fields.FieldByName('FOTO').Value := to-do;
+   Fields.FieldByName(TContatosFieldsNames.Nome).Value := value.ContatoId;
+   Fields.FieldByName(TContatosFieldsNames.Nome).Value := value.FirstName;
+   Fields.FieldByName(TContatosFieldsNames.Sobrenome).Value := value.LastName;
+   Fields.FieldByName(TContatosFieldsNames.Status).Value := value.Status;
+   //Fields.FieldByName(TContatosFieldsNames.Foto).Value := to-do;
    Post;
   end;
   //implementar mecanismo de notificação de bandeja ou push
@@ -231,7 +231,7 @@ procedure TFrmMainForm.ActDeleteContatoExecute(Sender: TObject);
 begin
   if Dialogs.ConfirmationMessage(string.Empty, TContatosDialogs.ConfDelContact) = TDialogsResult.mrYes then
   begin
-   if ContatosService.ExcluirContato(SelectedContact) then
+   if ContatosService.IContato.ExcluirContato(SelectedContact) then
     begin
      LstContatos.Items.Delete(LstContatos.Selected.Index);
     end;
@@ -329,7 +329,7 @@ begin
     try
       MyContatoObj.FirstName := EdtFirstName.Text;
       MyContatoObj.LastName := EdtLastName.Text;
-      MyContatoObj := ContatosService.NewContato(MyContatoObj);
+      MyContatoObj := ContatosService.IContato.NewContato(MyContatoObj);
 
     finally
      FreeAndNil(MyContatoObj);

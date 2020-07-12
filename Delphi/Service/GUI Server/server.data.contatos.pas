@@ -7,8 +7,8 @@ interface
   FireDAC.Stan.Intf, FireDAC.Stan.Option, FireDAC.Stan.Param, FireDAC.Stan.Error,
   FireDAC.DatS, FireDAC.Phys.Intf, FireDAC.DApt.Intf, FireDAC.Comp.DataSet,
   FireDAC.Comp.Client, FireDAC.Stan.StorageJSON, FireDAC.Comp.BatchMove,
-  FireDAC.Comp.BatchMove.JSON, System.SysUtils,
-  server.contatos.intf, classes.contatos.types;
+  FireDAC.Comp.BatchMove.JSON, System.SysUtils, server.contatos.intf,
+  classes.contatos.types, client.resources.contatos.dataobjects;
 
  type
 
@@ -157,11 +157,11 @@ begin
     with Dataset do
      begin
        Insert;
-       Fields.FieldByName('CONTACTID').Value  := Result.ContatoId;
-       Fields.FieldByName('NOME').Value  := Result.FirstName;
-       Fields.FieldByName('SOBRENOME').Value  := Result.LastName;
-       //Fields.FieldByName('FOTO').Value  := to-do;
-       Fields.FieldByName('STATUS').Value  := Result.Status;
+       Fields.FieldByName(TContatosFieldsNames.ContactId).Value  := Result.ContatoId;
+       Fields.FieldByName(TContatosFieldsNames.Nome).Value  := Result.FirstName;
+       Fields.FieldByName(TContatosFieldsNames.Sobrenome).Value  := Result.LastName;
+       //Fields.FieldByName(TContatosFieldsNames.Foto).Value  := to-do;
+       Fields.FieldByName(TContatosFieldsNames.Status).Value  := Result.Status;
        Post;
        SaveToFile('data.json', sfJson);
      end;

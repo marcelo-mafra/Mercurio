@@ -3,7 +3,7 @@
         <ProjectGuid>{575B4F19-FC0B-43F3-B98A-D5192DC4F6B2}</ProjectGuid>
         <MainSource>contatos.dpk</MainSource>
         <ProjectVersion>18.8</ProjectVersion>
-        <FrameworkType>None</FrameworkType>
+        <FrameworkType>FMX</FrameworkType>
         <Base>True</Base>
         <Config Condition="'$(Config)'==''">Debug</Config>
         <Platform Condition="'$(Platform)'==''">Win64</Platform>
@@ -145,12 +145,23 @@
         <DCCReference Include="cmlib.dcp"/>
         <DCCReference Include="FireDAC.dcp"/>
         <DCCReference Include="bindcomp.dcp"/>
+        <DCCReference Include="fmx.dcp"/>
         <DCCReference Include="client.model.contatos.pas"/>
         <DCCReference Include="client.model.listacontatos.pas"/>
         <DCCReference Include="client.data.contatos.pas">
             <Form>ContatosData</Form>
             <FormType>dfm</FormType>
             <DesignClass>TDataModule</DesignClass>
+        </DCCReference>
+        <DCCReference Include="client.view.contatos.fmedetailed.pas">
+            <Form>FmeContatosDetailedView</Form>
+            <FormType>fmx</FormType>
+            <DesignClass>TFrame</DesignClass>
+        </DCCReference>
+        <DCCReference Include="client.view.contatos.fmesample.pas">
+            <Form>FmeContatosSampleView</Form>
+            <FormType>fmx</FormType>
+            <DesignClass>TFrame</DesignClass>
         </DCCReference>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
