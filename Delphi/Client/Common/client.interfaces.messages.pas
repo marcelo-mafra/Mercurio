@@ -9,12 +9,12 @@ uses
 type
 
  //Abstrai o usuário que enviou uma mensagem.
- ISenderUser = interface(IChatInterface)
+ ISenderUser = interface(IMercurioInterface)
    ['{8E4F6C9A-AA2A-4778-B4BD-AAD72BF60DF0}']
  end;
 
  //Abstrai uma mensagem específica do chat.
- IChatMessage = interface(IChatInterface)
+ IChatMessage = interface(IMercurioInterface)
    ['{36B6B4C7-781A-4118-A2E4-76144DE8C426}']
    function GetContentText: string;
    function GetMessageId: MsgIdentifier;
@@ -26,7 +26,7 @@ type
  end;
 
  //Abstrai uma coleção de mensagens enviadas no chat.
- IChatMessages = interface(IChatInterface)
+ IChatMessages = interface(IMercurioInterface)
    ['{B1352A65-AFE2-4C05-ABD2-644D144EF4C3}']
 
    function GetChatMessage: IChatMessage;

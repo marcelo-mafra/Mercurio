@@ -18,7 +18,7 @@ type
     SpeedButton5: TSpeedButton;
     Label2: TLabel;
   strict private
-   FIContatosService: IContatosService;
+   FIContactsService: IContactsService;
    FConnected: boolean;
 
   private
@@ -27,9 +27,9 @@ type
 
   public
     { Public declarations }
-    constructor Create(IService: IContatosService; Parent: TFmxObject); reintroduce;
+    constructor Create(IService: IContactsService; Parent: TFmxObject); reintroduce;
     property  Connected: boolean read FConnected;
-    property ContatosService: IContatosService read FIContatosService;
+    property ContactsService: IContactsService read FIContactsService;
   end;
 
 implementation
@@ -38,11 +38,11 @@ implementation
 
 { TFmeContatosSampleView }
 
-constructor TFmeContatosSampleView.Create(IService: IContatosService;
+constructor TFmeContatosSampleView.Create(IService: IContactsService;
   Parent: TFmxObject);
 begin
   inherited Create(self);
-  FIContatosService := IService;
+  FIContactsService := IService;
   self.Parent := Parent;
   self.Align := TAlignLayout.Client;
   self.ListContacts;
@@ -62,7 +62,7 @@ begin
     ListObj := TListaContatos.Create;
 
     try
-      ContatosService.GetMyContatos(ListObj);
+      ContactsService.GetMyContatos(ListObj);
 
       if ListObj.IsEmpty then
        Exit;

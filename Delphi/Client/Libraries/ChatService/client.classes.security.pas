@@ -25,7 +25,7 @@ function TSecurityService.Authenticate(const UserName,
   Password: string): boolean;
 begin
  try
-   Result := True;
+   Result := (UserName = 'fake_user') and (Password = 'fake_pass');
 
  except
    Result := False;

@@ -124,7 +124,7 @@ type
     //IChatApplication
     function GetDialogs: IDlgMessage;
     function GetMercurioLogs: IMercurioLogs;
-    function GetContatosService: IContatosService;
+    function GetContatosService: IContactsService;
     function GetTitle: string;
 
   public
@@ -137,7 +137,7 @@ type
     property ContatosStyle: TContatosListStyle read FContatosStyle write SetContatosStyle;
 
     //IChatApplication
-    property ContatosService: IContatosService read GetContatosService;
+    property ContatosService: IContactsService read GetContatosService;
     property Dialogs: IDlgMessage read GetDialogs;
     property MercurioLogs: IMercurioLogs read GetMercurioLogs implements IMercurioLogs;
     property Title: string read GetTitle;
@@ -231,7 +231,7 @@ procedure TFrmMainForm.ActDeleteContatoExecute(Sender: TObject);
 begin
   if Dialogs.ConfirmationMessage(string.Empty, TContatosDialogs.ConfDelContact) = TDialogsResult.mrYes then
   begin
-   if ContatosService.IContato.ExcluirContato(SelectedContact) then
+   if ContatosService.IContact.ExcluirContato(SelectedContact) then
     begin
      LstContatos.Items.Delete(LstContatos.Selected.Index);
     end;
@@ -329,7 +329,7 @@ begin
     try
       MyContatoObj.FirstName := EdtFirstName.Text;
       MyContatoObj.LastName := EdtLastName.Text;
-      MyContatoObj := ContatosService.IContato.NewContato(MyContatoObj);
+      MyContatoObj := ContatosService.IContact.NewContato(MyContatoObj);
 
     finally
      FreeAndNil(MyContatoObj);
@@ -416,10 +416,10 @@ begin
  if Assigned(FConfObj) then FreeAndNil(FConfObj);
 end;
 
-function TFrmMainForm.GetContatosService: IContatosService;
+function TFrmMainForm.GetContatosService: IContactsService;
 begin
   //Interface que abstrai o serviço remoto de contatos do usuário.
-  Result := TContatosModel.Create(DoOnNewContato, nil) as IContatosService;
+  Result := TContatosModel.Create(DoOnNewContato, nil) as IContactsService;
 end;
 
 function TFrmMainForm.GetDialogs: IDlgMessage;

@@ -7,7 +7,7 @@ uses
   System.NetEncoding, classes.exceptions, client.classes.nethttp,
   client.interfaces.security, client.interfaces.connection, client.resources.serviceparams,
   client.resources.servicelabels, client.classes.security, client.resources.httpstatus,
-  client.model.serviceinfo, client.interfaces.baseclasses ;
+  client.model.serviceinfo, client.interfaces.baseclasses, classes.exceptions.connection ;
 
  type
    {Classe que encapsula as funcionalidades de conexão com o serviço remoto de chat.}
@@ -63,7 +63,13 @@ begin
 
   if Result then
    begin //Dispara o evento de OnConnect
-    if Assigned(FOnConnect) then FOnConnect(self);
+    Result := self.Security.Authenticate('','');
+    if Result then
+     begin
+      if Assigned(FOnConnect) then FOnConnect(self);
+     end
+    else
+      raise EAuthenticationError.Create;
    end
   else
     raise Exception.Create('');
@@ -71,6 +77,10 @@ begin
   if Assigned(NetHTTPObj) then FreeAndNil(NetHTTPObj);
 
  except
+  on E: EAuthenticationError do
+   begin //Dispara o evento OnConnectError
+    if Assigned(FOnConnectError) then FOnConnectError(self, E);
+   end;
   on E: Exception do
    begin //Dispara o evento OnConnectError
     if Assigned(FOnConnectError) then FOnConnectError(self, E);

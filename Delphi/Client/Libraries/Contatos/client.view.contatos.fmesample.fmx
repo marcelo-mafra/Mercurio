@@ -60,19 +60,19 @@ object FmeContatosSampleView: TFmeContatosSampleView
       Align = Top
       TabOrder = 0
       Position.Y = 30.000000000000000000
-      Size.Width = 242.000000000000000000
+      Size.Width = 246.000000000000000000
       Size.Height = 25.000000000000000000
       Size.PlatformDefault = False
       TextPrompt = 'Contatos...'
     end
     object ListBoxHeader2: TListBoxHeader
-      Size.Width = 242.000000000000000000
+      Size.Width = 246.000000000000000000
       Size.Height = 30.000000000000000000
       Size.PlatformDefault = False
       TabOrder = 1
       object SpeedButton5: TSpeedButton
         Align = MostRight
-        Position.X = 212.000000000000000000
+        Position.X = 216.000000000000000000
         Size.Width = 30.000000000000000000
         Size.Height = 30.000000000000000000
         Size.PlatformDefault = False
@@ -83,8 +83,8 @@ object FmeContatosSampleView: TFmeContatosSampleView
         Align = FitLeft
         Margins.Left = 3.000000000000000000
         Position.X = 3.000000000000000000
-        Size.Width = 142.000000000000000000
-        Size.Height = 30.000000000000000000
+        Size.Width = 142.000030517578100000
+        Size.Height = 29.999996185302730000
         Size.PlatformDefault = False
         StyleLookup = 'listboxitemlabel'
         Text = 'Contatos'

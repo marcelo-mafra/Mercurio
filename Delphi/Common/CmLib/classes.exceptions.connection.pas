@@ -28,6 +28,10 @@ type
    constructor Create; override;
  end;
 
+ EAuthenticationError = class(EMercurioException)
+  public
+   constructor Create; override;
+ end;
 
 implementation
 
@@ -65,6 +69,14 @@ begin
   inherited;
   HttpMessage := THTTPStatus.ToText(StatusCode);
   Message := string.Format(TConnectionError.HttpStatus, [StatusCode, HttpMessage]);
+end;
+
+{ EAuthenticationError }
+
+constructor EAuthenticationError.Create;
+begin
+  inherited;
+  Message := 'Usuário ou senha incorretos!';
 end;
 
 end.

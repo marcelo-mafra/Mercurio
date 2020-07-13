@@ -14,9 +14,10 @@ uses
      public
       class function AsJsonObject(const JsonString: string): TJsonObject;
       class function FindValue(const JsonString: string; ValueName: string): string; overload;
-      class function GetObjectCount(const JsonString: string; ArrayName: string): integer;
       class function FindValue(const JsonString: string; ArrayName: string; ValueName: string; Index: integer): string; overload;
+      class procedure FindValue(const JsonString: string; ArrayName: string; var ArrayValues: array of string; Index: integer); overload;
       class procedure ToDataset(const JsonString: string; Dataset: TDataset);
+      class function GetObjectCount(const JsonString: string; ArrayName: string): integer;
 
    end;
 
@@ -143,6 +144,57 @@ end;
 class procedure TNetJsonUtils.ToDataset(const JsonString: string;
   Dataset: TDataset);
 begin
+
+end;
+
+class procedure TNetJsonUtils.FindValue(const JsonString: string;
+  ArrayName: string; var ArrayValues: array of string; Index: integer);
+var
+  I: integer;
+  jsValueObj   : TJsonValue;
+  originalObject : TJsonObject;
+  jsPairObj : TJsonPair;
+  jsArrayObj : TJsonArray;
+  jsObject  : TJsonObject;
+begin
+    try
+     //parse json string
+     jsValueObj := TJSONObject.ParseJSONValue(UnicodeString(JsonString));
+
+     try
+       //value as object
+       originalObject := jsValueObj as TJsonObject;
+
+      //get pair, wich contains Array of objects
+       jsPairObj := originalObject.Get(ArrayName);
+       //pair value as array
+
+       jsArrayObj := jsPairObj.jsonValue as  TJsonArray;
+
+      //enumerate objects in array
+      // i-th object
+       jsObject := jsArrayObj.Items[Index] as TJsonObject;
+
+      //Percorre os campos do objeto json
+      I := 0;
+
+      for jsPairObj in jsObject do
+        begin
+          ArrayValues[I] := jsPairObj.JsonValue.Value;
+          Inc(I);
+        end;
+
+     finally
+      jsValueObj.Free();
+      {jsObject.Free;
+      jsArray.Free;
+      jsPair.Free;
+      originalObject.Free;  }
+     end;
+
+    except
+     raise;
+    end;
 
 end;
 

@@ -11,14 +11,14 @@ uses
 
 type
    //Encapsula a interface com o serviço remoto para o domínio "CONTATOS".
-   TContatosModel = class(TMercurioClass, IContatoService, IContatosService)
+   TContatosModel = class(TMercurioClass, IContactService, IContactsService)
      private
        FOnNewContatoEvent: TNewContatoNotifyEvent;
        FOnDeleteContatoEvent: TDeleteContatoNotifyEvent;
        function DoGetMyContatos: string;
        procedure DoJsonToObject(JsonData: string; Obj: TObject; Model: TTransformModel);
-       //IContatosService
-       function GetIContato: IContatoService;
+       //IContactService
+       function GetIContact: IContactService;
 
      public
        constructor Create(OnNewContato: TNewContatoNotifyEvent;
@@ -32,7 +32,7 @@ type
        //IContatosService
        procedure GetMyContatos(List: TListaObjetos); overload;
        procedure GetMyContatos(Dataset: TDataset); overload;
-       property IContato: IContatoService read GetIContato;
+       property IContact: IContactService read GetIContact;
 
 
    end;
@@ -71,7 +71,7 @@ begin
  except
   on E: Exception do
    begin
-     Result := '';
+     Result := string.Empty;
      MercurioLogs.RegisterRemoteCallFailure(TContatosServerMethods.GetContatosError, E.Message);
    end;
  end;
@@ -84,6 +84,7 @@ var
  I , Counter: integer;
  ContatoObj: TMyContato;
  vContactId, vFirstName, vLastName, vStatus: variant;
+ DataValues: array of string;
 begin
 
  try
@@ -91,21 +92,28 @@ begin
     begin
      Counter := TNetJsonUtils.GetObjectCount(JsonData, TContatosJosonData.ArrayName);
 
+     SetLength(DataValues, 7);
+
      for I := 0 to Counter - 1 do
        begin
-        vContactId := TNetJsonUtils.FindValue(JsonData, TContatosJosonData.ArrayName, TContatosJosonData.ContactId, I);
-        vFirstName := TNetJsonUtils.FindValue(JsonData, TContatosJosonData.ArrayName, TContatosJosonData.Nome, I);
-        vLastName  := TNetJsonUtils.FindValue(JsonData, TContatosJosonData.ArrayName, TContatosJosonData.Sobrenome, I);
-        vStatus    := TNetJsonUtils.FindValue(JsonData, TContatosJosonData.ArrayName, TContatosJosonData.Status, I);
+        TNetJsonUtils.FindValue(JsonData, TContatosJosonData.ArrayName, DataValues, I);
+        vContactId := DataValues[0];
+        vFirstName := DataValues[1];
+        vLastName  := DataValues[2];
+        //vFoto  :=   DataValues[3];
+        vStatus    := DataValues[4];
 
         case Model of
           tmDataset:
            begin
              TDataset(obj).Append;
-             TDataset(obj).Fields.FieldByName(TContatosFieldsNames.ContactId).Value := vContactId;
-             TDataset(obj).Fields.FieldByName(TContatosFieldsNames.Nome).Value := vFirstName;
-             TDataset(obj).Fields.FieldByName(TContatosFieldsNames.Sobrenome).Value := vLastName;
-             TDataset(obj).Fields.FieldByName(TContatosFieldsNames.Status).Value := vStatus;
+             with TDataset(obj).Fields do
+              begin
+               FieldByName(TContatosFieldsNames.ContactId).Value := vContactId;
+               FieldByName(TContatosFieldsNames.Nome).Value := vFirstName;
+               FieldByName(TContatosFieldsNames.Sobrenome).Value := vLastName;
+               FieldByName(TContatosFieldsNames.Status).Value := vStatus;
+              end;
              TDataset(obj).Post;
            end;
           tmListObject:
@@ -114,8 +122,6 @@ begin
               ContatoObj.ContatoId := vContactId;
               ContatoObj.FirstName := vFirstName;
               ContatoObj.LastName :=  vLastName;
-              ContatoObj.Status  := vStatus;
-
               TListaContatos(Obj).AddItem(ContatoObj);
            end;
         end;
@@ -160,9 +166,9 @@ begin
  end;
 end;
 
-function TContatosModel.GetIContato: IContatoService;
+function TContatosModel.GetIContact: IContactService;
 begin
- Result := self as IContatoService;
+ Result := self as IContactService;
 end;
 
 procedure TContatosModel.GetMyContatos(Dataset: TDataset);
@@ -181,11 +187,9 @@ procedure TContatosModel.GetMyContatos(List: TListaObjetos);
 var
  JsonData: string;
 begin
- if List = nil then
-  Exit;
+ if List = nil then Exit;
 
  JsonData := DoGetMyContatos;
-
  if not (JsonData.IsEmpty) then
    DoJsonToObject(JsonData, List, tmListObject);
 end;
@@ -194,8 +198,8 @@ function TContatosModel.NewContato(value: TMyContato): TMyContato;
 var
  IService: IMercurioContatosServer;
 begin
- if Value = nil then
-  exit;
+ Result := value;
+ if Result = nil then Exit;
 
  value.Status := TContatoStatus.Unknown; //Nasce com esse status
  Result := value;
