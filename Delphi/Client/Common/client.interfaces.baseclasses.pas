@@ -3,7 +3,7 @@ unit client.interfaces.baseclasses;
 interface
 
 uses
- System.SysUtils, classes.logs, classes.logs.factory, client.resources.mercurio;
+ System.SysUtils, classes.logs.types, classes.logs.factory, client.resources.mercurio;
 
 type
  MsgIdentifier = int64;

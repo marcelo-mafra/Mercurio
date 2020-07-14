@@ -3,7 +3,7 @@ unit classes.logs.textfile;
 interface
 
 uses
- Winapi.Windows, System.Classes, System.SysUtils, classes.logs, System.FastStreams;
+ Winapi.Windows, System.Classes, System.SysUtils, classes.logs.types, System.FastStreams;
 
  type
   TOnNewFileEvent = procedure(var NewFileName: string) of object;

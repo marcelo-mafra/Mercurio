@@ -15,8 +15,8 @@ uses
   FMX.MultiView, FMX.TabControl, FMX.Edit, FMX.SearchBox, Fmx.Bind.DBEngExt,
   Fmx.Bind.Editors,
   //Mercúrio units
-  client.interfaces.connection, client.model.connection, classes.conflogs,
-  client.interfaces.application, client.classes.dlgmessages, classes.logs,
+  client.interfaces.connection, client.model.connection, classes.logs.params,
+  client.interfaces.application, client.classes.dlgmessages, classes.logs.types,
   client.resources.servicelabels, client.interfaces.contatos, client.model.contatos,
   client.serverintf.contatos, client.model.listacontatos, client.resources.mercurio,
   client.resources.contatos, client.view.navegatelist, client.data.contatos,
@@ -103,21 +103,18 @@ type
   strict private
    FConnected: boolean;
    FNavegateObj: TNavegateList;
-   FConfObj: TLogsConfigurations;
+   FParamsObj: TLogsParams;
    FContatosData: TContatosData;
    FContatosStyle: TContatosListStyle;
 
    procedure DoOnNewContato(value: TMyContato);
-   procedure DoOnConnect(Sender: TObject);
-   procedure DoOnConnectError(Sender: TObject; E: Exception);
-   procedure DoOnDisconnect(Sender: TObject);
 
   private
     { Private declarations }
     procedure ConfigureElements(const ShowText: boolean);
     procedure ListarContatos; //***Levar para TFmeContatosSampleView
     procedure NavegateTo(Item: TViewItem);
-    function GetRemoteService: IServiceConnection;
+    function GetServiceConnection: IServiceConnection;
     function GetSelectedContact: TMyContato;
     procedure SetContatosStyle(value: TContatosListStyle);
 
@@ -129,10 +126,10 @@ type
 
   public
     { Public declarations }
-    property ConfObj: TLogsConfigurations read FConfObj;
+    property ParamsObj: TLogsParams read FParamsObj;
     property Connected: boolean read FConnected;
     property NavegateObj: TNavegateList read FNavegateObj;
-    property RemoteService: IServiceConnection read GetRemoteService;
+    property ServiceConnection: IServiceConnection read GetServiceConnection;
     property SelectedContact: TMyContato read GetSelectedContact;
     property ContatosStyle: TContatosListStyle read FContatosStyle write SetContatosStyle;
 
@@ -160,28 +157,6 @@ uses client.view.mainform.helpers;
 
 {Implementação de TFrmMainForm para uma série de eventos disponibilizados por
 meio de interfaces implementadas em classes de módulos externos.}
-procedure TFrmMainForm.DoOnConnect(Sender: TObject);
-begin
-//Implementa o evento TServiceConnection.OnConnect
- FConnected := True;
- MercurioLogs.RegisterInfo(TConnectionSucess.ConnectionSucess);
- self.ListarContatos;
-end;
-
-procedure TFrmMainForm.DoOnConnectError(Sender: TObject; E: Exception);
-begin
- //Implementa o evento TServiceConnection.OnConnectServiceError
- FConnected := False;
- MercurioLogs.RegisterError(TConnectionError.ConnectionFailure, E.Message);
-end;
-
-procedure TFrmMainForm.DoOnDisconnect(Sender: TObject);
-begin
-//Implementa o evento TServiceConnection.OnDisconnectService
- FConnected := False;
- MercurioLogs.RegisterInfo(TConnectionSucess.DisconnectionSucess);
-end;
-
 procedure TFrmMainForm.DoOnNewContato(value: TMyContato);
 begin
 {Implementa o evento OnNewContato, disparado sempre que a interface IContatosService
@@ -216,9 +191,11 @@ end;
 
 procedure TFrmMainForm.ActConnectServiceExecute(Sender: TObject);
 begin
- if RemoteService.ConnectService then
+ FConnected := ServiceConnection.ConnectService;
+ if Connected then
   begin
    if not Assigned(FContatosData) then FContatosData := TContatosData.Create(BindContatos);
+   self.ListarContatos;
   end;
 end;
 
@@ -246,11 +223,9 @@ end;
 
 procedure TFrmMainForm.ActDisconnectServiceExecute(Sender: TObject);
 begin
- RemoteService.DisconnectService;
- if not Connected then
-  begin
-   if Assigned(FContatosData) then FreeAndNil(FContatosData);
-  end;
+ ServiceConnection.DisconnectService;
+ FConnected := ServiceConnection.Connected;
+ if Assigned(FContatosData) then FreeAndNil(FContatosData);
 end;
 
 procedure TFrmMainForm.ActDisconnectServiceUpdate(Sender: TObject);
@@ -271,7 +246,7 @@ begin
 
     try
       //Busca informações sobre o serviço remoto.
-      RemoteService.ServiceInfo.GetServiceInfo(ListObj);
+      ServiceConnection.ServiceInfo.GetServiceInfo(ListObj);
 
     finally
       if ListObj.Count > 0 then
@@ -394,14 +369,14 @@ end;
 
 procedure TFrmMainForm.FormClose(Sender: TObject; var Action: TCloseAction);
 begin
- if (RemoteService <> nil) then RemoteService.DisconnectService;
+ ActDisconnectService.Execute;
 end;
 
 procedure TFrmMainForm.FormCreate(Sender: TObject);
 begin
  FConnected := False; //default
  FNavegateObj := TNavegateList.Create;
- FConfObj := TLogsConfigurations.Create(ParamsFile);
+ FParamsObj := TLogsParams.Create(ParamsFile);
 
  PnlServiceInfo.Visible := False;
 
@@ -413,7 +388,7 @@ procedure TFrmMainForm.FormDestroy(Sender: TObject);
 begin
  if Assigned(FContatosData) then FreeAndNil(FContatosData);
  if Assigned(FNavegateObj) then FreeAndNil(FNavegateObj);
- if Assigned(FConfObj) then FreeAndNil(FConfObj);
+ if Assigned(FParamsObj) then FreeAndNil(FParamsObj);
 end;
 
 function TFrmMainForm.GetContatosService: IContactsService;
@@ -432,15 +407,15 @@ function TFrmMainForm.GetMercurioLogs: IMercurioLogs;
 begin
 {Retorna uma interface que abstrai recursos de geração de registros de logs para
  toda a aplicação.}
- Result := TFactoryLogs.New(ParamsFile, ConfObj.Folder, ConfObj.CurrentFile,
-    TServiceLabels.ServiceName, ConfObj.MaxFileSize);
+ Result := TFactoryLogs.New(ParamsFile, ParamsObj.Folder, ParamsObj.CurrentFile,
+    TServiceLabels.ServiceName, ParamsObj.MaxFileSize);
 end;
 
-function TFrmMainForm.GetRemoteService: IServiceConnection;
+function TFrmMainForm.GetServiceConnection: IServiceConnection;
 begin
   //Interface que abstrai a conexão com o serviço remoto de chat.
-  Result := TServiceConnection.Create(DoOnConnect, DoOnConnectError, DoOnDisconnect) as IServiceConnection;
-  Result.Connected := self.Connected;
+  Result := TServiceConnection.Create as IServiceConnection;
+ // Result.Connected := self.Connected;
 end;
 
 function TFrmMainForm.GetSelectedContact: TMyContato;
@@ -478,8 +453,6 @@ var
  FullName: string;
 begin
 {Busca no serviço remoto os contatos do usuário corrente.}
- if Connected then
-  begin
     ListObj := TListaContatos.Create;
 
     try
@@ -517,7 +490,6 @@ begin
     finally
      LstContatos.EndUpdate;
     end;
-  end;
 end;
 
 procedure TFrmMainForm.MultiView1StartHiding(Sender: TObject);

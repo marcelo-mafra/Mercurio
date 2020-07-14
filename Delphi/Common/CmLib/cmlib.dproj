@@ -152,7 +152,7 @@
         <DCCReference Include="rtl.dcp"/>
         <DCCReference Include="resources.dcp"/>
         <DCCReference Include="classes.exceptions.pas"/>
-        <DCCReference Include="classes.conflogs.pas"/>
+        <DCCReference Include="classes.logs.params.pas"/>
         <DCCReference Include="classes.exceptions.connection.pas"/>
         <DCCReference Include="classes.contatos.types.pas"/>
         <BuildConfiguration Include="Release">

@@ -63,14 +63,12 @@ uses
     StatusUnsupportedMediaType                = 415;         //[RFC7231, Section 6.5.13]             //[RFC7694, Section 3]
     StatusRangeNotSatisfiable                 = 416;         //[RFC7233, Section 4.4]
     StatusExpectationFailed                   = 417;         //[RFC7231, Section 6.5.14]
-
     StatusMisdirectedRequest                  = 421;         //[RFC7540, Section 9.1.2]
     StatusUnprocessableEntity                 = 422;         //[RFC4918]
     StatusLocked                              = 423;         //[RFC4918]
     StatusFailedDependency                    = 424;         //[RFC4918]
     StatusTooEarly                            = 425;         //[RFC8470]
     StatusUpgradeRequired                     = 426;         //[RFC7231, Section 6.5.15]
-
     StatusPreconditionRequired                = 428;         //[RFC6585]
     StatusTooManyRequests                     = 429;         //[RFC6585]
 

@@ -3,7 +3,7 @@ unit client.interfaces.application;
 interface
 
 uses
- client.interfaces.common, classes.logs;
+ client.interfaces.common, classes.logs.types;
 
  type
 

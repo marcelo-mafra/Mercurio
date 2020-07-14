@@ -31,7 +31,7 @@ type
    procedure SetConnected(const Value: boolean);
 
    function ConnectService: boolean;
-   function DisconnectService: boolean;
+   procedure DisconnectService;
 
    property Connected: boolean read GetConnected write SetConnected;
    property Security: ISecurityService read GetSecurityService;

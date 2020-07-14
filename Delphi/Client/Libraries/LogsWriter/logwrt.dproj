@@ -154,7 +154,7 @@
         <DCCReference Include="resources.dcp"/>
         <DCCReference Include="cmlib.dcp"/>
         <DCCReference Include="classes.logs.controller.pas"/>
-        <DCCReference Include="classes.logs.pas"/>
+        <DCCReference Include="classes.logs.types.pas"/>
         <DCCReference Include="classes.logs.textfile.pas"/>
         <DCCReference Include="System.FastStreams.pas"/>
         <DCCReference Include="classes.logs.factory.pas"/>

@@ -2,7 +2,7 @@ unit client.serverintf.soaputils;
 
 interface
  uses
-  System.Classes, System.Net.HttpClient, System.SysUtils, classes.logs,
+  System.Classes, System.Net.HttpClient, System.SysUtils, classes.logs.types,
   client.resources.mercurio, client.resources.logs, client.resources.methods,
   classes.logs.factory;
 

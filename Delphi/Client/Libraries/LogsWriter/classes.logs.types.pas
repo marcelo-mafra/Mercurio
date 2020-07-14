@@ -1,4 +1,4 @@
-unit classes.logs;
+unit classes.logs.types;
 
 interface
 

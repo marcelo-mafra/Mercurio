@@ -3,7 +3,7 @@ unit classes.logs.controller;
 interface
 
 uses
- Winapi.Windows, System.Classes, System.UITypes, System.SysUtils, classes.logs,
+ Winapi.Windows, System.Classes, System.UITypes, System.SysUtils, classes.logs.types,
  classes.logs.textfile, System.Threading;
 
 

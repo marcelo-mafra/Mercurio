@@ -3,8 +3,8 @@ unit classes.logs.factory;
 interface
 
 uses
- System.SysUtils, classes.logs, classes.logs.controller, client.resources.logs,
- client.resources.servicelabels, classes.conflogs;
+ System.SysUtils, classes.logs.types, classes.logs.controller, client.resources.logs,
+ client.resources.servicelabels, classes.logs.params;
 
 type
   TFactoryLogs = class
@@ -31,12 +31,12 @@ inacessível mesmo a partir de outras units que acessam essa.}
 
 class function TFactoryLogs.New(const IniFile: string): IMercurioLogs;
 var
- ConfObj: TLogsConfigurations;
+ ConfObj: TLogsParams;
 begin
 {Retorna uma interface que abstrai recursos de geração de registros de logs para
  toda a aplicação. Será necessário ler os parâmetros no arquivo
  ini recebido em IniFile.}
- ConfObj := TLogsConfigurations.Create(IniFile);
+ ConfObj := TLogsParams.Create(IniFile);
  Result := self.New(IniFile, ConfObj.Folder, ConfObj.CurrentFile, TServiceLabels.ServiceName,
    ConfObj.MaxFileSize);
 
@@ -79,9 +79,9 @@ end;
 
 procedure TFactoryLogsEvents.DoOnNewFileEvent(var NewFileName: string);
 var
- ConfigLogsObj: TLogsConfigurations;
+ ConfigLogsObj: TLogsParams;
 begin
- ConfigLogsObj := TLogsConfigurations.Create(self.FConfigurationFile, False);
+ ConfigLogsObj := TLogsParams.Create(self.FConfigurationFile, False);
 
  try
   ConfigLogsObj.CurrentFile := NewFileName;

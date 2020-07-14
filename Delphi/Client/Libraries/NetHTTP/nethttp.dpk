@@ -25,6 +25,7 @@ package nethttp;
 {$IMAGEBASE $400000}
 {$DEFINE DEBUG}
 {$ENDIF IMPLICITBUILDING}
+{$DESCRIPTION 'Classes relacionadas à camada de transporte http'}
 {$RUNONLY}
 {$IMPLICITBUILD ON}
 

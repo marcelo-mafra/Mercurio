@@ -9,6 +9,9 @@ uses
   System.Json, client.classes.json, client.serverintf.soaputils;
 
  type
+   //Methods of http protocol.
+   TNetMethods = (nmGET, nmPOST, nmPUT, nmDELETE, nmPATCH);
+
    {Classe que encapsula as a comunicação http com o serviço remoto de chat.}
    TNetHTTPService = class(TInterfacedObject)
      private
@@ -19,8 +22,8 @@ uses
        constructor Create;
        destructor Destroy; override;
 
-       function Execute(const ServiceUrl: string; Stream: TStream): IHTTPResponse; overload;
-       function Execute(const ServiceUrl: string): TJsonObject; overload;
+       function Execute(const ServiceUrl: string; Stream: TStream; RequestMethod: TNetMethods = nmGET): IHTTPResponse; overload;
+       function Execute(const ServiceUrl: string; RequestMethod: TNetMethods = nmGET): TJsonObject; overload;
    end;
 
 implementation
@@ -34,69 +37,74 @@ end;
 
 destructor TNetHTTPService.Destroy;
 begin
-
   inherited;
 end;
 
-function TNetHTTPService.Execute(const ServiceUrl: string): TJsonObject;
+function TNetHTTPService.Execute(const ServiceUrl: string;
+  RequestMethod: TNetMethods = nmGET): TJsonObject;
 var
  HTTPClientObj: TNetHTTPClient;
  IResponse: IHTTPResponse;
 begin
  {O método "Execute" aciona um webmétodo do serviço remoto.}
  if ServiceUrl.IsEmpty then
-  raise EInvalidURL.Create;
+  begin
+   Result := nil;
+   raise EInvalidURL.Create;
+  end;
 
  HTTPClientObj :=  TNetHTTPClient.Create(nil);
  self.LoadServiceParams(HTTPClientObj);
  self.SetEvents(HTTPClientObj);
 
  try
-  IResponse := HTTPClientObj.Get(ServiceUrl);
+  case RequestMethod of
+    nmGET: IResponse := HTTPClientObj.Get(ServiceUrl);
+    //nmPOST: IResponse := HTTPClientObj.Post(ServiceUrl);
+    nmPUT: IResponse := HTTPClientObj.Put(ServiceUrl);
+    nmDELETE: IResponse := HTTPClientObj.Delete(ServiceUrl);
+    nmPATCH: IResponse := HTTPClientObj.Patch(ServiceUrl);
+  end;
 
-  if (IResponse <> nil) and (IResponse.StatusCode <> THTTPStatus.StatusOK) then
+  if (IResponse <> nil) then
    begin //Serviço não respondeu ou respondeu sinalizando alguma falha.
-
       case IResponse.StatusCode of //Respostas tratadas de forma específica: HTTPStatus <> 200
-        THTTPStatus.StatusBadRequest:
-          begin
-           raise EHTTPBadRequest.Create;
-          end;
+        THTTPStatus.StatusOK: if Assigned(HTTPClientObj) then FreeAndNil(HTTPClientObj);
+        THTTPStatus.StatusBadRequest: raise EHTTPBadRequest.Create;
+        THTTPStatus.StatusServiceUnavailable: raise ENoServiceResponse.Create;
+        THTTPStatus.StatusRequestTimeout: raise ENoServiceResponse.Create;
       end;
    end
-   else
-    begin
-     if Result = nil then //sem resposta do serviço remoto.
-      raise ENoServiceResponse.Create;
-    end;
+   else //sem resposta do serviço remoto.
+     raise ENoServiceResponse.Create;
+
    //Isso está errado. O ContentAsString nunca retorna um JSON, mas um HTML.
    Result := TNetJsonUtils.AsJsonObject(IResponse.ContentAsString);
-
-   if Assigned(HTTPClientObj) then
-    FreeAndNil(HTTPClientObj);
 
  except
    on E: ENoServiceResponse do //Não houve resposta do serviço remoto.
     begin
+      Result := nil;
       if Assigned(HTTPClientObj) then FreeAndNil(HTTPClientObj);
       TSOAPEvents.DoOnSOAPError(ServiceUrl, nil, E);
     end;
    on E: EHTTPBadRequest do //Serviço remoto respondeu com falha: Bad Request.
     begin
+      Result := nil;
       if Assigned(HTTPClientObj) then FreeAndNil(HTTPClientObj);
       TSOAPEvents.DoOnSOAPError(ServiceUrl, nil, E);
     end
    else
     begin //Serviço remoto respondeu com falha: demais cenários.
+      Result := nil;
       if Assigned(HTTPClientObj) then FreeAndNil(HTTPClientObj);
       TSOAPEvents.DoOnSOAPError(ServiceUrl, nil, nil);
     end;
  end;
-
 end;
 
 function TNetHTTPService.Execute(const ServiceUrl: string;
-  Stream: TStream): IHTTPResponse;
+  Stream: TStream; RequestMethod: TNetMethods = nmGET): IHTTPResponse;
 var
  HTTPClientObj: TNetHTTPClient;
 begin
@@ -110,32 +118,31 @@ begin
   self.LoadServiceParams(HTTPClientObj);
   self.SetEvents(HTTPClientObj);
 
-  Result := HTTPClientObj.Get(ServiceUrl, Stream);
+  case RequestMethod of
+    nmGET: Result := HTTPClientObj.Get(ServiceUrl, Stream);
+    //nmPOST: Result := HTTPClientObj.Post(ServiceUrl, Stream);
+    nmPUT: Result := HTTPClientObj.Put(ServiceUrl, Stream);
+    nmDELETE: Result := HTTPClientObj.Delete(ServiceUrl, Stream);
+    nmPATCH: Result := HTTPClientObj.Patch(ServiceUrl, Stream);
+  end;
 
-  if (Result <> nil) and (Result.StatusCode <> THTTPStatus.StatusOK) then
-   begin //Trata cenários onde houver resposta, mas sinalizando alguma falha.
+  if (Result <> nil) then
+   begin //Trata cenários onde houve resposta, mas sinalizando alguma falha.
       case Result.StatusCode of //Respostas tratadas de forma específica: HTTPStatus <> 200
-        THTTPStatus.StatusBadRequest:
-          begin
-           raise EHTTPBadRequest.Create;
-          end;
+        THTTPStatus.StatusOK: if Assigned(HTTPClientObj) then FreeAndNil(HTTPClientObj);
+        THTTPStatus.StatusBadRequest: raise EHTTPBadRequest.Create;
+        THTTPStatus.StatusServiceUnavailable: raise ENoServiceResponse.Create;
+        THTTPStatus.StatusRequestTimeout: raise ENoServiceResponse.Create;
       end;
    end
-   else
-    begin
-     if Result = nil then //Cenário sem resposta do serviço remoto.
+   else //Cenário sem resposta do serviço remoto.
       raise ENoServiceResponse.Create;
-    end;
-
-   if Assigned(HTTPClientObj) then
-    FreeAndNil(HTTPClientObj);
 
  except
    on E: ENoServiceResponse do //Não houve resposta do serviço remoto.
     begin
-      TSOAPEvents.DoOnSOAPError(ServiceUrl, Stream, E);
       if Assigned(HTTPClientObj) then FreeAndNil(HTTPClientObj);
-
+      TSOAPEvents.DoOnSOAPError(ServiceUrl, Stream, E);
     end;
    on E: EHTTPBadRequest do //Serviço remoto respondeu com falha: Bad Request.
     begin

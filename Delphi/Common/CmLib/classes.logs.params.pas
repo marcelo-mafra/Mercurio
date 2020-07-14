@@ -1,4 +1,4 @@
-unit classes.conflogs;
+unit classes.logs.params;
 
 interface
 
@@ -7,7 +7,7 @@ uses system.SysUtils, System.IniFiles, client.resources.mercurio,
 
 type
 
-  TLogsConfigurations = class
+  TLogsParams = class
     strict private
      FConfigurationFile: string;
      FFolder: string;
@@ -28,21 +28,21 @@ type
 
 implementation
 
-{ TLogsConfigurations }
+{ TLogsParams }
 
-constructor TLogsConfigurations.Create(const ConfigurationFile: string;
+constructor TLogsParams.Create(const ConfigurationFile: string;
    LoadParams: boolean = True);
 begin
  FConfigurationFile := ConfigurationFile;
  if LoadParams then LoadParameters;
 end;
 
-destructor TLogsConfigurations.Destroy;
+destructor TLogsParams.Destroy;
 begin
   inherited Destroy;
 end;
 
-procedure TLogsConfigurations.LoadParameters;
+procedure TLogsParams.LoadParameters;
 var
  ConfigFile: TIniFile;
 begin
@@ -59,7 +59,7 @@ begin
     end;
 end;
 
-procedure TLogsConfigurations.SetCurrentFile(const NewFileName: string);
+procedure TLogsParams.SetCurrentFile(const NewFileName: string);
 var
  ConfigFile: TIniFile;
 begin
