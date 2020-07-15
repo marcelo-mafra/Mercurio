@@ -14,14 +14,20 @@ uses
   FMX.ListView.Adapters.Base, FMX.ListView, FMX.ListBox, FMX.Layouts,
   FMX.MultiView, FMX.TabControl, FMX.Edit, FMX.SearchBox, Fmx.Bind.DBEngExt,
   Fmx.Bind.Editors,
-  //Mercúrio units
-  client.interfaces.connection, client.model.connection, classes.logs.params,
-  client.interfaces.application, client.classes.dlgmessages, classes.logs.types,
-  client.resources.servicelabels, client.interfaces.contatos, client.model.contatos,
-  client.serverintf.contatos, client.model.listacontatos, client.resources.mercurio,
-  client.resources.contatos, client.view.navegatelist, client.data.contatos,
-  client.resources.logs, client.resources.connection, classes.logs.factory,
-  classes.contatos.types, client.resources.contatos.dataobjects;
+
+  {Mercúrio units listed by domains or specializations.}
+
+  //Connection
+  client.interfaces.connection, client.model.connection.factory, client.resources.connection,
+  //Logs
+  classes.logs.types, classes.logs.params, classes.logs.factory, client.resources.logs,
+  //Application and UX.
+  client.interfaces.application, client.resources.mercurio, client.resources.servicelabels,
+  client.classes.dlgmessages, client.view.navegatelist,
+  //Contatos
+  client.interfaces.contatos, classes.contatos.types, client.model.contatos.factory,
+  client.serverintf.contatos, client.model.listacontatos, client.resources.contatos,
+  client.resources.contatos.dataobjects;
 
 type
   TFrmMainForm = class(TForm, IChatApplication, IMercurioLogs)
@@ -60,12 +66,8 @@ type
     ActDeleteContato: TAction;
     SterlingStyleBook: TStyleBook;
     BindContatos: TBindSourceDB;
-    BindingsList1: TBindingsList;
     TabItem1: TTabItem;
-    LinkFillControlToField1: TLinkFillControlToField;
-    LinkFillControlToField2: TLinkFillControlToField;
     LstContatos: TListBox;
-    ListBoxItem2: TListBoxItem;
     SearchBox1: TSearchBox;
     ListBoxHeader2: TListBoxHeader;
     SpeedButton5: TSpeedButton;
@@ -75,7 +77,8 @@ type
     TabContatosListBox: TTabItem;
     BtnConnect: TSpeedButton;
     ContactsListview: TListView;
-    LinkFillControlToField3: TLinkFillControlToField;
+    BindingsList1: TBindingsList;
+    LinkFillControlToField1: TLinkFillControlToField;
     procedure ActDisconnectServiceExecute(Sender: TObject);
     procedure ActDisconnectServiceUpdate(Sender: TObject);
     procedure ActConnectServiceUpdate(Sender: TObject);
@@ -104,8 +107,8 @@ type
    FConnected: boolean;
    FNavegateObj: TNavegateList;
    FParamsObj: TLogsParams;
-   FContatosData: TContatosData;
    FContatosStyle: TContatosListStyle;
+   FContatosDetailed: TFrame;
 
    procedure DoOnNewContato(value: TMyContato);
 
@@ -162,19 +165,7 @@ begin
 {Implementa o evento OnNewContato, disparado sempre que a interface IContatosService
 cria um novo contato no serviço remoto. Os dados do novo contato estão no parâmetro
 "value".}
- if not Assigned(FContatosData) then Exit;
-
- with FContatosData.dsContatos do
-  begin
-   Append;
-   Fields.FieldByName(TContatosFieldsNames.Nome).Value := value.ContatoId;
-   Fields.FieldByName(TContatosFieldsNames.Nome).Value := value.FirstName;
-   Fields.FieldByName(TContatosFieldsNames.Sobrenome).Value := value.LastName;
-   Fields.FieldByName(TContatosFieldsNames.Status).Value := value.Status;
-   //Fields.FieldByName(TContatosFieldsNames.Foto).Value := to-do;
-   Post;
-  end;
-  //implementar mecanismo de notificação de bandeja ou push
+ //implementar mecanismo de notificação de bandeja ou push
 end;
 
 //Fim da "seção" que implementa eventos de interfaces externas.
@@ -194,7 +185,6 @@ begin
  FConnected := ServiceConnection.ConnectService;
  if Connected then
   begin
-   if not Assigned(FContatosData) then FContatosData := TContatosData.Create(BindContatos);
    self.ListarContatos;
   end;
 end;
@@ -225,7 +215,6 @@ procedure TFrmMainForm.ActDisconnectServiceExecute(Sender: TObject);
 begin
  ServiceConnection.DisconnectService;
  FConnected := ServiceConnection.Connected;
- if Assigned(FContatosData) then FreeAndNil(FContatosData);
 end;
 
 procedure TFrmMainForm.ActDisconnectServiceUpdate(Sender: TObject);
@@ -377,16 +366,17 @@ begin
  FConnected := False; //default
  FNavegateObj := TNavegateList.Create;
  FParamsObj := TLogsParams.Create(ParamsFile);
+{ Cria os frames de dados de contatos.}
+ FContatosDetailed := TFactoryFrameContatos.New(TabContatosListView, cfDetailed);
 
  PnlServiceInfo.Visible := False;
-
  ConfigureElements(False);
  NavegateTo(viContatos);
 end;
 
 procedure TFrmMainForm.FormDestroy(Sender: TObject);
 begin
- if Assigned(FContatosData) then FreeAndNil(FContatosData);
+ if Assigned(FContatosDetailed) then FreeAndNil(FContatosDetailed);
  if Assigned(FNavegateObj) then FreeAndNil(FNavegateObj);
  if Assigned(FParamsObj) then FreeAndNil(FParamsObj);
 end;
@@ -394,7 +384,7 @@ end;
 function TFrmMainForm.GetContatosService: IContactsService;
 begin
   //Interface que abstrai o serviço remoto de contatos do usuário.
-  Result := TContatosModel.Create(DoOnNewContato, nil) as IContactsService;
+  Result := TFactoryContatos.New(DoOnNewContato, nil);
 end;
 
 function TFrmMainForm.GetDialogs: IDlgMessage;
@@ -414,8 +404,7 @@ end;
 function TFrmMainForm.GetServiceConnection: IServiceConnection;
 begin
   //Interface que abstrai a conexão com o serviço remoto de chat.
-  Result := TServiceConnection.Create as IServiceConnection;
- // Result.Connected := self.Connected;
+  Result := TFactoryServiceConnection.New;
 end;
 
 function TFrmMainForm.GetSelectedContact: TMyContato;
@@ -478,7 +467,7 @@ begin
 
           ItemObj.ItemData.Detail := MyContatoObj.ContatoId;
           ItemObj.StyleLookup := TMercurioUI.ListBoxItemStyle;
-          ItemObj.ItemData.Accessory := TlistBoxItemData.TAccessory(1);
+          ItemObj.ItemData.Accessory := TListBoxItemData.TAccessory(1);
           ItemObj.WordWrap := True;
           ItemObj.Hint := ItemObj.ItemData.Detail;
           ItemObj.Data := MyContatoObj;

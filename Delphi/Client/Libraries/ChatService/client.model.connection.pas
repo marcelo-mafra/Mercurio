@@ -32,9 +32,9 @@ uses
        function GetServiceInfo: IServiceInfo;
 
      public
+       constructor Create; overload;
        constructor Create(OnConnectEvent: TOnConnectEvent; OnConnectErrorEvent:
           TOnConnectErrorEvent; OnDisconnectEvent: TOnDisconnectEvent); overload;
-       constructor Create; overload;
        destructor Destroy; override;
 
        //IServiceConnection

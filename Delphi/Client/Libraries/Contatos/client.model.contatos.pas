@@ -15,6 +15,8 @@ type
      private
        FOnNewContatoEvent: TNewContatoNotifyEvent;
        FOnDeleteContatoEvent: TDeleteContatoNotifyEvent;
+       FContatosData: TContatosData;
+
        function DoGetMyContatos: string;
        procedure DoJsonToObject(JsonData: string; Obj: TObject; Model: TTransformModel);
        //IContactService
@@ -47,10 +49,13 @@ begin
  inherited Create;
  FOnNewContatoEvent := OnNewContato;
  FOnDeleteContatoEvent := OnDeleteContato;
+ if not Assigned(FContatosData) then
+   FContatosData := TContatosData.Create(nil);
 end;
 
 destructor TContatosModel.Destroy;
 begin
+  if Assigned(FContatosData) then FreeAndNil(FContatosData);
   inherited Destroy;
 end;
 

@@ -2,4 +2,105 @@ object FmeContatosDetailedView: TFmeContatosDetailedView
   Size.Width = 287.000000000000000000
   Size.Height = 394.000000000000000000
   Size.PlatformDefault = False
+  object ContactsListview: TListView
+    ItemAppearanceClassName = 'TDynamicAppearance'
+    ItemEditAppearanceClassName = 'TDynamicAppearance'
+    HeaderAppearanceClassName = 'TListHeaderObjects'
+    FooterAppearanceClassName = 'TListHeaderObjects'
+    Align = Client
+    Size.Width = 287.000000000000000000
+    Size.Height = 394.000000000000000000
+    Size.PlatformDefault = False
+    TabOrder = 0
+    ItemAppearance.ItemHeight = 55
+    ItemAppearanceObjects.ItemObjects.ObjectsCollection = <
+      item
+        AppearanceObjectName = 'Text1'
+        AppearanceClassName = 'TTextObjectAppearance'
+        Appearance.Font.Size = 16.000000000000000000
+        Appearance.TextAlign = Leading
+        Appearance.Width = 215.000000000000000000
+        Appearance.Height = 25.000000000000000000
+        Appearance.PlaceOffset.X = 54.000000000000000000
+        Appearance.PlaceOffset.Y = 8.000000000000000000
+      end
+      item
+        AppearanceObjectName = 'Image1'
+        AppearanceClassName = 'TImageObjectAppearance'
+        Appearance.Width = 47.000000000000000000
+        Appearance.Height = 44.000000000000000000
+        Appearance.PlaceOffset.Y = 8.000000000000000000
+      end
+      item
+        AppearanceObjectName = 'Text2'
+        AppearanceClassName = 'TTextObjectAppearance'
+        Appearance.TextAlign = Leading
+        Appearance.TextColor = claDimgray
+        Appearance.Width = 223.000000000000000000
+        Appearance.Height = 20.000000000000000000
+        Appearance.PlaceOffset.X = 54.000000000000000000
+        Appearance.PlaceOffset.Y = 32.000000000000000000
+      end
+      item
+        AppearanceObjectName = 'Text3'
+        AppearanceClassName = 'TTextObjectAppearance'
+        Appearance.TextAlign = Trailing
+        Appearance.TextColor = claDimgray
+        Appearance.Width = 315.000000000000000000
+        Appearance.Height = 33.000000000000000000
+        Appearance.Align = Trailing
+        Appearance.PlaceOffset.Y = 8.000000000000000000
+      end
+      item
+        AppearanceObjectName = 'Image2'
+        AppearanceClassName = 'TImageObjectAppearance'
+        Appearance.Width = 17.000000000000000000
+        Appearance.Height = 17.000000000000000000
+        Appearance.PlaceOffset.X = 278.000000000000000000
+        Appearance.PlaceOffset.Y = 32.000000000000000000
+      end>
+    ItemAppearanceObjects.ItemEditObjects.ObjectsCollection = <
+      item
+        AppearanceObjectName = 'Text1'
+        AppearanceClassName = 'TTextObjectAppearance'
+      end>
+  end
+  object BindContatos: TBindSourceDB
+    DataSet = ContatosData.dsContatos
+    ScopeMappings = <>
+    Left = 222
+    Top = 230
+  end
+  object BindingsList1: TBindingsList
+    Methods = <>
+    OutputConverters = <>
+    Left = 220
+    Top = 173
+    object LinkFillControlToField1: TLinkFillControlToField
+      Category = 'Quick Bindings'
+      Control = ContactsListview
+      Track = True
+      FillDataSource = BindContatos
+      AutoFill = True
+      FillExpressions = <
+        item
+          SourceMemberName = 'Nome'
+          ControlMemberName = 'Text1'
+        end
+        item
+          SourceMemberName = 'ContactId'
+          ControlMemberName = 'Text2'
+        end
+        item
+          SourceMemberName = 'Foto'
+          ControlMemberName = 'Image1'
+        end
+        item
+          SourceMemberName = 'Sobrenome'
+          ControlMemberName = 'Text3'
+        end>
+      FillHeaderExpressions = <>
+      FillBreakGroups = <>
+    end
+  end
 end
