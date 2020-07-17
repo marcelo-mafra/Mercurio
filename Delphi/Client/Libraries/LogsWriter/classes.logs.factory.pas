@@ -31,30 +31,29 @@ inacessível mesmo a partir de outras units que acessam essa.}
 
 class function TFactoryLogs.New(const IniFile: string): IMercurioLogs;
 var
- ConfObj: TLogsParams;
+ ParamsObj: TLogsParams;
 begin
 {Retorna uma interface que abstrai recursos de geração de registros de logs para
  toda a aplicação. Será necessário ler os parâmetros no arquivo
  ini recebido em IniFile.}
- ConfObj := TLogsParams.Create(IniFile);
- Result := self.New(IniFile, ConfObj.Folder, ConfObj.CurrentFile, TServiceLabels.ServiceName,
-   ConfObj.MaxFileSize);
-
+ ParamsObj := TLogsParams.Create(IniFile);
+ Result := self.New(IniFile, ParamsObj.Folder, ParamsObj.CurrentFile, TServiceLabels.ServiceName,
+   ParamsObj.MaxFileSize);
 end;
 
 class function TFactoryLogs.New(const IniFile, Folder, CurrentFile, AppName: string;
   MaxSize: integer): IMercurioLogs;
 var
- LogsObj: TMercurioLogsController;
+ LogsObj: TMercurioLogs;
  LogsEvents: TFactoryLogsEvents;
  FileExt: string;
 begin
 {Retorna uma interface que abstrai recursos de geração de registros de logs para
  toda a aplicação. Nessa versão do método não é necessário ler os parâmetros
  pois todas as infos são recebidas pelo método.}
- FileExt := client.resources.logs.TMercurioLogs.FileExtension;
+ FileExt := TMercurioLogsParams.FileExtension;
  LogsEvents := TFactoryLogsEvents.Create(IniFile);
- LogsObj := TMercurioLogsController.Create(Folder, FileExt, TEncoding.UTF8);
+ LogsObj := TMercurioLogs.Create(Folder, FileExt, TEncoding.UTF8);
 
  LogsObj.MaxFileSize := MaxSize;
  LogsObj.AppName := AppName;
@@ -73,20 +72,19 @@ end;
 
 destructor TFactoryLogsEvents.Destroy;
 begin
-
   inherited;
 end;
 
 procedure TFactoryLogsEvents.DoOnNewFileEvent(var NewFileName: string);
 var
- ConfigLogsObj: TLogsParams;
+ ParamsObj: TLogsParams;
 begin
- ConfigLogsObj := TLogsParams.Create(self.FConfigurationFile, False);
+ ParamsObj := TLogsParams.Create(self.FConfigurationFile, False);
 
  try
-  ConfigLogsObj.CurrentFile := NewFileName;
+  ParamsObj.CurrentFile := NewFileName;
  finally
-   FreeAndNil(ConfigLogsObj);
+   FreeAndNil(ParamsObj);
  end;
 end;
 

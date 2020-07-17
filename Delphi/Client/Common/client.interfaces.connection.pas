@@ -28,12 +28,11 @@ type
    function GetSecurityService: ISecurityService;
    function GetServiceInfo: IServiceInfo;
    function GetConnected: boolean;
-   procedure SetConnected(const Value: boolean);
 
    function ConnectService: boolean;
    procedure DisconnectService;
 
-   property Connected: boolean read GetConnected write SetConnected;
+   property Connected: boolean read GetConnected;
    property Security: ISecurityService read GetSecurityService;
    property ServiceInfo: IServiceInfo read GetServiceInfo;
  end;

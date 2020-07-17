@@ -118,9 +118,6 @@ Coordinates=539,201,162,36
 [TabItem1]
 Coordinates=302,139,59,33
 
-[LstContatos]
-Coordinates=270,490,116,177
-
 [SearchBox1]
 Coordinates=422,139,73,51
 
@@ -154,4 +151,7 @@ Coordinates=640,530,99,231
 
 [BindingsList1]
 Coordinates=134,1,82,33
+
+[LstContatos]
+Coordinates=270,490,116,177
 

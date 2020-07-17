@@ -24,10 +24,8 @@ uses
        FOnConnectError: TOnConnectErrorEvent;
        FOnDisconnect: TOnDisconnectEvent;
        FServiceHost, FServiceName: string;
-       FConnected: boolean;
 
        function GetConnected: boolean;
-       procedure SetConnected(const Value: boolean);
        function GetSecurityService: ISecurityService;
        function GetServiceInfo: IServiceInfo;
 
@@ -41,7 +39,7 @@ uses
        function ConnectService: boolean;
        procedure DisconnectService;
 
-       property Connected: boolean read GetConnected write SetConnected ;
+       property Connected: boolean read GetConnected ;
        property Security: ISecurityService read GetSecurityService;
        property ServiceHost: string read FServiceHost;
        property ServiceName: string read FServiceName;
@@ -128,28 +126,24 @@ end;
 
 procedure TServiceConnection.DisconnectService;
 begin
- FConnected := False;
  if Assigned(FOnDisconnect) then FOnDisconnect(Self);
 end;
 
 procedure TServiceConnection.DoOnConnect(Sender: TObject);
 begin
 //Implementa o evento TServiceConnection.OnConnect
- FConnected := True;
  MercurioLogs.RegisterInfo(TConnectionSucess.ConnectionSucess);
 end;
 
 procedure TServiceConnection.DoOnConnectError(Sender: TObject; E: Exception);
 begin
  //Implementa o evento TServiceConnection.OnConnectError
- FConnected := False;
  MercurioLogs.RegisterError(TConnectionError.ConnectionFailure, E.Message);
 end;
 
 procedure TServiceConnection.DoOnDisconnect(Sender: TObject);
 begin
 //Implementa o evento TServiceConnection.OnDisconnect
- FConnected := False;
  MercurioLogs.RegisterInfo(TConnectionSucess.DisconnectionSucess);
 end;
 
@@ -158,14 +152,9 @@ begin
  Result := TChatServiceInfo.Create as IServiceInfo;
 end;
 
-procedure TServiceConnection.SetConnected(const Value: boolean);
-begin
- FConnected := value;
-end;
-
 function TServiceConnection.GetConnected: boolean;
 begin
- Result := FConnected;
+ Result := TMercurioClass(self).Connected;
 end;
 
 function TServiceConnection.GetSecurityService: ISecurityService;

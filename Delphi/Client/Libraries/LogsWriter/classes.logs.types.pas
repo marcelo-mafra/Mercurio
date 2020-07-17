@@ -32,7 +32,7 @@ uses
   ///<summary>
    ///  Classe que ordena pequenas strings usadas como parte de registros de
    /// logs. </summary>
-   TMercurioLogs =  class
+   TMercurioLogsConst =  class
     const
       CommandId             = 'Número do comando: %d';
       SQLCommand            = 'Comando executado: %s';

@@ -7,7 +7,7 @@ uses
 
 type
   //Logs consts
-  TMercurioLogs = class
+  TMercurioLogsParams = class
     const
       FileExtension = '.log';
   end;

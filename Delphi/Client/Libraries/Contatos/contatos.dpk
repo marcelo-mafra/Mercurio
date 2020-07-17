@@ -38,7 +38,8 @@ requires
   FireDAC,
   bindcomp,
   fmx,
-  bindcompfmx;
+  bindcompfmx,
+  servicecon;
 
 contains
   client.model.contatos in 'client.model.contatos.pas',

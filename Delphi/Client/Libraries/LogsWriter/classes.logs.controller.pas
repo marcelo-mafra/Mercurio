@@ -11,7 +11,7 @@ uses
 { Evento disparado quando um novo arquivo delogs passa a ser usado.}
   TOnNewFileEvent = procedure(var NewFileName: string) of object;
 
-  TMercurioLogsController = class(TInterfacedObject, IMercurioLogs)
+  TMercurioLogs = class(TInterfacedObject, IMercurioLogs)
 
    private
     AWriter: TTextFileLog;
@@ -64,9 +64,9 @@ uses
 
 implementation
 
-{ TMercurioLogsController }
+{ TMercurioLogs }
 
-constructor TMercurioLogsController.Create(const SourcePath, FileExtension: string;
+constructor TMercurioLogs.Create(const SourcePath, FileExtension: string;
      Encoding: TEncoding; Events: TLogEvents);
 begin
  inherited Create;
@@ -76,7 +76,7 @@ begin
  FEvents := Events;
 end;
 
-constructor TMercurioLogsController.Create(const SourcePath,
+constructor TMercurioLogs.Create(const SourcePath,
   FileExtension: string; Encoding: TEncoding);
 begin
  inherited Create;
@@ -90,7 +90,7 @@ begin
             leOnMethodCallError, leUnknown];
 end;
 
-constructor TMercurioLogsController.Create(const SourcePath: string);
+constructor TMercurioLogs.Create(const SourcePath: string);
 begin
  inherited Create;
  FSourcePath := SourcePath;
@@ -104,55 +104,55 @@ begin
             leOnMethodCallError, leUnknown];
 end;
 
-function TMercurioLogsController.CreateWriter: TTextFileLog;
+function TMercurioLogs.CreateWriter: TTextFileLog;
 begin
  Result := TTextFileLog.Create(SourcePath, FileExtension, Encoding, Events);
  Result.OnNewFile := OnNewFile;
 end;
 
-destructor TMercurioLogsController.Destroy;
+destructor TMercurioLogs.Destroy;
 begin
   if Assigned(AWriter) then FreeAndNil(AWriter);
   inherited Destroy;
 end;
 
-function TMercurioLogsController.GetCurrentFile: string;
+function TMercurioLogs.GetCurrentFile: string;
 begin
  Result := FCurrentFile;
 end;
 
-procedure TMercurioLogsController.RegisterAuditFailure(const Message: string);
+procedure TMercurioLogs.RegisterAuditFailure(const Message: string);
 begin
   inherited;
   RegisterLog(Message, '', leOnAuthenticateFail);
 end;
 
-procedure TMercurioLogsController.RegisterAuditSucess(const Message: string);
+procedure TMercurioLogs.RegisterAuditSucess(const Message: string);
 begin
   inherited;
   RegisterLog(Message, '', leOnAuthenticateSucess);
 end;
 
-procedure TMercurioLogsController.RegisterError(const Message,
+procedure TMercurioLogs.RegisterError(const Message,
   ContextInfo: string);
 begin
   inherited;
   RegisterLog(Message, ContextInfo, leOnError);
 end;
 
-procedure TMercurioLogsController.RegisterError(const Message: string);
+procedure TMercurioLogs.RegisterError(const Message: string);
 begin
   inherited;
   RegisterLog(Message, '', leOnError);
 end;
 
-procedure TMercurioLogsController.RegisterInfo(const Message: string);
+procedure TMercurioLogs.RegisterInfo(const Message: string);
 begin
   inherited;
   RegisterLog(Message, '', leOnInformation);
 end;
 
-procedure TMercurioLogsController.RegisterLog(const Info, ContextInfo: string;
+procedure TMercurioLogs.RegisterLog(const Info, ContextInfo: string;
   Event: TLogEvent);
 var
  AList: TStringList;
@@ -200,72 +200,72 @@ as mensagens de log.}
    case Event of
      leOnInformation:
        begin
-         AList.Append(Format(TLogInfo.LOGTYPE, [TMercurioLogs.InfoLogType]));
+         AList.Append(Format(TLogInfo.LOGTYPE, [TMercurioLogsConst.InfoLogType]));
          AWriter.RegisterInfo(AList.CommaText);
        end;
      leOnWarning:
        begin
-         AList.Append(Format(TLogInfo.LOGTYPE, [TMercurioLogs.WarnLogType]));
+         AList.Append(Format(TLogInfo.LOGTYPE, [TMercurioLogsConst.WarnLogType]));
          AWriter.RegisterWarning(AList.CommaText);
        end;
      leOnError:
        begin
-         AList.Append(Format(TLogInfo.LOGTYPE, [TMercurioLogs.ErrorLogType]));
+         AList.Append(Format(TLogInfo.LOGTYPE, [TMercurioLogsConst.ErrorLogType]));
          AWriter.RegisterError(AList.CommaText);
        end;
      leOnPrepare:
        begin
-         AList.Append(Format(TLogInfo.LOGTYPE, [TMercurioLogs.PrepareLogType]));
+         AList.Append(Format(TLogInfo.LOGTYPE, [TMercurioLogsConst.PrepareLogType]));
          AWriter.RegisterPrepare(AList.CommaText);
        end;
      leOnTrace:
        begin
-         AList.Append(Format(TLogInfo.LOGTYPE, [TMercurioLogs.TraceLogType]));
+         AList.Append(Format(TLogInfo.LOGTYPE, [TMercurioLogsConst.TraceLogType]));
          AWriter.RegisterTrace(AList.CommaText);
        end;
      leOnAuthenticateSucess:
        begin
-         AList.Append(Format(TLogInfo.LOGTYPE, [TMercurioLogs.AuthLogType]));
+         AList.Append(Format(TLogInfo.LOGTYPE, [TMercurioLogsConst.AuthLogType]));
          AWriter.RegisterAuditSucess(AList.CommaText);
        end;
      leOnAuthenticateFail:
        begin
-         AList.Append(Format(TLogInfo.LOGTYPE, [TMercurioLogs.AuthFailLogType]));
+         AList.Append(Format(TLogInfo.LOGTYPE, [TMercurioLogsConst.AuthFailLogType]));
          AWriter.RegisterAuditFailure(AList.CommaText);
        end;
      leOnAuthorize:
        begin
-         AList.Append(Format(TLogInfo.LOGTYPE, [TMercurioLogs.AutLogType]));
+         AList.Append(Format(TLogInfo.LOGTYPE, [TMercurioLogsConst.AutLogType]));
          AWriter.RegisterAuthorization(AList.CommaText);
        end;
      leOnConnect:
        begin
-         AList.Append(Format(TLogInfo.LOGTYPE, [TMercurioLogs.ConLogType]));
+         AList.Append(Format(TLogInfo.LOGTYPE, [TMercurioLogsConst.ConLogType]));
          AWriter.RegisterConnection(AList.CommaText);
        end;
      leOnConnectError:
        begin
-         AList.Append(Format(TLogInfo.LOGTYPE, [TMercurioLogs.ConErrorLogType]));
+         AList.Append(Format(TLogInfo.LOGTYPE, [TMercurioLogsConst.ConErrorLogType]));
          AWriter.RegisterConnectionFailure(AList.CommaText);
        end;
      leOnConnectClose:
        begin
-         AList.Append(Format(TLogInfo.LOGTYPE, [TMercurioLogs.ConCloseLogType]));
+         AList.Append(Format(TLogInfo.LOGTYPE, [TMercurioLogsConst.ConCloseLogType]));
          AWriter.RegisterConnectionClose(AList.CommaText);
        end;
      leOnMethodCall:
        begin
-         AList.Append(Format(TLogInfo.LOGTYPE, [TMercurioLogs.RemoteCallLogType]));
+         AList.Append(Format(TLogInfo.LOGTYPE, [TMercurioLogsConst.RemoteCallLogType]));
          AWriter.RegisterRemoteCallSucess(AList.CommaText);
        end;
      leOnMethodCallError:
        begin
-         AList.Append(Format(TLogInfo.LOGTYPE, [TMercurioLogs.RemoteCallErrorLogType]));
+         AList.Append(Format(TLogInfo.LOGTYPE, [TMercurioLogsConst.RemoteCallErrorLogType]));
          AWriter.RegisterRemoteCallFailure(AList.CommaText);
        end;
      leUnknown:
        begin
-         AList.Append(Format(TLogInfo.LOGTYPE, [TMercurioLogs.UnknownLogType]));
+         AList.Append(Format(TLogInfo.LOGTYPE, [TMercurioLogsConst.UnknownLogType]));
          AWriter.RegisterUnknow(AList.CommaText);
        end;
    end;
@@ -281,31 +281,31 @@ as mensagens de log.}
  end;
 end;
 
-procedure TMercurioLogsController.RegisterRemoteCallFailure(const Message,
+procedure TMercurioLogs.RegisterRemoteCallFailure(const Message,
   ContextInfo: string);
 begin
    RegisterLog(Message, ContextInfo, leOnMethodCallError);
 end;
 
-procedure TMercurioLogsController.RegisterRemoteCallSucess(const Message,
+procedure TMercurioLogs.RegisterRemoteCallSucess(const Message,
   ContextInfo: string);
 begin
    RegisterLog(Message, ContextInfo, leOnMethodCall);
 end;
 
-procedure TMercurioLogsController.RegisterSucess(const Message: string);
+procedure TMercurioLogs.RegisterSucess(const Message: string);
 begin
   inherited;
   RegisterLog(Message, '', leOnInformation);
 end;
 
-procedure TMercurioLogsController.RegisterWarning(const Message: string);
+procedure TMercurioLogs.RegisterWarning(const Message: string);
 begin
   inherited;
   RegisterLog(Message, '', leOnWarning);
 end;
 
-procedure TMercurioLogsController.SetCurrentFile(const CurrentFile: string);
+procedure TMercurioLogs.SetCurrentFile(const CurrentFile: string);
 begin
  FCurrentFile := CurrentFile;
  if Assigned(AWriter) then AWriter.CurrentFile := CurrentFile;

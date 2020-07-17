@@ -27,7 +27,7 @@ uses
   //Contatos
   client.interfaces.contatos, classes.contatos.types, client.model.contatos.factory,
   client.serverintf.contatos, client.model.listacontatos, client.resources.contatos,
-  client.resources.contatos.dataobjects;
+  client.resources.contatos.dataobjects, Data.DB, Data.SqlExpr;
 
 type
   TFrmMainForm = class(TForm, IChatApplication, IMercurioLogs)
@@ -79,6 +79,7 @@ type
     ContactsListview: TListView;
     BindingsList1: TBindingsList;
     LinkFillControlToField1: TLinkFillControlToField;
+    SQLConnection1: TSQLConnection;
     procedure ActDisconnectServiceExecute(Sender: TObject);
     procedure ActDisconnectServiceUpdate(Sender: TObject);
     procedure ActConnectServiceUpdate(Sender: TObject);
@@ -108,20 +109,20 @@ type
    FNavegateObj: TNavegateList;
    FParamsObj: TLogsParams;
    FContatosStyle: TContatosListStyle;
-   FContatosDetailed: TFrame;
+   FContatosDetailed, FContatosSample: TFrame;
 
    procedure DoOnNewContato(value: TMyContato);
 
   private
     { Private declarations }
     procedure ConfigureElements(const ShowText: boolean);
-    procedure ListarContatos; //***Levar para TFmeContatosSampleView
     procedure NavegateTo(Item: TViewItem);
     function GetServiceConnection: IServiceConnection;
-    function GetSelectedContact: TMyContato;
+    function GetSelectedContact: TMyContato; //MODIFICAR PARA FRAME
     procedure SetContatosStyle(value: TContatosListStyle);
 
     //IChatApplication
+    function GetConnected: boolean;
     function GetDialogs: IDlgMessage;
     function GetMercurioLogs: IMercurioLogs;
     function GetContatosService: IContactsService;
@@ -130,13 +131,13 @@ type
   public
     { Public declarations }
     property ParamsObj: TLogsParams read FParamsObj;
-    property Connected: boolean read FConnected;
     property NavegateObj: TNavegateList read FNavegateObj;
     property ServiceConnection: IServiceConnection read GetServiceConnection;
     property SelectedContact: TMyContato read GetSelectedContact;
     property ContatosStyle: TContatosListStyle read FContatosStyle write SetContatosStyle;
 
     //IChatApplication
+    property Connected: boolean read GetConnected;
     property ContatosService: IContactsService read GetContatosService;
     property Dialogs: IDlgMessage read GetDialogs;
     property MercurioLogs: IMercurioLogs read GetMercurioLogs implements IMercurioLogs;
@@ -168,8 +169,6 @@ cria um novo contato no serviço remoto. Os dados do novo contato estão no parâme
  //implementar mecanismo de notificação de bandeja ou push
 end;
 
-//Fim da "seção" que implementa eventos de interfaces externas.
-
 procedure TFrmMainForm.ActBackExecute(Sender: TObject);
 begin
  NavegateTo(NavegateObj.PreviousItem);
@@ -183,10 +182,6 @@ end;
 procedure TFrmMainForm.ActConnectServiceExecute(Sender: TObject);
 begin
  FConnected := ServiceConnection.ConnectService;
- if Connected then
-  begin
-   self.ListarContatos;
-  end;
 end;
 
 procedure TFrmMainForm.ActConnectServiceUpdate(Sender: TObject);
@@ -300,7 +295,6 @@ begin
      EdtFirstName.SetFocus;
     end;
   end;
-
 end;
 
 procedure TFrmMainForm.ActSaveContatoDataUpdate(Sender: TObject);
@@ -330,7 +324,11 @@ end;
 
 procedure TFrmMainForm.ActUpdateContatosExecute(Sender: TObject);
 begin
- self.ListarContatos;
+ case ContatosStyle of
+   ltSample: (FContatosSample as IContatosFrame).UpdateData;
+   ltDetailed: (FContatosDetailed as IContatosFrame).UpdateData;
+  // ltFull: Result := nil;
+ end;
 end;
 
 procedure TFrmMainForm.ActUpdateContatosUpdate(Sender: TObject);
@@ -367,7 +365,8 @@ begin
  FNavegateObj := TNavegateList.Create;
  FParamsObj := TLogsParams.Create(ParamsFile);
 { Cria os frames de dados de contatos.}
- FContatosDetailed := TFactoryFrameContatos.New(TabContatosListView, cfDetailed);
+ FContatosDetailed := TFactoryFrameContatos.New(TabContatosListView, nil, cfDetailed);
+ FContatosSample := TFactoryFrameContatos.New(TabContatosListBox, ActUpdateContatos, cfSample);
 
  PnlServiceInfo.Visible := False;
  ConfigureElements(False);
@@ -377,8 +376,14 @@ end;
 procedure TFrmMainForm.FormDestroy(Sender: TObject);
 begin
  if Assigned(FContatosDetailed) then FreeAndNil(FContatosDetailed);
+ if Assigned(FContatosSample) then FreeAndNil(FContatosSample);
  if Assigned(FNavegateObj) then FreeAndNil(FNavegateObj);
  if Assigned(FParamsObj) then FreeAndNil(FParamsObj);
+end;
+
+function TFrmMainForm.GetConnected: boolean;
+begin
+ Result := FConnected;
 end;
 
 function TFrmMainForm.GetContatosService: IContactsService;
@@ -410,20 +415,8 @@ end;
 function TFrmMainForm.GetSelectedContact: TMyContato;
 begin
  case ContatosStyle of
-   ltSample:
-     begin
-       if (LstContatos.Selected <> nil) then
-         Result := TMyContato(LstContatos.Selected.Data)
-       else
-         Result := nil;                                                                                                          ;
-     end;
-   ltDetailed:
-     begin
-       if (ContactsListView.Selected <> nil) then
-         Result := nil//TMyContato(ContactsListView.Selected.TagObject)
-       else
-         Result := nil;                                                                                                          ;
-     end;
+   ltSample: Result := (FContatosSample as IContatosFrame).SelectedContact;
+   ltDetailed: Result := (FContatosDetailed as IContatosFrame).SelectedContact;
    ltFull: Result := nil;
  end;
 end;
@@ -431,54 +424,6 @@ end;
 function TFrmMainForm.GetTitle: string;
 begin
  Result := Application.Title;
-end;
-
-procedure TFrmMainForm.ListarContatos;
-var
- I: integer;
- ListObj: TListaContatos;
- MyContatoObj: TMyContato;
- ItemObj: TListBoxItem;
- FullName: string;
-begin
-{Busca no serviço remoto os contatos do usuário corrente.}
-    ListObj := TListaContatos.Create;
-
-    try
-      ContatosService.GetMyContatos(ListObj);
-
-      if ListObj.IsEmpty then
-       Exit;
-
-      LstContatos.BeginUpdate;
-      LstContatos.Clear;
-
-      for I := 0 to ListObj.Count - 1 do
-       begin
-        MyContatoObj := ListObj.FindObject(I);
-
-        if MyContatoObj <> nil then
-         begin
-          ItemObj := TListBoxItem.Create(LstContatos);
-          FullName := string.Empty;
-          ItemObj.Text := FullName.Join(' ', [MyContatoObj.FirstName.TrimRight, MyContatoObj.LastName.TrimRight]);
-          ItemObj.Height := 37;
-          //ItemObj.ItemData.Bitmap := GetBitmap(3);
-
-          ItemObj.ItemData.Detail := MyContatoObj.ContatoId;
-          ItemObj.StyleLookup := TMercurioUI.ListBoxItemStyle;
-          ItemObj.ItemData.Accessory := TListBoxItemData.TAccessory(1);
-          ItemObj.WordWrap := True;
-          ItemObj.Hint := ItemObj.ItemData.Detail;
-          ItemObj.Data := MyContatoObj;
-
-          LstContatos.AddObject(ItemObj);
-         end;
-       end;
-
-    finally
-     LstContatos.EndUpdate;
-    end;
 end;
 
 procedure TFrmMainForm.MultiView1StartHiding(Sender: TObject);
@@ -503,10 +448,13 @@ begin
  FNavegateObj.AddItem(Item);
 end;
 
-
 procedure TFrmMainForm.SetContatosStyle(value: TContatosListStyle);
 begin
  FContatosStyle := value;
 end;
+
+{initialization
+RegisterFmxClasses([TFrmMainForm]);}
+
 
 end.

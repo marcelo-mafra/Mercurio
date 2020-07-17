@@ -3,7 +3,8 @@ unit client.interfaces.baseclasses;
 interface
 
 uses
- System.SysUtils, classes.logs.types, classes.logs.factory, client.resources.mercurio;
+ System.SysUtils, System.Classes, classes.logs.types, classes.logs.factory, client.resources.mercurio,
+ client.interfaces.application, FMX.Types, FMX.Forms;
 
 type
  MsgIdentifier = int64;
@@ -19,12 +20,14 @@ type
  TMercurioClass = class(TInterfacedObject)
    private
     FParamsFile: string;
+    function GetConnected: boolean;
     function GetMercurioLogs: IMercurioLogs;
 
    public
     constructor Create;
     destructor Destroy; override;
 
+    property Connected: boolean read GetConnected ;
     property MercurioLogs: IMercurioLogs read GetMercurioLogs;
     property ParamsFile: string read FParamsFile;
  end;
@@ -42,6 +45,19 @@ end;
 destructor TMercurioClass.Destroy;
 begin
   inherited Destroy;
+end;
+
+function TMercurioClass.GetConnected: boolean;
+var
+ IApplication: IChatApplication;
+begin
+ if Application.MainForm <> nil then
+   begin
+    IApplication := Application.MainForm as IChatApplication;
+    Result := IApplication.Connected;
+   end
+  else
+ Result := False;
 end;
 
 function TMercurioClass.GetMercurioLogs: IMercurioLogs;

@@ -147,6 +147,7 @@
         <DCCReference Include="bindcomp.dcp"/>
         <DCCReference Include="fmx.dcp"/>
         <DCCReference Include="bindcompfmx.dcp"/>
+        <DCCReference Include="servicecon.dcp"/>
         <DCCReference Include="client.model.contatos.pas"/>
         <DCCReference Include="client.model.listacontatos.pas"/>
         <DCCReference Include="client.data.contatos.pas">
@@ -209,12 +210,6 @@
                 </DeployFile>
                 <DeployFile LocalName="$(BDS)\Redist\iossimulator\libpcre.dylib" Class="DependencyModule">
                     <Platform Name="iOSSimulator">
-                        <Overwrite>true</Overwrite>
-                    </Platform>
-                </DeployFile>
-                <DeployFile LocalName="..\..\..\BIN\Win64\Debug\contatos.rsm" Configuration="Debug" Class="DebugSymbols">
-                    <Platform Name="Win64">
-                        <RemoteName>contatos.rsm</RemoteName>
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>

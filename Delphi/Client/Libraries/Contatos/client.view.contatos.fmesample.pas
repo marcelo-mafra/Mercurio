@@ -7,29 +7,40 @@ uses
   FMX.Types, FMX.Graphics, FMX.Controls, FMX.Forms, FMX.Dialogs, FMX.StdCtrls,
   FMX.ListBox, FMX.Controls.Presentation, FMX.Edit, FMX.SearchBox, FMX.Layouts,
   client.model.listacontatos, client.serverintf.contatos, client.interfaces.contatos,
-  client.resources.mercurio;
+  client.resources.mercurio, client.data.contatos, client.model.contatos,
+  client.model.connection.factory;
 
 type
-  TFmeContatosSampleView = class(TFrame)
+  TFmeContatosSampleView = class(TFrame, IContatosFrame)
     LstContatos: TListBox;
     ListBoxItem2: TListBoxItem;
     SearchBox1: TSearchBox;
     ListBoxHeader2: TListBoxHeader;
-    SpeedButton5: TSpeedButton;
+    BtnUpdate: TSpeedButton;
     Label2: TLabel;
   strict private
-   FIContactsService: IContactsService;
-   FConnected: boolean;
+
+   FContatosData: TContatosData;
 
   private
     { Private declarations }
     procedure ListContacts;
+    procedure DoOnDestroyEvent(Sender: TObject);
+    procedure Init;
+    function GetIContactsService: IContactsService;
+    //IContatosFrame
+    function GetConnected: boolean;
+    function GetSelectedContact: TMyContato;
+    procedure UpdateData;
 
   public
     { Public declarations }
-    constructor Create(IService: IContactsService; Parent: TFmxObject); reintroduce;
-    property  Connected: boolean read FConnected;
-    property ContactsService: IContactsService read FIContactsService;
+    constructor Create(Parent: TFmxObject; UpdateAction: TBasicAction); reintroduce;
+    property ContactsService: IContactsService read GetIContactsService ;
+    //IContatosFrame
+    property Connected: boolean read GetConnected;
+    property SelectedContact: TMyContato read GetSelectedContact;
+
   end;
 
 implementation
@@ -38,14 +49,46 @@ implementation
 
 { TFmeContatosSampleView }
 
-constructor TFmeContatosSampleView.Create(IService: IContactsService;
-  Parent: TFmxObject);
+constructor TFmeContatosSampleView.Create(Parent: TFmxObject; UpdateAction: TBasicAction);
 begin
-  inherited Create(self);
-  FIContactsService := IService;
+  inherited Create(nil);
   self.Parent := Parent;
   self.Align := TAlignLayout.Client;
-  self.ListContacts;
+  BtnUpdate.Action := UpdateAction;
+  self.Init;
+end;
+
+procedure TFmeContatosSampleView.DoOnDestroyEvent(Sender: TObject);
+begin
+ if not Assigned(FContatosData) then FreeAndNil(FContatosData);
+end;
+
+function TFmeContatosSampleView.GetConnected: boolean;
+begin
+ Result := TFactoryServiceConnection.New.Connected;
+end;
+
+function TFmeContatosSampleView.GetIContactsService: IContactsService;
+begin
+  //Interface que abstrai o serviço remoto de contatos do usuário.
+  Result := TContatosModel.Create(nil, nil) as IContactsService;
+end;
+
+function TFmeContatosSampleView.GetSelectedContact: TMyContato;
+begin
+ if (LstContatos.Selected <> nil) then
+   Result := TMyContato(LstContatos.Selected.Data)
+ else
+   Result := nil;
+end;
+
+procedure TFmeContatosSampleView.Init;
+begin
+ if not Assigned(FContatosData) then
+  FContatosData := TContatosData.Create(nil);
+
+ FContatosData.OnDestroy := DoOnDestroyEvent;
+ self.ListContacts;
 end;
 
 procedure TFmeContatosSampleView.ListContacts;
@@ -64,8 +107,7 @@ begin
     try
       ContactsService.GetMyContatos(ListObj);
 
-      if ListObj.IsEmpty then
-       Exit;
+      if ListObj.IsEmpty then Exit;
 
       LstContatos.BeginUpdate;
       LstContatos.Clear;
@@ -78,7 +120,8 @@ begin
          begin
           ItemObj := TListBoxItem.Create(LstContatos);
           FullName := string.Empty;
-          ItemObj.Text := FullName.Join(' ', [MyContatoObj.FirstName.TrimRight, MyContatoObj.LastName.TrimRight]);
+          FullName := FullName.Join(' ', [MyContatoObj.FirstName.TrimRight, MyContatoObj.LastName.TrimRight]);
+          ItemObj.Text := FullName;
           ItemObj.Height := 37;
           //ItemObj.ItemData.Bitmap := GetBitmap(3);
 
@@ -88,7 +131,6 @@ begin
           ItemObj.WordWrap := True;
           ItemObj.Hint := ItemObj.ItemData.Detail;
           ItemObj.Data := MyContatoObj;
-
           LstContatos.AddObject(ItemObj);
          end;
        end;
@@ -97,7 +139,11 @@ begin
      LstContatos.EndUpdate;
     end;
   end;
+end;
 
+procedure TFmeContatosSampleView.UpdateData;
+begin
+ self.ListContacts;
 end;
 
 end.

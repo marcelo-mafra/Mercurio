@@ -34,7 +34,8 @@ requires
   nethttp,
   logwrt,
   resources,
-  cmlib;
+  cmlib,
+  fmx;
 
 contains
   client.interfaces.common in '..\..\Common\client.interfaces.common.pas',

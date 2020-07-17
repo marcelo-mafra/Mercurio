@@ -3,8 +3,8 @@ unit client.model.contatos.factory;
 interface
 
 uses
- FMX.Types, FMX.Forms, client.interfaces.contatos, client.model.contatos,
- client.view.contatos.fmedetailed;
+ System.Classes, FMX.Types, FMX.Forms, client.interfaces.contatos, client.model.contatos,
+ client.view.contatos.fmedetailed, client.view.contatos.fmesample;
 
 type
   TContatosFrame = (cfSample, cfDetailed);
@@ -15,7 +15,8 @@ type
   end;
 
   TFactoryFrameContatos = class
-    class function New(const Parent: TFmxObject; Frame: TContatosFrame): TFrame;
+    class function New(const Parent: TFmxObject; UpdateAction: TBasicAction;
+      Frame: TContatosFrame): TFrame;
   end;
 
 implementation
@@ -33,12 +34,12 @@ end;
 { TFactoryFrameContatos }
 
 class function TFactoryFrameContatos.New(const Parent: TFmxObject;
-  Frame: TContatosFrame): TFrame;
+  UpdateAction: TBasicAction; Frame: TContatosFrame): TFrame;
 begin
  case Frame of
    cfSample:
     begin
-
+      Result := TFmeContatosSampleView.Create(Parent, UpdateAction);
     end;
    cfDetailed:
     begin
