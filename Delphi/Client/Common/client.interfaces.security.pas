@@ -13,6 +13,7 @@ type
    ['{8EA049BB-9398-4E7A-93B2-40791FF0B2D6}']
 
    function  Authenticate(const UserName, Password: string): boolean;
+   procedure NewSessionId(const UserObj: string; var Session: string);
  end;
 
 

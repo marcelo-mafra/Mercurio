@@ -158,6 +158,8 @@
         <DCCReference Include="client.classes.security.pas"/>
         <DCCReference Include="client.model.serviceinfo.pas"/>
         <DCCReference Include="client.model.connection.factory.pas"/>
+        <DCCReference Include="client.classes.session.pas"/>
+        <DCCReference Include="client.model.observerscon.pas"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>

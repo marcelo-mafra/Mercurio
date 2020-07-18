@@ -3,7 +3,7 @@ unit client.classes.security;
 interface
 
 uses
-  client.interfaces.security;
+  System.SysUtils, client.interfaces.security;
 
  type
    TSecurityService = class(TInterfacedObject, ISecurityService)
@@ -15,6 +15,10 @@ uses
 
        //ISecurityService methods
        function Authenticate(const UserName, Password: string): boolean;
+       procedure NewSessionId(const UserObj: string; var Session: string);
+
+
+
    end;
 
 implementation
@@ -40,6 +44,12 @@ end;
 destructor TSecurityService.Destroy;
 begin
   inherited Destroy;
+end;
+
+procedure TSecurityService.NewSessionId(const UserObj: string;
+  var Session: string);
+begin
+ Session := Random(MaxInt).ToString;
 end;
 
 end.

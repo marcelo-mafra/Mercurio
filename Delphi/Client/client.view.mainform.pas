@@ -6,19 +6,16 @@ uses
   //RTL units
   System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants,
   System.Rtti, System.Actions, System.Bindings.Outputs, System.ImageList,
-  Data.Bind.EngExt,  Data.Bind.Components, Data.Bind.DBScope,
   //FMX units
   FMX.Types, FMX.Controls, FMX.Forms, FMX.Graphics, FMX.Dialogs,
   FMX.ActnList, FMX.ImgList, FMX.Controls.Presentation, FMX.StdCtrls,
-  FMX.Objects, FMX.StdActns, FMX.ListView.Types, FMX.ListView.Appearances,
-  FMX.ListView.Adapters.Base, FMX.ListView, FMX.ListBox, FMX.Layouts,
-  FMX.MultiView, FMX.TabControl, FMX.Edit, FMX.SearchBox, Fmx.Bind.DBEngExt,
-  Fmx.Bind.Editors,
+  FMX.Objects, FMX.StdActns, FMX.ListBox, FMX.Layouts, FMX.MultiView, FMX.TabControl,
+  FMX.Edit, FMX.SearchBox, Fmx.Bind.DBEngExt, Fmx.Bind.Editors,
 
   {Mercúrio units listed by domains or specializations.}
-
   //Connection
-  client.interfaces.connection, client.model.connection.factory, client.resources.connection,
+  client.classes.session, client.interfaces.connection, client.model.connection.factory,
+  client.resources.connection, client.interfaces.observerscon, client.model.observerscon,
   //Logs
   classes.logs.types, classes.logs.params, classes.logs.factory, client.resources.logs,
   //Application and UX.
@@ -27,7 +24,7 @@ uses
   //Contatos
   client.interfaces.contatos, classes.contatos.types, client.model.contatos.factory,
   client.serverintf.contatos, client.model.listacontatos, client.resources.contatos,
-  client.resources.contatos.dataobjects, Data.DB, Data.SqlExpr;
+  client.resources.contatos.dataobjects;
 
 type
   TFrmMainForm = class(TForm, IChatApplication, IMercurioLogs)
@@ -65,21 +62,11 @@ type
     Label3: TLabel;
     ActDeleteContato: TAction;
     SterlingStyleBook: TStyleBook;
-    BindContatos: TBindSourceDB;
     TabItem1: TTabItem;
-    LstContatos: TListBox;
-    SearchBox1: TSearchBox;
-    ListBoxHeader2: TListBoxHeader;
-    SpeedButton5: TSpeedButton;
-    Label2: TLabel;
     TabControl1: TTabControl;
     TabContatosListView: TTabItem;
     TabContatosListBox: TTabItem;
     BtnConnect: TSpeedButton;
-    ContactsListview: TListView;
-    BindingsList1: TBindingsList;
-    LinkFillControlToField1: TLinkFillControlToField;
-    SQLConnection1: TSQLConnection;
     procedure ActDisconnectServiceExecute(Sender: TObject);
     procedure ActDisconnectServiceUpdate(Sender: TObject);
     procedure ActConnectServiceUpdate(Sender: TObject);
@@ -105,11 +92,12 @@ type
     procedure MultiView1StartHiding(Sender: TObject);
 
   strict private
-   FConnected: boolean;
+   FSessionObj: TConnectionSession;
    FNavegateObj: TNavegateList;
    FParamsObj: TLogsParams;
    FContatosStyle: TContatosListStyle;
    FContatosDetailed, FContatosSample: TFrame;
+   FObserversConnection: IObserversConnection;
 
    procedure DoOnNewContato(value: TMyContato);
 
@@ -118,7 +106,7 @@ type
     procedure ConfigureElements(const ShowText: boolean);
     procedure NavegateTo(Item: TViewItem);
     function GetServiceConnection: IServiceConnection;
-    function GetSelectedContact: TMyContato; //MODIFICAR PARA FRAME
+    function GetSelectedContact: TMyContato;
     procedure SetContatosStyle(value: TContatosListStyle);
 
     //IChatApplication
@@ -180,8 +168,14 @@ begin
 end;
 
 procedure TFrmMainForm.ActConnectServiceExecute(Sender: TObject);
+var
+ SessionId: string;
 begin
- FConnected := ServiceConnection.ConnectService;
+ if ServiceConnection.ConnectService(SessionId) then
+  begin
+    FSessionObj := TConnectionSession.Create(SessionId);
+    FObserversConnection.NotifyObjects(Sender, csConnected);
+  end;
 end;
 
 procedure TFrmMainForm.ActConnectServiceUpdate(Sender: TObject);
@@ -195,7 +189,10 @@ begin
   begin
    if ContatosService.IContact.ExcluirContato(SelectedContact) then
     begin
-     LstContatos.Items.Delete(LstContatos.Selected.Index);
+      case ContatosStyle of
+       ltSample: (FContatosSample as IContatosFrame).DeleteSelected;
+       ltDetailed: (FContatosDetailed as IContatosFrame).DeleteSelected;
+      end;
     end;
   end;
 end;
@@ -208,8 +205,13 @@ end;
 
 procedure TFrmMainForm.ActDisconnectServiceExecute(Sender: TObject);
 begin
- ServiceConnection.DisconnectService;
- FConnected := ServiceConnection.Connected;
+ try
+   ServiceConnection.DisconnectService;
+   FObserversConnection.NotifyObjects(Sender, csInactive);
+
+ finally
+   if Assigned(FSessionObj) then FreeAndNil(FSessionObj);
+ end;
 end;
 
 procedure TFrmMainForm.ActDisconnectServiceUpdate(Sender: TObject);
@@ -361,12 +363,16 @@ end;
 
 procedure TFrmMainForm.FormCreate(Sender: TObject);
 begin
- FConnected := False; //default
+ //FConnected := False; //default
  FNavegateObj := TNavegateList.Create;
  FParamsObj := TLogsParams.Create(ParamsFile);
-{ Cria os frames de dados de contatos.}
- FContatosDetailed := TFactoryFrameContatos.New(TabContatosListView, nil, cfDetailed);
- FContatosSample := TFactoryFrameContatos.New(TabContatosListBox, ActUpdateContatos, cfSample);
+{ Cria os frames de dados de contatos e os adiciona como "observers da conexão".}
+ FContatosDetailed := TFactoryFrameContatos.New(FSessionObj, TabContatosListView, nil, cfDetailed);
+ FContatosSample := TFactoryFrameContatos.New(FSessionObj, TabContatosListBox, ActUpdateContatos, cfSample);
+ //Set these objects as observers for the connection status.
+  FObserversConnection := TObserversConnection.New;
+ FObserversConnection.Add(FContatosDetailed as IObserverConnection);
+ FObserversConnection.Add(FContatosSample as IObserverConnection);
 
  PnlServiceInfo.Visible := False;
  ConfigureElements(False);
@@ -383,7 +389,7 @@ end;
 
 function TFrmMainForm.GetConnected: boolean;
 begin
- Result := FConnected;
+ Result := (FSessionObj <> nil) and (FSessionObj.Active);
 end;
 
 function TFrmMainForm.GetContatosService: IContactsService;
@@ -409,7 +415,7 @@ end;
 function TFrmMainForm.GetServiceConnection: IServiceConnection;
 begin
   //Interface que abstrai a conexão com o serviço remoto de chat.
-  Result := TFactoryServiceConnection.New;
+  Result := TFactoryServiceConnection.New(FSessionObj);
 end;
 
 function TFrmMainForm.GetSelectedContact: TMyContato;
@@ -417,7 +423,6 @@ begin
  case ContatosStyle of
    ltSample: Result := (FContatosSample as IContatosFrame).SelectedContact;
    ltDetailed: Result := (FContatosDetailed as IContatosFrame).SelectedContact;
-   ltFull: Result := nil;
  end;
 end;
 

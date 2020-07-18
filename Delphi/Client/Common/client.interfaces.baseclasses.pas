@@ -57,7 +57,7 @@ begin
     Result := IApplication.Connected;
    end
   else
- Result := False;
+   Result := False;
 end;
 
 function TMercurioClass.GetMercurioLogs: IMercurioLogs;

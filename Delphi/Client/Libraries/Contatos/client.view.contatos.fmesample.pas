@@ -8,10 +8,11 @@ uses
   FMX.ListBox, FMX.Controls.Presentation, FMX.Edit, FMX.SearchBox, FMX.Layouts,
   client.model.listacontatos, client.serverintf.contatos, client.interfaces.contatos,
   client.resources.mercurio, client.data.contatos, client.model.contatos,
-  client.model.connection.factory;
+  client.model.connection.factory, client.classes.session,
+  client.interfaces.observerscon;
 
 type
-  TFmeContatosSampleView = class(TFrame, IContatosFrame)
+  TFmeContatosSampleView = class(TFrame, IContatosFrame, IObserverConnection)
     LstContatos: TListBox;
     ListBoxItem2: TListBoxItem;
     SearchBox1: TSearchBox;
@@ -19,7 +20,8 @@ type
     BtnUpdate: TSpeedButton;
     Label2: TLabel;
   strict private
-
+   FSessionObj: TConnectionSession;
+   FStatus: TConnectionStatus;
    FContatosData: TContatosData;
 
   private
@@ -31,11 +33,16 @@ type
     //IContatosFrame
     function GetConnected: boolean;
     function GetSelectedContact: TMyContato;
+    procedure DeleteSelected;
     procedure UpdateData;
 
   public
     { Public declarations }
-    constructor Create(Parent: TFmxObject; UpdateAction: TBasicAction); reintroduce;
+    constructor Create(const SessionObj: TConnectionSession; Parent: TFmxObject;
+       UpdateAction: TBasicAction); reintroduce;
+    //IObserverConnection
+    procedure ChangedStatus(Sender: TObject; Status: TConnectionStatus);
+
     property ContactsService: IContactsService read GetIContactsService ;
     //IContatosFrame
     property Connected: boolean read GetConnected;
@@ -49,13 +56,29 @@ implementation
 
 { TFmeContatosSampleView }
 
-constructor TFmeContatosSampleView.Create(Parent: TFmxObject; UpdateAction: TBasicAction);
+procedure TFmeContatosSampleView.ChangedStatus(Sender: TObject;
+  Status: TConnectionStatus);
+begin
+ FStatus := Status;
+ if Status = csConnected then
+   ListContacts;
+end;
+
+constructor TFmeContatosSampleView.Create(const SessionObj: TConnectionSession;
+   Parent: TFmxObject; UpdateAction: TBasicAction);
 begin
   inherited Create(nil);
+  FStatus := csInactive; //default
+  FSessionObj := SessionObj;
   self.Parent := Parent;
   self.Align := TAlignLayout.Client;
   BtnUpdate.Action := UpdateAction;
   self.Init;
+end;
+
+procedure TFmeContatosSampleView.DeleteSelected;
+begin
+  LstContatos.Items.Delete(LstContatos.Selected.Index);
 end;
 
 procedure TFmeContatosSampleView.DoOnDestroyEvent(Sender: TObject);
@@ -65,7 +88,8 @@ end;
 
 function TFmeContatosSampleView.GetConnected: boolean;
 begin
- Result := TFactoryServiceConnection.New.Connected;
+ Result := FStatus = (csConnected);
+// Result := TFactoryServiceConnection.New(FSessionObj).Connected;
 end;
 
 function TFmeContatosSampleView.GetIContactsService: IContactsService;

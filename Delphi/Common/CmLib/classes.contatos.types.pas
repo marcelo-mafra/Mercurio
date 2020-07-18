@@ -6,7 +6,7 @@ uses
  System.SysUtils;
 
 type
- TContatosListStyle = (ltSample, ltDetailed, ltFull);
+ TContatosListStyle = (ltSample, ltDetailed);
 
  TContatoStatus = class
    const

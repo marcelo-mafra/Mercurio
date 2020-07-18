@@ -40,7 +40,9 @@ contains
   client.model.connection in 'client.model.connection.pas',
   client.classes.security in 'client.classes.security.pas',
   client.model.serviceinfo in 'client.model.serviceinfo.pas',
-  client.model.connection.factory in 'client.model.connection.factory.pas';
+  client.model.connection.factory in 'client.model.connection.factory.pas',
+  client.classes.session in 'client.classes.session.pas',
+  client.model.observerscon in 'client.model.observerscon.pas';
 
 end.
 

@@ -8,13 +8,14 @@ uses
   client.interfaces.security, client.interfaces.connection, client.resources.serviceparams,
   client.resources.servicelabels, client.classes.security, client.resources.httpstatus,
   client.model.serviceinfo, client.interfaces.baseclasses, classes.exceptions.connection,
-  client.resources.connection ;
+  client.resources.connection, client.classes.session ;
 
  type
    {Classe que encapsula as funcionalidades de conexão com o serviço remoto de chat.}
    TServiceConnection = class(TMercurioClass, IServiceConnection)
      strict private
        //events implementation
+        FSessionObj: TConnectionSession;
         procedure DoOnConnect(Sender: TObject);
         procedure DoOnConnectError(Sender: TObject; E: Exception);
         procedure DoOnDisconnect(Sender: TObject);
@@ -30,13 +31,14 @@ uses
        function GetServiceInfo: IServiceInfo;
 
      public
-       constructor Create; overload;
-       constructor Create(OnConnectEvent: TOnConnectEvent; OnConnectErrorEvent:
-          TOnConnectErrorEvent; OnDisconnectEvent: TOnDisconnectEvent); overload;
+       constructor Create(const SessionObj: TConnectionSession); overload;
+       constructor Create(const SessionObj: TConnectionSession; OnConnectEvent: TOnConnectEvent;
+          OnConnectErrorEvent: TOnConnectErrorEvent;
+          OnDisconnectEvent: TOnDisconnectEvent); overload;
        destructor Destroy; override;
 
        //IServiceConnection
-       function ConnectService: boolean;
+       function ConnectService(var SessionId: string): boolean;
        procedure DisconnectService;
 
        property Connected: boolean read GetConnected ;
@@ -52,7 +54,7 @@ implementation
 
 { TServiceConnection }
 
-function TServiceConnection.ConnectService: boolean;
+function TServiceConnection.ConnectService(var SessionId: string): boolean;
 var
  NetHTTPObj: TNetHTTPService;
  IResponse: IHTTPResponse;
@@ -72,6 +74,7 @@ begin
     Result := self.Security.Authenticate('fake_user','fake_pass');
     if Result then
      begin
+      self.Security.NewSessionId('', SessionId);
       if Assigned(FOnConnect) then FOnConnect(self);
      end
     else
@@ -94,19 +97,21 @@ begin
  end;
 end;
 
-constructor TServiceConnection.Create(OnConnectEvent: TOnConnectEvent;
-    OnConnectErrorEvent: TOnConnectErrorEvent; OnDisconnectEvent: TOnDisconnectEvent);
+constructor TServiceConnection.Create(const SessionObj: TConnectionSession;
+    OnConnectEvent: TOnConnectEvent; OnConnectErrorEvent: TOnConnectErrorEvent;
+    OnDisconnectEvent: TOnDisconnectEvent);
 begin
- self.Create();
+ self.Create(SessionObj);
  //Eventos
  FOnConnect := OnConnectEvent;
  FOnConnectError := OnConnectErrorEvent;
  FOnDisconnect := OnDisconnectEvent;
 end;
 
-constructor TServiceConnection.Create;
+constructor TServiceConnection.Create(const SessionObj: TConnectionSession);
 begin
  inherited Create;
+ FSessionObj := SessionObj;
  //Service host and name
  FServiceName := TServiceLabels.ServiceName;
  FServiceHost := TServiceLabels.ServiceHost;

@@ -37,6 +37,7 @@ type
    ['{F8F1BFB4-04F9-4590-B490-0A7F261E1DE3}']
    function GetConnected: boolean;
    function GetSelectedContact: TMyContato;
+   procedure DeleteSelected;
    procedure UpdateData;
 
    property Connected: boolean read GetConnected;

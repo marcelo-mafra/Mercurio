@@ -14,8 +14,8 @@ object FmeContatosSampleView: TFmeContatosSampleView
     DefaultItemStyles.ItemStyle = ''
     DefaultItemStyles.GroupHeaderStyle = ''
     DefaultItemStyles.GroupFooterStyle = ''
-    Viewport.Width = 246.000000000000000000
-    Viewport.Height = 384.000000000000000000
+    Viewport.Width = 242.000000000000000000
+    Viewport.Height = 325.000000000000000000
     object ListBoxItem2: TListBoxItem
       ItemData.Detail = '1 min'
       ItemData.Accessory = aMore
@@ -60,19 +60,19 @@ object FmeContatosSampleView: TFmeContatosSampleView
       Align = Top
       TabOrder = 0
       Position.Y = 30.000000000000000000
-      Size.Width = 246.000000000000000000
+      Size.Width = 242.000000000000000000
       Size.Height = 25.000000000000000000
       Size.PlatformDefault = False
       TextPrompt = 'Contatos...'
     end
     object ListBoxHeader2: TListBoxHeader
-      Size.Width = 246.000000000000000000
+      Size.Width = 242.000000000000000000
       Size.Height = 30.000000000000000000
       Size.PlatformDefault = False
       TabOrder = 1
       object BtnUpdate: TSpeedButton
         Align = MostRight
-        Position.X = 216.000000000000000000
+        Position.X = 212.000000000000000000
         Size.Width = 30.000000000000000000
         Size.Height = 30.000000000000000000
         Size.PlatformDefault = False

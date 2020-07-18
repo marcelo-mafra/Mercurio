@@ -29,7 +29,7 @@ type
    function GetServiceInfo: IServiceInfo;
    function GetConnected: boolean;
 
-   function ConnectService: boolean;
+   function ConnectService(var SessionId: string): boolean;
    procedure DisconnectService;
 
    property Connected: boolean read GetConnected;

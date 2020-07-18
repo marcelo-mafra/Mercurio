@@ -4,7 +4,8 @@ interface
 
 uses
  System.Classes, FMX.Types, FMX.Forms, client.interfaces.contatos, client.model.contatos,
- client.view.contatos.fmedetailed, client.view.contatos.fmesample;
+ client.view.contatos.fmedetailed, client.view.contatos.fmesample,
+ client.classes.session;
 
 type
   TContatosFrame = (cfSample, cfDetailed);
@@ -15,8 +16,8 @@ type
   end;
 
   TFactoryFrameContatos = class
-    class function New(const Parent: TFmxObject; UpdateAction: TBasicAction;
-      Frame: TContatosFrame): TFrame;
+    class function New(const SessionObj: TConnectionSession; const Parent: TFmxObject;
+      UpdateAction: TBasicAction; Frame: TContatosFrame): TFrame;
   end;
 
 implementation
@@ -33,13 +34,13 @@ end;
 
 { TFactoryFrameContatos }
 
-class function TFactoryFrameContatos.New(const Parent: TFmxObject;
-  UpdateAction: TBasicAction; Frame: TContatosFrame): TFrame;
+class function TFactoryFrameContatos.New(const SessionObj: TConnectionSession;
+  const Parent: TFmxObject; UpdateAction: TBasicAction; Frame: TContatosFrame): TFrame;
 begin
  case Frame of
    cfSample:
     begin
-      Result := TFmeContatosSampleView.Create(Parent, UpdateAction);
+      Result := TFmeContatosSampleView.Create(SessionObj, Parent, UpdateAction);
     end;
    cfDetailed:
     begin
