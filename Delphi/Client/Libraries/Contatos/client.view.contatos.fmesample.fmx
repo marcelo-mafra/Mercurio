@@ -14,8 +14,8 @@ object FmeContatosSampleView: TFmeContatosSampleView
     DefaultItemStyles.ItemStyle = ''
     DefaultItemStyles.GroupHeaderStyle = ''
     DefaultItemStyles.GroupFooterStyle = ''
-    Viewport.Width = 242.000000000000000000
-    Viewport.Height = 325.000000000000000000
+    Viewport.Width = 246.000000000000000000
+    Viewport.Height = 384.000000000000000000
     object ListBoxItem2: TListBoxItem
       ItemData.Detail = '1 min'
       ItemData.Accessory = aMore

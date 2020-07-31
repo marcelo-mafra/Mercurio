@@ -5,12 +5,16 @@ interface
 uses
   System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants, 
   FMX.Types, FMX.Graphics, FMX.Controls, FMX.Forms, FMX.Dialogs, FMX.StdCtrls,
-  client.data.contatos, FMX.ListView.Types, FMX.ListView.Appearances,
-  FMX.ListView.Adapters.Base, Data.Bind.EngExt, Fmx.Bind.DBEngExt, System.Rtti,
-  System.Bindings.Outputs, Fmx.Bind.Editors, Data.Bind.Components,
-  Data.Bind.DBScope, FMX.ListView, client.interfaces.contatos, client.classes.session,
+  FMX.ListView.Types, FMX.ListView.Appearances, FMX.ListView.Adapters.Base,
+  Data.Bind.EngExt, Fmx.Bind.DBEngExt, System.Bindings.Outputs, Fmx.Bind.Editors,
+  Data.Bind.Components, Data.Bind.DBScope, FMX.ListView,
+  //Mercúrio units
+  client.data.contatos, client.interfaces.contatos, client.classes.session,
   client.model.connection.factory, client.serverintf.contatos,
-  client.interfaces.observerscon;
+  client.interfaces.observerscon, System.Rtti, FireDAC.Stan.Intf,
+  FireDAC.Stan.Option, FireDAC.Stan.Param, FireDAC.Stan.Error, FireDAC.DatS,
+  FireDAC.Phys.Intf, FireDAC.DApt.Intf, FireDAC.Stan.StorageBin, Data.DB,
+  FireDAC.Comp.DataSet, FireDAC.Comp.Client;
 
 type
   TFmeContatosDetailedView = class(TFrame, IContatosFrame, IObserverConnection)
@@ -18,6 +22,7 @@ type
     BindContatos: TBindSourceDB;
     BindingsList1: TBindingsList;
     LinkFillControlToField1: TLinkFillControlToField;
+    dsContatos: TFDMemTable;
   private
     { Private declarations }
     FSessionObj: TConnectionSession;
@@ -49,7 +54,7 @@ implementation
 
 function TFmeContatosDetailedView.GetConnected: boolean;
 begin
- Result := FStatus = (csConnected);
+ Result := FStatus = (TConnectionStatus.csConnected);
  //Result := TFactoryServiceConnection.New(FSessionObj).Connected;
 end;
 
@@ -63,23 +68,36 @@ end;
 
 procedure TFmeContatosDetailedView.Init;
 begin
- FStatus := csInactive;//default
+ FStatus := TConnectionStatus.csInactive;//default
+
  if not Assigned(FContatosData) then
-  FContatosData := TContatosData.Create(BindContatos);
+  begin
+   FContatosData := TContatosData.Create(BindContatos);
+   BindContatos.DataSet := self.dsContatos;// FContatosData.dsContatos;
+   LinkFillControlToField1.FillDataSource := BindContatos;
+   LinkFillControlToField1.Control := ContactsListview;
+  end;
 
  FContatosData.OnDestroy := DoOnDestroyEvent;
+ self.UpdateData;
 end;
 
 procedure TFmeContatosDetailedView.UpdateData;
+var
+ IService: IContactsService;
 begin
- if BindContatos.DataSet <> nil then BindContatos.DataSet.Refresh;
+ if (BindContatos.DataSet <> nil) and (Application.MainForm <> nil) then
+  begin
+   IService := Application.MainForm as IContactsService;
+   IService.GetMyContatos(BindContatos.DataSet);
+  end;
 end;
 
 procedure TFmeContatosDetailedView.ChangedStatus(Sender: TObject;
   Status: TConnectionStatus);
 begin
  FStatus := Status;
- if Status = csConnected then
+ if Status = TConnectionStatus.csConnected then
    self.UpdateData;
 end;
 

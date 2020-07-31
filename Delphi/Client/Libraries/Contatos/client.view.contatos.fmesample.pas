@@ -88,8 +88,7 @@ end;
 
 function TFmeContatosSampleView.GetConnected: boolean;
 begin
- Result := FStatus = (csConnected);
-// Result := TFactoryServiceConnection.New(FSessionObj).Connected;
+ Result := (FStatus = (csConnected));
 end;
 
 function TFmeContatosSampleView.GetIContactsService: IContactsService;

@@ -5,10 +5,10 @@ Coordinates=10,10,99,231
 Coordinates=11,160,82,33
 
 [BindContatos]
-Coordinates=189,55,124,159
+Coordinates=230,30,81,159
 Visible=True
 
-[ContatosData.dsContatos]
+[dsContatos]
+Coordinates=190,170,70,33
 Visible=False
-Coordinates=128,1,140,33
 

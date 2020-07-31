@@ -75,6 +75,7 @@ begin
     if Result then
      begin
       self.Security.NewSessionId('', SessionId);
+      FSessionObj := TConnectionSession.Create(SessionId);
       if Assigned(FOnConnect) then FOnConnect(self);
      end
     else

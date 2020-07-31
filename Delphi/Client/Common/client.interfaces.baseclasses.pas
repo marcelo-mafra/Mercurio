@@ -3,15 +3,14 @@ unit client.interfaces.baseclasses;
 interface
 
 uses
- System.SysUtils, System.Classes, classes.logs.types, classes.logs.factory, client.resources.mercurio,
- client.interfaces.application, FMX.Types, FMX.Forms;
+ System.SysUtils, System.Classes, classes.logs.types, FMX.Types, FMX.Forms,
+ classes.logs.factory, client.resources.mercurio, client.interfaces.application;
 
 type
  MsgIdentifier = int64;
 
  //Classe abstrata usada como classe-base para diversas listas de objetos.
  TListaObjetos = class
-
    public
      procedure AddItem(value: TObject); virtual; abstract;
  end;

@@ -6,7 +6,7 @@ uses
   System.SysUtils, System.Classes, Soap.InvokeRegistry, client.classes.json,
   client.interfaces.common, client.interfaces.baseclasses, client.interfaces.contatos,
   client.serverintf.contatos, client.interfaces.application, client.resources.contatos,
-  client.model.listacontatos, client.data.contatos, Data.DB, Variants,
+  client.model.listacontatos, Data.DB, System.Variants,
   classes.contatos.types, client.resources.contatos.dataobjects;
 
 type
@@ -15,7 +15,6 @@ type
      private
        FOnNewContatoEvent: TNewContatoNotifyEvent;
        FOnDeleteContatoEvent: TDeleteContatoNotifyEvent;
-       FContatosData: TContatosData;
 
        function DoGetMyContatos: string;
        procedure DoJsonToObject(JsonData: string; Obj: TObject; Model: TTransformModel);
@@ -49,13 +48,10 @@ begin
  inherited Create;
  FOnNewContatoEvent := OnNewContato;
  FOnDeleteContatoEvent := OnDeleteContato;
- if not Assigned(FContatosData) then
-   FContatosData := TContatosData.Create(nil);
 end;
 
 destructor TContatosModel.Destroy;
 begin
-  if Assigned(FContatosData) then FreeAndNil(FContatosData);
   inherited Destroy;
 end;
 
@@ -70,9 +66,6 @@ begin
    if (IService <> nil) and not (Result.IsEmpty) then
      MercurioLogs.RegisterRemoteCallSucess(TContatosServerMethods.GetContatosSucess, Result);
 
-  {Não dar "FreeAndNil" em ContatoObj, uma vez que foi adicionado na lista
-   da variável List. FreeAndNil aqui vai eliminar de List o último ponteiro
-   associado à variável ContatoObj. }
  except
   on E: Exception do
    begin
@@ -180,8 +173,7 @@ procedure TContatosModel.GetMyContatos(Dataset: TDataset);
 var
  JsonData: string;
 begin
- if Dataset = nil then
-  Exit;
+ if Dataset = nil then Exit;
 
  JsonData := DoGetMyContatos;
  if not (JsonData.IsEmpty) then

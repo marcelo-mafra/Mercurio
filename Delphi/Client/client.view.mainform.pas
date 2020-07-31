@@ -27,7 +27,7 @@ uses
   client.resources.contatos.dataobjects;
 
 type
-  TFrmMainForm = class(TForm, IChatApplication, IMercurioLogs)
+  TFrmMainForm = class(TForm, IChatApplication, IContactsService, IMercurioLogs)
     ActList: TActionList;
     ActConnectService: TAction;
     ActDisconnectService: TAction;
@@ -126,7 +126,7 @@ type
 
     //IChatApplication
     property Connected: boolean read GetConnected;
-    property ContatosService: IContactsService read GetContatosService;
+    property ContatosService: IContactsService read GetContatosService implements IContactsService;
     property Dialogs: IDlgMessage read GetDialogs;
     property MercurioLogs: IMercurioLogs read GetMercurioLogs implements IMercurioLogs;
     property Title: string read GetTitle;
@@ -329,7 +329,6 @@ begin
  case ContatosStyle of
    ltSample: (FContatosSample as IContatosFrame).UpdateData;
    ltDetailed: (FContatosDetailed as IContatosFrame).UpdateData;
-  // ltFull: Result := nil;
  end;
 end;
 
@@ -370,7 +369,7 @@ begin
  FContatosDetailed := TFactoryFrameContatos.New(FSessionObj, TabContatosListView, nil, cfDetailed);
  FContatosSample := TFactoryFrameContatos.New(FSessionObj, TabContatosListBox, ActUpdateContatos, cfSample);
  //Set these objects as observers for the connection status.
-  FObserversConnection := TObserversConnection.New;
+ FObserversConnection := TObserversConnection.New;
  FObserversConnection.Add(FContatosDetailed as IObserverConnection);
  FObserversConnection.Add(FContatosSample as IObserverConnection);
 
