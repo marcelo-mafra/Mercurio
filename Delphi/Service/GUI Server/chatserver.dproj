@@ -139,9 +139,12 @@
         <DCCReference Include="server.chatserver.intf.pas"/>
         <DCCReference Include="server.contatos.intf.pas"/>
         <DCCReference Include="server.contatos.impl.pas"/>
-        <DCCReference Include="server.data.contatos.pas"/>
+        <DCCReference Include="server.contatos.data.pas"/>
         <DCCReference Include="server.serviceinfo.intf.pas"/>
         <DCCReference Include="server.serviceinfo.impl.pas"/>
+        <DCCReference Include="server.permissions.intf.pas"/>
+        <DCCReference Include="server.permissions.impl.pas"/>
+        <DCCReference Include="server.permissions.data.pas"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>

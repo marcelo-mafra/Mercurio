@@ -36,6 +36,9 @@
         <Projects Include="Client\Libraries\ChatMessages\chatmessages.dproj">
             <Dependencies/>
         </Projects>
+        <Projects Include="Client\Libraries\Permissions\permissions.dproj">
+            <Dependencies/>
+        </Projects>
     </ItemGroup>
     <ProjectExtensions>
         <Borland.Personality>Default.Personality.12</Borland.Personality>
@@ -143,14 +146,23 @@
     <Target Name="chatmessages:Make">
         <MSBuild Projects="Client\Libraries\ChatMessages\chatmessages.dproj" Targets="Make"/>
     </Target>
+    <Target Name="permissions">
+        <MSBuild Projects="Client\Libraries\Permissions\permissions.dproj"/>
+    </Target>
+    <Target Name="permissions:Clean">
+        <MSBuild Projects="Client\Libraries\Permissions\permissions.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="permissions:Make">
+        <MSBuild Projects="Client\Libraries\Permissions\permissions.dproj" Targets="Make"/>
+    </Target>
     <Target Name="Build">
-        <CallTarget Targets="chatserver;mercurio;resources;cmlib;logwrt;nethttp;interfaces;servicecon;dlgmessages;contatos;chatmessages"/>
+        <CallTarget Targets="chatserver;mercurio;resources;cmlib;logwrt;nethttp;interfaces;servicecon;dlgmessages;contatos;chatmessages;permissions"/>
     </Target>
     <Target Name="Clean">
-        <CallTarget Targets="chatserver:Clean;mercurio:Clean;resources:Clean;cmlib:Clean;logwrt:Clean;nethttp:Clean;interfaces:Clean;servicecon:Clean;dlgmessages:Clean;contatos:Clean;chatmessages:Clean"/>
+        <CallTarget Targets="chatserver:Clean;mercurio:Clean;resources:Clean;cmlib:Clean;logwrt:Clean;nethttp:Clean;interfaces:Clean;servicecon:Clean;dlgmessages:Clean;contatos:Clean;chatmessages:Clean;permissions:Clean"/>
     </Target>
     <Target Name="Make">
-        <CallTarget Targets="chatserver:Make;mercurio:Make;resources:Make;cmlib:Make;logwrt:Make;nethttp:Make;interfaces:Make;servicecon:Make;dlgmessages:Make;contatos:Make;chatmessages:Make"/>
+        <CallTarget Targets="chatserver:Make;mercurio:Make;resources:Make;cmlib:Make;logwrt:Make;nethttp:Make;interfaces:Make;servicecon:Make;dlgmessages:Make;contatos:Make;chatmessages:Make;permissions:Make"/>
     </Target>
     <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
 </Project>

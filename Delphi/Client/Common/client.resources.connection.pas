@@ -17,11 +17,11 @@ type
   TConnectionError = class
     const
       ConnectionFailure   = 'A conexão com o serviço remoto não pode ser iniciada.'; //General message
-      InvalidUrl        = 'O endereço remoto é inválido!';
-      NoServiceResponse = 'O serviço remoto não respondeu a uma requisição feita.';
-      StatusBadRequest  = 'Bad request';
-      HttpStatus        = 'Ocorreu uma falha na comunicação com o serviço remoto. ' +
-                          'Código de erro: %d. Mensagem: %s';
+      InvalidUrl          = 'O endereço remoto é inválido!';
+      NoServiceResponse   = 'O serviço remoto não respondeu a uma requisição feita.';
+      StatusBadRequest    = 'Bad request';
+      HttpStatus          = 'Ocorreu uma falha na comunicação com o serviço remoto. ' +
+                            'Código de erro: %d. Mensagem: %s';
   end;
 
 implementation

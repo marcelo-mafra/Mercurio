@@ -11,9 +11,12 @@ uses
   server.chatserver.intf in 'server.chatserver.intf.pas',
   server.contatos.intf in 'server.contatos.intf.pas',
   server.contatos.impl in 'server.contatos.impl.pas',
-  server.data.contatos in 'server.data.contatos.pas',
+  server.contatos.data in 'server.contatos.data.pas',
   server.serviceinfo.intf in 'server.serviceinfo.intf.pas',
-  server.serviceinfo.impl in 'server.serviceinfo.impl.pas';
+  server.serviceinfo.impl in 'server.serviceinfo.impl.pas',
+  server.permissions.intf in 'server.permissions.intf.pas',
+  server.permissions.impl in 'server.permissions.impl.pas',
+  server.permissions.data in 'server.permissions.data.pas';
 
 {$R *.res}
 

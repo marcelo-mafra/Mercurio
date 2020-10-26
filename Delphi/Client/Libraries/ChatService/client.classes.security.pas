@@ -41,6 +41,11 @@ begin
    if Assigned(FOnAuthenticateSucess) then FOnAuthenticateSucess(self, UserName, Password);
 
  except
+  on E: EAuthenticationError do
+   begin
+    if Assigned(FOnAuthenticateFailure) then
+     FOnAuthenticateFailure(self, UserName, Password, E);
+   end;
   on E: Exception do
    begin
     Result := False;

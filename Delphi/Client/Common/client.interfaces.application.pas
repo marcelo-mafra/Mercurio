@@ -3,7 +3,7 @@ unit client.interfaces.application;
 interface
 
 uses
- client.interfaces.common, classes.logs.types;
+ client.interfaces.common, classes.logs.types, classes.permissions.types;
 
  type
 
@@ -16,13 +16,14 @@ uses
   end;
 
 
- //Abstrai o a aplicação cliente de chat.
+ //Abstrai a aplicação cliente de chat.
  IChatApplication = interface(IMercurioInterface)
    ['{B427E7E4-808D-412D-83E5-579DC86510BD}']
     function GetConnected: boolean;
     function GetDialogs: IDlgMessage;
     function GetMercurioLogs: IMercurioLogs;
     function GetTitle: string;
+    function HasPermission(const Feature: TMercurioFeature): boolean;
 
     property Connected: boolean read GetConnected;
     property Dialogs: IDlgMessage read GetDialogs;

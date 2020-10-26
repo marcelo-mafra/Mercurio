@@ -5,7 +5,7 @@ unit server.contatos.impl;
 interface
 
 uses Soap.InvokeRegistry, System.Types, Soap.XSBuiltIns, server.contatos.intf,
- System.SysUtils, System.Json, System.Classes, server.data.contatos;
+ System.SysUtils, System.Json, System.Classes, server.contatos.data;
 
 type
 

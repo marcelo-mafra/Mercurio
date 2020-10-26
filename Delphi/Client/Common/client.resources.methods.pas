@@ -9,17 +9,17 @@ uses
 {    Constantes relacionadas à execução de métodos remotos de "domínios" gerais.}
     TSOAPEventsMsg = class
       const
-        AfterExecute = 'SOAP protocol: AfterExecute event. Method name: %s';
-        RequestCompleted = 'SOAP protocol: RequestCompleted event';
-        RequestError  = 'SOAP protocol: RequestError event';
+        AfterExecute      = 'SOAP protocol: AfterExecute event. Method name: %s';
+        RequestCompleted  = 'SOAP protocol: RequestCompleted event';
+        RequestError      = 'SOAP protocol: RequestError event';
     end;
 
 {    Constantes relacionadas à execução de métodos remotos de "domínios" gerais.}
     TServerMethodsCall = class
       const
         RemoteMethodsSucess = 'A execução de um método remoto foi feita com sucesso!';
-        RemoteMethodSucess = 'A execução do método remoto "%s" foi feita com sucesso!';
-        RemoteMethodError  = 'Ocorreu um erro na execução do método remoto "%s"!';
+        RemoteMethodSucess  = 'A execução do método remoto "%s" foi feita com sucesso!';
+        RemoteMethodError   = 'Ocorreu um erro na execução do método remoto "%s"!';
     end;
 
 implementation

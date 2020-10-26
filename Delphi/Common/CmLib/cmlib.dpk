@@ -36,6 +36,7 @@ contains
   classes.exceptions in 'classes.exceptions.pas',
   classes.logs.params in 'classes.logs.params.pas',
   classes.exceptions.connection in 'classes.exceptions.connection.pas',
-  classes.contatos.types in 'classes.contatos.types.pas';
+  classes.contatos.types in 'classes.contatos.types.pas',
+  classes.permissions.types in 'classes.permissions.types.pas';
 
 end.

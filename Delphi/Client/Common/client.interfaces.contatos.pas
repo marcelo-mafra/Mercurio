@@ -7,8 +7,6 @@ uses
  client.serverintf.contatos, Data.DB;
 
 type
- //Define que a listagem será feita por meio de datasets ou listas de objetos.
- TTransformModel = (tmDataset, tmListObject);
 
  //Tipo que define um evento de inserção de um novo contato.
  TNewContatoNotifyEvent = procedure(value: TMyContato) of object;

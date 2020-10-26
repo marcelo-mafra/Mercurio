@@ -162,6 +162,7 @@
         <DCCReference Include="client.serverintf.contatos.pas"/>
         <DCCReference Include="client.serverintf.soaputils.pas"/>
         <DCCReference Include="client.serverintf.serviceinfo.pas"/>
+        <DCCReference Include="client.serverintf.permissions.pas"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>
@@ -188,12 +189,6 @@
                 </Source>
             </Delphi.Personality>
             <Deployment Version="3">
-                <DeployFile LocalName="..\..\..\BIN\Win64\Debug\nethttp.rsm" Configuration="Debug" Class="DebugSymbols">
-                    <Platform Name="Win64">
-                        <RemoteName>nethttp.rsm</RemoteName>
-                        <Overwrite>true</Overwrite>
-                    </Platform>
-                </DeployFile>
                 <DeployFile LocalName="$(BDS)\Redist\osx32\libcgunwind.1.0.dylib" Class="DependencyModule">
                     <Platform Name="OSX32">
                         <Overwrite>true</Overwrite>
