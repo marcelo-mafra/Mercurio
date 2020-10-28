@@ -148,7 +148,7 @@ var
 begin
   if aStream <> nil then
   begin
-    StrStream := TStringStream.Create('');
+    StrStream := TStringStream.Create(string.Empty);
 
     try
       StrStream.CopyFrom(aStream, 0);  // No need to position at 0 nor provide size
@@ -159,7 +159,7 @@ begin
     end;
   end
   else
-    Result := '';
+    Result := string.Empty;
 end;
 
 

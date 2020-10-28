@@ -69,7 +69,6 @@ begin
  Result := Value;
  UtilsObj := TPermissionsDataUtils.Create;
 
-
  try
    Dataset := UtilsObj.CreateDataset;
     with Dataset do
@@ -99,16 +98,12 @@ var
   Dataset: TFDMemTable;
   JsonObj: TJsonObject;
   UtilsObj: TPermissionsDataUtils;
-//  StreamObj: TStringStream;
 begin
  Result := TStringList.Create;
  UtilsObj := TPermissionsDataUtils.Create;
- //StreamObj := TStringStream.Create('', TEncoding.UTF8);
 
  try
     Dataset := UtilsObj.CreateDataset;
-    //Dataset.SaveToStream(StreamObj, sfJson);
-    //Result.LoadFromStream(StreamObj, TEncoding.UTF8);
 
     while not Dataset.Eof do
      begin

@@ -7,10 +7,9 @@ uses
   System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants,
   System.Rtti, System.Actions, System.Bindings.Outputs, System.ImageList,
   //FMX units
-  FMX.Types, FMX.Controls, FMX.Forms, FMX.Graphics, FMX.Dialogs,
-  FMX.ActnList, FMX.ImgList, FMX.Controls.Presentation, FMX.StdCtrls,
-  FMX.Objects, FMX.StdActns, FMX.ListBox, FMX.Layouts, FMX.MultiView, FMX.TabControl,
-  FMX.Edit, FMX.SearchBox, Fmx.Bind.DBEngExt, Fmx.Bind.Editors,
+  FMX.Types, FMX.Controls, FMX.Forms, FMX.ActnList, FMX.ImgList, FMX.Controls.Presentation,
+  FMX.StdCtrls, FMX.Objects, FMX.StdActns, FMX.ListBox, FMX.Layouts, FMX.MultiView,
+  FMX.TabControl, FMX.Edit, FMX.SearchBox, Fmx.Bind.DBEngExt, Fmx.Bind.Editors,
 
   {Mercúrio units listed by domains or specializations.}
   //Connection
@@ -27,7 +26,7 @@ uses
   client.resources.contatos.dataobjects,
   //Permissões
   client.interfaces.permissions, client.model.permissions.factory,
-  classes.permissions.types, client.serverintf.permissions;
+  classes.permissions.types;
 
 type
   TFrmMainForm = class(TForm, IChatApplication, IContactsService, IMercurioLogs)
@@ -95,22 +94,21 @@ type
     procedure MultiView1StartHiding(Sender: TObject);
 
   strict private
-   FAllowedFeatures: TMercurioFeatures;
-   FSessionObj: TConnectionSession;
-   FNavegateObj: TNavegateList;
-   FParamsObj: TLogsParams;
-   FContatosStyle: TContatosListStyle;
-   FContatosDetailed, FContatosSample: TFrame;
-   FObserversConnection: IObserversConnection;
+    FAllowedFeatures: TMercurioFeatures;
+    FSessionObj: TConnectionSession;
+    FNavegateObj: TNavegateList;
+    FParamsObj: TLogsParams;
+    FContatosStyle: TContatosListStyle;
+    FContatosDetailed, FContatosSample: TFrame;
+    FObserversConnection: IObserversConnection;
 
    procedure DoOnNewContato(value: TMyContato);
    function DoHasPermission(const Feature: TMercurioFeature): boolean;
-   procedure RegisterPermission(Feature: TMercurioFeature; FeatureName, Usuario: string);
 
   private
     { Private declarations }
     procedure ConfigureElements(const ShowText: boolean);
-    procedure NavegateTo(Item: TViewItem);
+    procedure NavegateTo(Item: TViewItem; const Added: boolean = True);
     function GetPermissionsService: IPermissionsService;
     function GetServiceConnection: IServiceConnection;
     function GetSelectedContact: TMyContato;
@@ -175,12 +173,12 @@ end;
 
 procedure TFrmMainForm.ActBackExecute(Sender: TObject);
 begin
- NavegateTo(NavegateObj.PreviousItem);
+ NavegateTo(NavegateObj.PreviousItem, False);
 end;
 
 procedure TFrmMainForm.ActBackUpdate(Sender: TObject);
 begin
- TAction(Sender).Enabled := not (NavegateObj.IsEmpty);
+ TAction(Sender).Enabled := not (NavegateObj.IsEmpty) and (NavegateObj.CurrentIndex > TNavConst.MinValue);
 end;
 
 procedure TFrmMainForm.ActConnectServiceExecute(Sender: TObject);
@@ -191,9 +189,9 @@ begin
   begin
     FSessionObj := TConnectionSession.Create(SessionId);
     FObserversConnection.NotifyObjects(Sender, csConnected);
-    FAllowedFeatures := [];
-   // self.RegisterPermission(mfListaContatos, 'Novo contato', 'Marcelo');
-    self.PermissionsService.GetMyPermissions(FAllowedFeatures);
+    self.FAllowedFeatures := [];
+    //self.RegisterPermission(mfListaContatos, 'Novo contato', 'Marcelo');
+    self.PermissionsService.GetMyPermissions(self.FAllowedFeatures);
   end;
 end;
 
@@ -219,7 +217,7 @@ end;
 procedure TFrmMainForm.ActDeleteContatoUpdate(Sender: TObject);
 begin
  TAction(Sender).Enabled := (Connected) and (TabMain.ActiveTab = TabContatos) and
-    (SelectedContact <> nil) and (DoHasPermission(mfDeleteContato));
+    (SelectedContact <> nil) and (self.HasPermission(mfDeleteContato));
 end;
 
 procedure TFrmMainForm.ActDisconnectServiceExecute(Sender: TObject);
@@ -295,7 +293,7 @@ end;
 
 procedure TFrmMainForm.ActServiceInfoUpdate(Sender: TObject);
 begin
- TAction(Sender).Enabled := Connected;
+ TAction(Sender).Enabled := Connected and self.HasPermission(mfServiceInfo)
 end;
 
 procedure TFrmMainForm.ActSaveContatoDataExecute(Sender: TObject);
@@ -321,7 +319,7 @@ end;
 procedure TFrmMainForm.ActSaveContatoDataUpdate(Sender: TObject);
 begin
  TAction(Sender).Enabled := (Connected) and not (EdtFirstName.Text.IsEmpty)
-   and not (EdtLastName.Text.IsEmpty) and (DoHasPermission(mfInsertContato));
+   and not (EdtLastName.Text.IsEmpty) and (self.HasPermission(mfInsertContato));
 end;
 
 procedure TFrmMainForm.ActTabContactsExecute(Sender: TObject);
@@ -332,7 +330,7 @@ end;
 procedure TFrmMainForm.ActTabContactsUpdate(Sender: TObject);
 begin
  TAction(Sender).Enabled := (Connected) //and (TabMain.ActiveTab <> TabContatos)
-   and (DoHasPermission(mfListaContatos));
+   and (self.HasPermission(mfListaContatos));
 end;
 
 procedure TFrmMainForm.ActTabNewContactExecute(Sender: TObject);
@@ -348,7 +346,7 @@ end;
 procedure TFrmMainForm.ActUpdateContatosExecute(Sender: TObject);
 begin
  case ContatosStyle of
-   ltSample: (FContatosSample as IContatosFrame).UpdateData;
+   ltSample:   (FContatosSample as IContatosFrame).UpdateData;
    ltDetailed: (FContatosDetailed as IContatosFrame).UpdateData;
  end;
 end;
@@ -396,7 +394,7 @@ begin
 
  PnlServiceInfo.Visible := False;
  ConfigureElements(False);
- NavegateTo(viContatos);
+ //NavegateTo(viContatos);
 end;
 
 procedure TFrmMainForm.FormDestroy(Sender: TObject);
@@ -428,7 +426,7 @@ function TFrmMainForm.GetMercurioLogs: IMercurioLogs;
 begin
 {Retorna uma interface que abstrai recursos de geração de registros de logs para
  toda a aplicação.}
- Result := TFactoryLogs.New(ParamsFile, ParamsObj.Folder, ParamsObj.CurrentFile,
+ Result := TFactoryLogs.New(self.ParamsFile, ParamsObj.Folder, ParamsObj.CurrentFile,
     TServiceLabels.ServiceName, ParamsObj.MaxFileSize);
 end;
 
@@ -472,45 +470,30 @@ begin
  ConfigureElements(True);
 end;
 
-procedure TFrmMainForm.NavegateTo(Item: TViewItem);
+procedure TFrmMainForm.NavegateTo(Item: TViewItem; const Added: boolean);
+var
+ NewItem: TTabItem;
 begin
  case Item of
-   viContatos:    TabMain.ActiveTab := TabContatos;
-   viNovoContato: TabMain.ActiveTab := TabNewContact;
-   viServiceInfo: TabMain.ActiveTab := TabServiceInfo;
-   viNone: Exit;
+   viContatos:    NewItem := TabContatos;
+   viNovoContato: NewItem := TabNewContact;
+   viServiceInfo: NewItem := TabServiceInfo;
+   viNone:        NewItem := nil;
  end;
 
- FNavegateObj.AddItem(Item);
-end;
-
-procedure TFrmMainForm.RegisterPermission(Feature: TMercurioFeature;
-  FeatureName, Usuario: string);
-var
- PermissionObj: TMyPermission;
-begin
- if Connected then
+ if (NewItem <> nil) and (NewItem <> TabMain.ActiveTab) then
   begin
-    PermissionObj := TMyPermission.Create;
-
-    try
-      PermissionObj.FeatureId := Integer(Feature);
-      PermissionObj.FeatureName := FeatureName;
-      PermissionObj.Usuario := Usuario;
-      PermissionObj.Enabled := True;
-      PermissionObj := PermissionsService.IPermission.NewPermission(PermissionObj);
-
-    finally
-     FreeAndNil(PermissionObj);
-    end;
+   TabMain.ActiveTab := NewItem;
+   if Added then FNavegateObj.AddItem(Item);
   end;
-
 end;
 
 procedure TFrmMainForm.SetContatosStyle(value: TContatosListStyle);
 begin
  FContatosStyle := value;
 end;
+
+
 
 {initialization
 RegisterFmxClasses([TFrmMainForm]);}

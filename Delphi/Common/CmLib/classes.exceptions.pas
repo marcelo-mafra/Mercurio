@@ -12,7 +12,7 @@ type
    constructor Create; virtual; abstract;
  end;
 
- EJsonMessageTransf    = class(EMercurioException)
+ EJsonMessageTransf = class(EMercurioException)
   public
    constructor Create; override;
  end;

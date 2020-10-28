@@ -6,6 +6,12 @@ uses Soap.InvokeRegistry, System.Types, Soap.XSBuiltIns, server.permissions.intf
  System.SysUtils, System.Json, System.Classes, server.permissions.data;
 
 type
+  TJsonConsts = class //do not localize!
+    const
+      ArrayPermissoes = '{"ArrayPermissoes":[';
+      JsonTerminator  = ',';
+      ArrayTerminator = ']}';
+  end;
 
   { TMercurioPermissionsServer }
   TMercurioPermissionsServer = class(TInvokableClass, IMercurioPermissionsServer)
@@ -24,8 +30,8 @@ var
  JDocumment: TStringStream;
  StrData: TStringList;
 begin
-  JDocumment := TStringStream.Create('', TEncoding.UTF8);
-  JDocumment.WriteString('{"ArrayPermissoes":[');
+  JDocumment := TStringStream.Create(string.Empty, TEncoding.UTF8);
+  JDocumment.WriteString(TJsonConsts.ArrayPermissoes);
   StrData := TPermissionsData.GetPermissions;
 
   try
@@ -34,13 +40,13 @@ begin
    for I := 0 to StrData.Count - 1 do
     begin
      if I < StrData.Count - 1 then
-      JDocumment.WriteString(StrData.Strings[I] + ',')
+      JDocumment.WriteString(StrData.Strings[I] + TJsonConsts.JsonTerminator)
      else
       JDocumment.WriteString(StrData.Strings[I]);
     end;
     end;
  //Escreve o símbolo de fim do conjunto no padrão json.
-  JDocumment.WriteString(']}');
+  JDocumment.WriteString(TJsonConsts.ArrayTerminator);
   Result := JDocumment.DataString;
 
   finally

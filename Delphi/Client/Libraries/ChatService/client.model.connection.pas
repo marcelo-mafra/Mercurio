@@ -55,6 +55,9 @@ implementation
 { TServiceConnection }
 
 function TServiceConnection.ConnectService(var SessionId: string): boolean;
+const
+ sUsuario = 'fake_user';
+ sSenha   = 'fake_pass';
 var
  NetHTTPObj: TNetHTTPService;
  IResponse: IHTTPResponse;
@@ -71,10 +74,10 @@ begin
 
   if Result then
    begin //Dispara o evento de OnConnect
-    Result := self.Security.Authenticate('fake_user','fake_pass');
+    Result := self.Security.Authenticate(sUsuario, sSenha);
     if Result then
      begin
-      self.Security.NewSessionId('', SessionId);
+      self.Security.NewSessionId(string.Empty, SessionId);
       FSessionObj := TConnectionSession.Create(SessionId);
       if Assigned(FOnConnect) then FOnConnect(self);
      end
@@ -82,7 +85,7 @@ begin
       raise EAuthenticationError.Create;
    end
   else
-    raise Exception.Create('');
+    raise Exception.Create(string.Empty);
 
   if Assigned(NetHTTPObj) then FreeAndNil(NetHTTPObj);
 

@@ -6,7 +6,17 @@ uses
  System.SysUtils, Generics.Collections;
 
 type
+  {Representam "views" acessadas ao longo da navegação pelo aplicativo.}
   TViewItem = (viNone, viContatos, viNovoContato, viProfile, viServiceInfo);
+
+  {Constantes usadas pela classe TNavegateList.}
+  TNavConst = class
+    const
+     InitialValue = -1;
+     MinValue = 0;
+
+  end;
+
   {Classe que monta uma lista de "páginas" navegadas durante a sessão de uso
    do Mercúrio.}
   TNavegateList = class
@@ -45,7 +55,7 @@ end;
 constructor TNavegateList.Create;
 begin
  FList := TList<TViewItem>.Create;
-
+ FCurrentIndex := TNavConst.InitialValue;
  FCurrentItem := viNone;
 end;
 
@@ -58,10 +68,12 @@ end;
 
 function TNavegateList.FindObject(Index: integer): TViewItem;
 begin
- if Index >= 0 then
-  Result := FList.Items[Index]
+ if Index >= TNavConst.MinValue then Result := FList.Items[Index]
  else
-  Result := viNone;
+   Result := viNone;
+
+ FCurrentIndex := Index;
+ FCurrentItem := Result;
 end;
 
 function TNavegateList.GetCount: integer;
@@ -71,12 +83,15 @@ end;
 
 function TNavegateList.GetIsEmpty: boolean;
 begin
- Result := FList.Count = 0;
+ Result := FList.Count = TNavConst.MinValue;
 end;
 
 function TNavegateList.GetPreviousItem: TViewItem;
 begin
- Result := self.FindObject(Pred(CurrentIndex));
+ if CurrentIndex >= TNavConst.MinValue then
+   Dec(FCurrentIndex);
+
+ Result := self.FindObject(CurrentIndex);
 end;
 
 end.

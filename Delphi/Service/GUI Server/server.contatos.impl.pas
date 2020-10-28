@@ -8,6 +8,12 @@ uses Soap.InvokeRegistry, System.Types, Soap.XSBuiltIns, server.contatos.intf,
  System.SysUtils, System.Json, System.Classes, server.contatos.data;
 
 type
+  TJsonConsts = class //do not localize!
+    const
+      ArrayContatos = '{"ArrayContatos":[';
+      JsonTerminator  = ',';
+      ArrayTerminator = ']}';
+  end;
 
   { TMercurioContatosServer }
   TMercurioContatosServer = class(TInvokableClass, IMercurioContatosServer)
@@ -31,8 +37,8 @@ var
  JDocumment: TStringStream;
  StrData: TStringList;
 begin
-  JDocumment := TStringStream.Create('', TEncoding.UTF8);
-  JDocumment.WriteString('{"ArrayContatos":[');
+  JDocumment := TStringStream.Create(string.Empty, TEncoding.UTF8);
+  JDocumment.WriteString(TJsonConsts.ArrayContatos);
   StrData := TContatosData.GetContatos;
 
   try
@@ -41,13 +47,13 @@ begin
    for I := 0 to StrData.Count - 1 do
     begin
      if I < StrData.Count - 1 then
-      JDocumment.WriteString(StrData.Strings[I] + ',')
+      JDocumment.WriteString(StrData.Strings[I] + TJsonConsts.JsonTerminator)
      else
       JDocumment.WriteString(StrData.Strings[I]);
     end;
     end;
  //Escreve o símbolo de fim do conjunto no padrão json.
-  JDocumment.WriteString(']}');
+  JDocumment.WriteString(TJsonConsts.ArrayTerminator);
   Result := JDocumment.DataString;
 
   finally

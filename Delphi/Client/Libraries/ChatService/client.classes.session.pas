@@ -36,7 +36,6 @@ end;
 
 destructor TConnectionSession.Destroy;
 begin
-
   inherited;
 end;
 

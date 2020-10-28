@@ -6,7 +6,7 @@ uses
  System.SysUtils;
 
 type
- TMercurioFeature = (mfListaContatos, mfInsertContato, mfDeleteContato);
+ TMercurioFeature = (mfListaContatos, mfInsertContato, mfDeleteContato, mfServiceInfo);
 
  TMercurioFeatures = set of TMercurioFeature;
 

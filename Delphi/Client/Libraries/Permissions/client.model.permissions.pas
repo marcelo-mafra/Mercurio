@@ -53,7 +53,7 @@ implementation
 
 constructor TPermissionsModel.Create;
 begin
- FFeatureName := '';
+ FFeatureName := string.Empty;
  FEnabled := False;
  self.Reset;
  inherited Create;
@@ -104,7 +104,6 @@ begin
     begin
      self.Reset; //Limpa o set de features permitidas
      Counter := TNetJsonUtils.GetObjectCount(JsonData, TPermissionsJosonData.ArrayName);
-
      SetLength(DataValues, 4);
 
      for I := 0 to Counter - 1 do
