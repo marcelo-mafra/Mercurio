@@ -17,6 +17,12 @@ type
    constructor Create; override;
  end;
 
+ //Exceçao relaciona a uma lista de objetos desconhecida ou inválida
+ EInvalidObjectList = class(EMercurioException)
+  public
+   constructor Create; override;
+ end;
+
 implementation
 
 
@@ -29,5 +35,13 @@ begin
 end;
 
 
+
+{ EInvalidObjectList }
+
+constructor EInvalidObjectList.Create;
+begin
+  inherited;
+  Message := TChatMessages.InvalidObjectList;
+end;
 
 end.

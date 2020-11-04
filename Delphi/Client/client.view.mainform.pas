@@ -26,7 +26,7 @@ uses
   client.resources.contatos.dataobjects,
   //Permissões
   client.interfaces.permissions, client.model.permissions.factory,
-  classes.permissions.types;
+  classes.permissions.types, client.model.listapermissions;
 
 type
   TFrmMainForm = class(TForm, IChatApplication, IContactsService, IMercurioLogs)
@@ -94,7 +94,7 @@ type
     procedure MultiView1StartHiding(Sender: TObject);
 
   strict private
-    FAllowedFeatures: TMercurioFeatures;
+    FAllowedFeaturesObj: TListaPermissions;
     FSessionObj: TConnectionSession;
     FNavegateObj: TNavegateList;
     FParamsObj: TLogsParams;
@@ -132,7 +132,6 @@ type
     property ContatosStyle: TContatosListStyle read FContatosStyle write SetContatosStyle;
 
     //IChatApplication
-    property AllowedFeatures: TMercurioFeatures read FAllowedFeatures;
     property Connected: boolean read GetConnected;
     property ContatosService: IContactsService read GetContatosService implements IContactsService;
     property Dialogs: IDlgMessage read GetDialogs;
@@ -157,7 +156,7 @@ uses client.view.mainform.helpers;
 
 function TFrmMainForm.DoHasPermission(const Feature: TMercurioFeature): boolean;
 begin
- Result := Feature in FAllowedFeatures;
+ Result := (Assigned(FAllowedFeaturesObj)) and (FAllowedFeaturesObj.HasPermission(Feature));
 end;
 
 {Implementação de TFrmMainForm para uma série de eventos disponibilizados por
@@ -189,9 +188,8 @@ begin
   begin
     FSessionObj := TConnectionSession.Create(SessionId);
     FObserversConnection.NotifyObjects(Sender, csConnected);
-    self.FAllowedFeatures := [];
     //self.RegisterPermission(mfListaContatos, 'Novo contato', 'Marcelo');
-    self.PermissionsService.GetMyPermissions(self.FAllowedFeatures);
+    self.PermissionsService.GetMyPermissions(FAllowedFeaturesObj);
   end;
 end;
 
@@ -225,6 +223,7 @@ begin
  try
    ServiceConnection.DisconnectService;
    FObserversConnection.NotifyObjects(Sender, csInactive);
+   FAllowedFeaturesObj.Clear;
 
  finally
    if Assigned(FSessionObj) then FreeAndNil(FSessionObj);
@@ -383,6 +382,7 @@ procedure TFrmMainForm.FormCreate(Sender: TObject);
 begin
  FNavegateObj := TNavegateList.Create;
  FParamsObj := TLogsParams.Create(ParamsFile);
+ FAllowedFeaturesObj := TListaPermissions.Create;
 
 { Cria os frames de dados de contatos e os adiciona como "observers da conexão".}
  FContatosDetailed := TFactoryFrameContatos.New(FSessionObj, TabContatosListView, nil, cfDetailed);
@@ -403,6 +403,7 @@ begin
  if Assigned(FContatosSample) then FreeAndNil(FContatosSample);
  if Assigned(FNavegateObj) then FreeAndNil(FNavegateObj);
  if Assigned(FParamsObj) then FreeAndNil(FParamsObj);
+ if Assigned(FAllowedFeaturesObj) then FreeAndNil(FAllowedFeaturesObj);
 end;
 
 function TFrmMainForm.GetConnected: boolean;

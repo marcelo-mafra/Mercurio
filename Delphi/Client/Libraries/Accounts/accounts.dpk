@@ -1,4 +1,4 @@
-package permissions;
+package accounts;
 
 {$R *.res}
 {$IFDEF IMPLICITBUILDING This IFDEF should not be used by users}
@@ -25,7 +25,7 @@ package permissions;
 {$IMAGEBASE $400000}
 {$DEFINE DEBUG}
 {$ENDIF IMPLICITBUILDING}
-{$DESCRIPTION 'Implementa as classes de gerenciamento de permissões de acesso a funcionalidades.'}
+{$DESCRIPTION 'Implementa as classes de gerenciamento de contas de acesso ao chat.'}
 {$RUNONLY}
 {$IMPLICITBUILD ON}
 
@@ -33,13 +33,7 @@ requires
   rtl,
   cmlib,
   interfaces,
-  resources,
-  nethttp;
-
-contains
-  client.model.permissions.factory in 'client.model.permissions.factory.pas',
-  client.model.permissions in 'client.model.permissions.pas',
-  client.model.listapermissions in 'client.model.listapermissions.pas',
-  client.model.permissions.consts in 'client.model.permissions.consts.pas';
+  nethttp,
+  resources;
 
 end.

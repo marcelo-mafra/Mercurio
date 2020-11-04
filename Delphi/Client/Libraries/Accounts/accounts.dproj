@@ -1,7 +1,7 @@
 ﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
     <PropertyGroup>
-        <ProjectGuid>{F3FDC5F1-62DF-4DA0-BD08-13055CC10682}</ProjectGuid>
-        <MainSource>nethttp.dpk</MainSource>
+        <ProjectGuid>{47D87918-2AA8-46E6-8790-50FD95A1A6A2}</ProjectGuid>
+        <MainSource>accounts.dpk</MainSource>
         <ProjectVersion>18.8</ProjectVersion>
         <FrameworkType>None</FrameworkType>
         <Base>True</Base>
@@ -59,12 +59,6 @@
         <Cfg_1>true</Cfg_1>
         <Base>true</Base>
     </PropertyGroup>
-    <PropertyGroup Condition="('$(Platform)'=='Win64' and '$(Cfg_1)'=='true') or '$(Cfg_1_Win64)'!=''">
-        <Cfg_1_Win64>true</Cfg_1_Win64>
-        <CfgParent>Cfg_1</CfgParent>
-        <Cfg_1>true</Cfg_1>
-        <Base>true</Base>
-    </PropertyGroup>
     <PropertyGroup Condition="'$(Config)'=='Release' or '$(Cfg_2)'!=''">
         <Cfg_2>true</Cfg_2>
         <CfgParent>Base</CfgParent>
@@ -82,14 +76,14 @@
         <GenPackage>true</GenPackage>
         <DCC_Namespace>System;Xml;Data;Datasnap;Web;Soap;$(DCC_Namespace)</DCC_Namespace>
         <DCC_CBuilderOutput>All</DCC_CBuilderOutput>
+        <SanitizedProjectName>accounts</SanitizedProjectName>
         <RuntimeOnlyPackage>true</RuntimeOnlyPackage>
-        <SanitizedProjectName>nethttp</SanitizedProjectName>
-        <DCC_DcpOutput>$(MERCURIODIR)\DCP\$(Platform)\$(Config)</DCC_DcpOutput>
-        <DCC_BplOutput>$(MERCURIODIR)\BIN\$(Platform)\$(Config)</DCC_BplOutput>
-        <DCC_UnitSearchPath>$(MERCURIODIR)\DCU\$(Platform)\$(Config);$(MERCURIODIR)\DCP\Win64\Debug;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
         <VerInfo_Locale>1046</VerInfo_Locale>
         <VerInfo_Keys>CompanyName=;FileDescription=$(MSBuildProjectName);FileVersion=1.0.0.0;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProgramID=com.embarcadero.$(MSBuildProjectName);ProductName=$(MSBuildProjectName);ProductVersion=1.0.0.0;Comments=</VerInfo_Keys>
-        <DCC_Description>Classes relacionadas à camada de transporte http</DCC_Description>
+        <DCC_Description>Implementa as classes de gerenciamento de contas de acesso ao chat.</DCC_Description>
+        <DCC_DcpOutput>$(MERCURIODIR)\DCP\$(Platform)\$(Config)</DCC_DcpOutput>
+        <DCC_BplOutput>$(MERCURIODIR)\BIN\$(Platform)\$(Config)</DCC_BplOutput>
+        <DCC_UnitSearchPath>$(MERCURIODIR)\DCP\$(Platform)\$(Config);$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Base_Android)'!=''">
         <DCC_CBuilderOutput>None</DCC_CBuilderOutput>
@@ -119,7 +113,6 @@
         <DCC_Namespace>Winapi;System.Win;Data.Win;Datasnap.Win;Web.Win;Soap.Win;Xml.Win;$(DCC_Namespace)</DCC_Namespace>
         <BT_BuildType>Debug</BT_BuildType>
         <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
-        <VerInfo_Keys>CompanyName=;FileDescription=$(MSBuildProjectName);FileVersion=1.0.0.0;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProgramID=com.embarcadero.$(MSBuildProjectName);ProductName=$(MSBuildProjectName);ProductVersion=1.0.0.0;Comments=</VerInfo_Keys>
         <VerInfo_Locale>1033</VerInfo_Locale>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_1)'!=''">
@@ -134,12 +127,6 @@
         <DCC_RemoteDebug>false</DCC_RemoteDebug>
         <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
         <VerInfo_Locale>1033</VerInfo_Locale>
-        <DCC_Description>Módulo de classes de transporte e comunicação http</DCC_Description>
-    </PropertyGroup>
-    <PropertyGroup Condition="'$(Cfg_1_Win64)'!=''">
-        <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
-        <VerInfo_Locale>1033</VerInfo_Locale>
-        <DCC_Description>Classes relacionadas à camada de transporte http</DCC_Description>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_2)'!=''">
         <DCC_LocalDebugSymbols>false</DCC_LocalDebugSymbols>
@@ -153,17 +140,9 @@
         </DelphiCompile>
         <DCCReference Include="rtl.dcp"/>
         <DCCReference Include="cmlib.dcp"/>
+        <DCCReference Include="interfaces.dcp"/>
+        <DCCReference Include="nethttp.dcp"/>
         <DCCReference Include="resources.dcp"/>
-        <DCCReference Include="soaprtl.dcp"/>
-        <DCCReference Include="logwrt.dcp"/>
-        <DCCReference Include="client.classes.nethttp.pas"/>
-        <DCCReference Include="client.classes.json.pas"/>
-        <DCCReference Include="client.serverintf.chatservice.pas"/>
-        <DCCReference Include="client.serverintf.contatos.pas"/>
-        <DCCReference Include="client.serverintf.soaputils.pas"/>
-        <DCCReference Include="client.serverintf.serviceinfo.pas"/>
-        <DCCReference Include="client.serverintf.permissions.pas"/>
-        <DCCReference Include="client.serverintf.accounts.pas"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>
@@ -181,13 +160,13 @@
         <Borland.ProjectType>Package</Borland.ProjectType>
         <BorlandProject>
             <Delphi.Personality>
+                <Source>
+                    <Source Name="MainSource">accounts.dpk</Source>
+                </Source>
                 <Excluded_Packages>
                     <Excluded_Packages Name="$(BDSBIN)\dcloffice2k260.bpl">Microsoft Office 2000 Sample Automation Server Wrapper Components</Excluded_Packages>
                     <Excluded_Packages Name="$(BDSBIN)\dclofficexp260.bpl">Microsoft Office XP Sample Automation Server Wrapper Components</Excluded_Packages>
                 </Excluded_Packages>
-                <Source>
-                    <Source Name="MainSource">nethttp.dpk</Source>
-                </Source>
             </Delphi.Personality>
             <Deployment Version="3">
                 <DeployFile LocalName="$(BDS)\Redist\osx32\libcgunwind.1.0.dylib" Class="DependencyModule">
@@ -205,15 +184,15 @@
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
-                <DeployFile LocalName="C:\Users\Public\Documents\Embarcadero\Studio\20.0\Bpl\nethttp.bpl" Configuration="Debug" Class="ProjectOutput">
+                <DeployFile LocalName="C:\Users\Public\Documents\Embarcadero\Studio\20.0\Bpl\accounts.bpl" Configuration="Debug" Class="ProjectOutput">
                     <Platform Name="Win32">
-                        <RemoteName>nethttp.bpl</RemoteName>
+                        <RemoteName>accounts.bpl</RemoteName>
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
-                <DeployFile LocalName="..\..\..\BIN\Win64\Debug\nethttp.bpl" Configuration="Debug" Class="ProjectOutput">
+                <DeployFile LocalName="..\..\..\BIN\Win64\Debug\accounts.bpl" Configuration="Debug" Class="ProjectOutput">
                     <Platform Name="Win64">
-                        <RemoteName>nethttp.bpl</RemoteName>
+                        <RemoteName>accounts.bpl</RemoteName>
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>

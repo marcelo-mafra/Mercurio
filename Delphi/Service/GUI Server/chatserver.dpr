@@ -16,7 +16,10 @@ uses
   server.serviceinfo.impl in 'server.serviceinfo.impl.pas',
   server.permissions.intf in 'server.permissions.intf.pas',
   server.permissions.impl in 'server.permissions.impl.pas',
-  server.permissions.data in 'server.permissions.data.pas';
+  server.permissions.data in 'server.permissions.data.pas',
+  server.accounts.intf in 'server.accounts.intf.pas',
+  server.accounts.data in 'server.accounts.data.pas',
+  server.accounts.impl in 'server.accounts.impl.pas';
 
 {$R *.res}
 

@@ -5,9 +5,10 @@ interface
 uses
   System.SysUtils, System.Classes, Soap.InvokeRegistry, client.classes.json,
   client.interfaces.common, client.interfaces.baseclasses, client.interfaces.permissions,
-  client.serverintf.permissions, client.interfaces.application,
+  client.serverintf.permissions, client.interfaces.application, classes.exceptions,
   Data.DB, System.Variants, client.model.listapermissions, classes.permissions.types,
-  client.resources.permissions.dataobjects, client.resources.permissions;
+  client.resources.permissions.dataobjects, client.resources.permissions,
+  client.model.permissions.consts;
 
 type
    //Encapsula a interface com o serviço remoto para o domínio "PERMISSÕES".
@@ -18,7 +19,6 @@ type
        FAllowedFeatures: TMercurioFeatures;
        procedure Reset;
        function DoGetMyPermissions: string;
-       procedure DoAllowFeature(const Feature: TMercurioFeature);
        procedure DoJsonToObject(JsonData: string; Obj: TObject; Model: TTransformModel);
 
        //IPermissionService
@@ -64,11 +64,6 @@ begin
   inherited Destroy;
 end;
 
-procedure TPermissionsModel.DoAllowFeature(const Feature: TMercurioFeature);
-begin
- FAllowedFeatures := FAllowedFeatures + [Feature];
-end;
-
 function TPermissionsModel.DoGetMyPermissions: string;
 var
  IService: IMercurioPermissionsServer;
@@ -102,6 +97,9 @@ begin
  try
    if not (JsonData.IsEmpty) then
     begin
+     //Não pode executar esse método interno sem um objeto definido.
+     if Obj = nil then raise EInvalidObjectList.Create;
+
      self.Reset; //Limpa o set de features permitidas
      Counter := TNetJsonUtils.GetObjectCount(JsonData, TPermissionsJosonData.ArrayName);
      SetLength(DataValues, 4);
@@ -109,14 +107,10 @@ begin
      for I := 0 to Counter - 1 do
        begin
         TNetJsonUtils.FindValue(JsonData, TPermissionsJosonData.ArrayName, DataValues, I);
-        vFeatureId := DataValues[0];
-        vFeature   := DataValues[1];
-        vUsuario   := DataValues[2];
-        vEnabled   := DataValues[3];
-        //Registra que o usuário pode acessar uma feature
-        self.DoAllowFeature(TMercurioFeature(vFeatureId));
-
-        if Obj = nil then Continue;
+        vFeatureId := DataValues[TJsonFields.FeatureId];
+        vFeature   := DataValues[TJsonFields.Feature];
+        vUsuario   := DataValues[TJsonFields.Usuario];
+        vEnabled   := DataValues[TJsonFields.Enabled];
 
         case Model of
           tmDataset:
@@ -142,6 +136,11 @@ begin
            end;
         end;
        end;
+
+       case Model of
+         tmDataset: ;//to-do;
+         tmListObject: self.FAllowedFeatures := TListaPermissions(Obj).AllowedFeatures;
+       end;
     end;
   {Não dar "FreeAndNil" em PermissionObj, uma vez que foi adicionado na lista
    da variável List que gerencia automaticamente o ciclo de vida dos seus objetos. }
@@ -149,6 +148,10 @@ begin
   on E: EVariantTypeCastError do
    begin
      MercurioLogs.RegisterError(TPermissionsServerMethods.VariantCastError, E.Message);
+   end;
+  on E: EInvalidObjectList do
+   begin
+     MercurioLogs.RegisterError(TPermissionsServerMethods.GetPermissionsError, E.Message);
    end;
  end;
 
@@ -178,12 +181,21 @@ procedure TPermissionsModel.GetMyPermissions(
   var AllowedFeatures: TMercurioFeatures);
 var
  JsonData: string;
+ ListaObj: TListaPermissions;
 begin
  JsonData := DoGetMyPermissions;
+
  if not (JsonData.IsEmpty) then
   begin
-   DoJsonToObject(JsonData, nil, tmListObject);
-   AllowedFeatures := self.FAllowedFeatures;
+   ListaObj := TListaPermissions.Create;
+
+   try
+    DoJsonToObject(JsonData, ListaObj, tmListObject);
+    AllowedFeatures := ListaObj.AllowedFeatures;
+
+   finally
+    FreeAndNil(ListaObj);
+   end;
   end;
 end;
 

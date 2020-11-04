@@ -145,6 +145,9 @@
         <DCCReference Include="server.permissions.intf.pas"/>
         <DCCReference Include="server.permissions.impl.pas"/>
         <DCCReference Include="server.permissions.data.pas"/>
+        <DCCReference Include="server.accounts.intf.pas"/>
+        <DCCReference Include="server.accounts.data.pas"/>
+        <DCCReference Include="server.accounts.impl.pas"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>

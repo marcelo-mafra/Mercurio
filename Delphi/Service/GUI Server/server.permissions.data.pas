@@ -149,7 +149,6 @@ end;
 
 destructor TPermissionsDataUtils.Destroy;
 begin
-
   inherited;
 end;
 

@@ -46,6 +46,7 @@ contains
   client.resources.serviceinfo in '..\..\Common\client.resources.serviceinfo.pas',
   client.resources.contatos.dataobjects in '..\..\Common\client.resources.contatos.dataobjects.pas',
   client.resources.permissions.dataobjects in '..\..\Common\client.resources.permissions.dataobjects.pas',
-  client.resources.permissions in '..\..\Common\client.resources.permissions.pas';
+  client.resources.permissions in '..\..\Common\client.resources.permissions.pas',
+  client.resources.accounts.dataobjects in '..\..\Common\client.resources.accounts.dataobjects.pas';
 
 end.
