@@ -164,6 +164,7 @@
         <DCCReference Include="..\..\Common\client.interfaces.connection.pas"/>
         <DCCReference Include="..\..\Common\client.interfaces.observerscon.pas"/>
         <DCCReference Include="..\..\Common\client.interfaces.permissions.pas"/>
+        <DCCReference Include="..\..\Common\client.interfaces.accounts.pas"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>

@@ -46,6 +46,7 @@ contains
   client.interfaces.baseclasses in '..\..\Common\client.interfaces.baseclasses.pas',
   client.interfaces.connection in '..\..\Common\client.interfaces.connection.pas',
   client.interfaces.observerscon in '..\..\Common\client.interfaces.observerscon.pas',
-  client.interfaces.permissions in '..\..\Common\client.interfaces.permissions.pas';
+  client.interfaces.permissions in '..\..\Common\client.interfaces.permissions.pas',
+  client.interfaces.accounts in '..\..\Common\client.interfaces.accounts.pas';
 
 end.

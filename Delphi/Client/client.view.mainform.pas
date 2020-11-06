@@ -366,10 +366,10 @@ begin
   end
   else
   begin
-    BtnContacts.Text :=  string.Empty;
+    BtnContacts.Text    :=  string.Empty;
     BtnServiceInfo.Text :=  string.Empty;
-    BtnNewContact.Text :=  string.Empty;
-    BtnDelContact.Text :=  string.Empty;
+    BtnNewContact.Text  :=  string.Empty;
+    BtnDelContact.Text  :=  string.Empty;
   end;
 end;
 

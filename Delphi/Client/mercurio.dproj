@@ -390,6 +390,7 @@
             <FormType>fmx</FormType>
             <DesignClass>TFrame</DesignClass>
         </DCCReference>
+        <DCCReference Include="client.view.controls.helpers.pas"/>
         <None Include="mercurio.todo"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>

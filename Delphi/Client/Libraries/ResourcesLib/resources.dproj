@@ -165,6 +165,7 @@
         <DCCReference Include="..\..\Common\client.resources.permissions.dataobjects.pas"/>
         <DCCReference Include="..\..\Common\client.resources.permissions.pas"/>
         <DCCReference Include="..\..\Common\client.resources.accounts.dataobjects.pas"/>
+        <DCCReference Include="..\..\Common\client.resources.accounts.pas"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>

@@ -143,6 +143,10 @@
         <DCCReference Include="interfaces.dcp"/>
         <DCCReference Include="nethttp.dcp"/>
         <DCCReference Include="resources.dcp"/>
+        <DCCReference Include="client.model.accounts.factory.pas"/>
+        <DCCReference Include="client.model.accounts.pas"/>
+        <DCCReference Include="client.model.accounts.consts.pas"/>
+        <DCCReference Include="client.model.listaaccounts.pas"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>

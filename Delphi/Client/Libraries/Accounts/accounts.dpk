@@ -36,4 +36,10 @@ requires
   nethttp,
   resources;
 
+contains
+  client.model.accounts.factory in 'client.model.accounts.factory.pas',
+  client.model.accounts in 'client.model.accounts.pas',
+  client.model.accounts.consts in 'client.model.accounts.consts.pas',
+  client.model.listaaccounts in 'client.model.listaaccounts.pas';
+
 end.
