@@ -26,6 +26,7 @@ type
     { Private declarations }
   public
     { Public declarations }
+    property HTTPServer: TIdHTTPWebBrokerBridge read FServer;
   end;
 
 var
@@ -40,9 +41,9 @@ uses
 
 procedure TForm1.ApplicationEvents1Idle(Sender: TObject; var Done: Boolean);
 begin
-  ButtonStart.Enabled := not FServer.Active;
-  ButtonStop.Enabled := FServer.Active;
-  EditPort.Enabled := not FServer.Active;
+  ButtonStart.Enabled := not HTTPServer.Active;
+  ButtonStop.Enabled := HTTPServer.Active;
+  EditPort.Enabled := not HTTPServer.Active;
 end;
 
 procedure TForm1.ButtonOpenBrowserClick(Sender: TObject);
@@ -63,8 +64,8 @@ end;
 
 procedure TForm1.ButtonStopClick(Sender: TObject);
 begin
-  FServer.Active := False;
-  FServer.Bindings.Clear;
+  HTTPServer.Active := False;
+  HTTPServer.Bindings.Clear;
 end;
 
 procedure TForm1.FormCreate(Sender: TObject);
@@ -74,11 +75,11 @@ end;
 
 procedure TForm1.StartServer;
 begin
-  if not FServer.Active then
+  if not HTTPServer.Active then
   begin
-    FServer.Bindings.Clear;
-    FServer.DefaultPort := StrToInt(EditPort.Text);
-    FServer.Active := True;
+    HTTPServer.Bindings.Clear;
+    HTTPServer.DefaultPort := StrToInt(EditPort.Text);
+    HTTPServer.Active := True;
   end;
 end;
 

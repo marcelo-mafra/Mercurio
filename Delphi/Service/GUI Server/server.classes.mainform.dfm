@@ -43,7 +43,7 @@ object Form1: TForm1
   object EditPort: TEdit
     Left = 24
     Top = 67
-    Width = 121
+    Width = 156
     Height = 21
     TabOrder = 2
     Text = '8080'
@@ -51,7 +51,7 @@ object Form1: TForm1
   object ButtonOpenBrowser: TButton
     Left = 24
     Top = 112
-    Width = 107
+    Width = 156
     Height = 25
     Caption = 'Open Browser'
     TabOrder = 3
@@ -59,7 +59,7 @@ object Form1: TForm1
   end
   object ApplicationEvents1: TApplicationEvents
     OnIdle = ApplicationEvents1Idle
-    Left = 144
-    Top = 88
+    Left = 96
+    Top = 40
   end
 end

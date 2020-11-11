@@ -3,6 +3,9 @@
         <ProjectGuid>{4C602DD4-6831-47E7-86F7-22744080BFE0}</ProjectGuid>
     </PropertyGroup>
     <ItemGroup>
+        <Projects Include="Service\Isapi Server\mercuriochat.dproj">
+            <Dependencies/>
+        </Projects>
         <Projects Include="Service\GUI Server\chatserver.dproj">
             <Dependencies/>
         </Projects>
@@ -50,6 +53,15 @@
             <Default.Personality/>
         </BorlandProject>
     </ProjectExtensions>
+    <Target Name="mercuriochat">
+        <MSBuild Projects="Service\Isapi Server\mercuriochat.dproj"/>
+    </Target>
+    <Target Name="mercuriochat:Clean">
+        <MSBuild Projects="Service\Isapi Server\mercuriochat.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="mercuriochat:Make">
+        <MSBuild Projects="Service\Isapi Server\mercuriochat.dproj" Targets="Make"/>
+    </Target>
     <Target Name="chatserver">
         <MSBuild Projects="Service\GUI Server\chatserver.dproj"/>
     </Target>
@@ -168,13 +180,13 @@
         <MSBuild Projects="Client\Libraries\Accounts\accounts.dproj" Targets="Make"/>
     </Target>
     <Target Name="Build">
-        <CallTarget Targets="chatserver;mercurio;resources;cmlib;logwrt;nethttp;interfaces;servicecon;dlgmessages;contatos;chatmessages;permissions;accounts"/>
+        <CallTarget Targets="mercuriochat;chatserver;mercurio;resources;cmlib;logwrt;nethttp;interfaces;servicecon;dlgmessages;contatos;chatmessages;permissions;accounts"/>
     </Target>
     <Target Name="Clean">
-        <CallTarget Targets="chatserver:Clean;mercurio:Clean;resources:Clean;cmlib:Clean;logwrt:Clean;nethttp:Clean;interfaces:Clean;servicecon:Clean;dlgmessages:Clean;contatos:Clean;chatmessages:Clean;permissions:Clean;accounts:Clean"/>
+        <CallTarget Targets="mercuriochat:Clean;chatserver:Clean;mercurio:Clean;resources:Clean;cmlib:Clean;logwrt:Clean;nethttp:Clean;interfaces:Clean;servicecon:Clean;dlgmessages:Clean;contatos:Clean;chatmessages:Clean;permissions:Clean;accounts:Clean"/>
     </Target>
     <Target Name="Make">
-        <CallTarget Targets="chatserver:Make;mercurio:Make;resources:Make;cmlib:Make;logwrt:Make;nethttp:Make;interfaces:Make;servicecon:Make;dlgmessages:Make;contatos:Make;chatmessages:Make;permissions:Make;accounts:Make"/>
+        <CallTarget Targets="mercuriochat:Make;chatserver:Make;mercurio:Make;resources:Make;cmlib:Make;logwrt:Make;nethttp:Make;interfaces:Make;servicecon:Make;dlgmessages:Make;contatos:Make;chatmessages:Make;permissions:Make;accounts:Make"/>
     </Target>
     <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
 </Project>
