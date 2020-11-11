@@ -24,7 +24,7 @@ type
        destructor Destroy; override;
 
        //IAccountService
-       function NewAccount(Value: TMyAccount): TMyAccount;
+       function NewAccount(value: TMyAccount): TMyAccount;
 
        //IAccountsService
        procedure GetMyAccounts(List: TListaObjetos);
@@ -115,7 +115,8 @@ begin
               AccountObj.AccountName := vAccountName;
               AccountObj.MyName :=  vMyName;
               AccountObj.Enabled :=  vEnabled;
-              AccountObj.CreatedAt := vCreatedAt;
+              AccountObj.CreatedAt.AsDateTime := vCreatedAt;
+              //data := XMLTimeToDateTime('2017-11-24T00:08:41-02:00', True);
               TListaAccounts(Obj).AddItem(AccountObj);
            end;
         end;
@@ -152,7 +153,7 @@ begin
 
 end;
 
-function TAccountsModel.NewAccount(Value: TMyAccount): TMyAccount;
+function TAccountsModel.NewAccount(value: TMyAccount): TMyAccount;
 var
  IService: IMercurioAccountsServer;
 begin
@@ -161,7 +162,7 @@ begin
 
  try
    IService := GetIMercurioAccountsServer();
-   Result := IService.NewAccount(Value);
+   Result := IService.NewAccount(value);
 
    if Result <> nil then
     begin

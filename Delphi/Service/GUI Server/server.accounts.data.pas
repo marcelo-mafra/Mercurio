@@ -14,10 +14,16 @@ interface
  type
 
    TAccountsData = class
-     class function NewAccount(const value: TMyAccount): TMyAccount;
-     class function GetAccounts: TStringList; overload;
-     class procedure GetAccounts(Stream: TMemoryStream); overload;
-     class function DropAccount(const value: TMyAccount): boolean;
+     strict private
+      function DoCreateDataset: TFDMemTable;
+
+     public
+      class function New: TAccountsData;
+
+      function NewAccount(const value: TMyAccount): TMyAccount;
+      function GetAccounts: TStringList; overload;
+      procedure GetAccounts(Stream: TMemoryStream); overload;
+      function DropAccount(const value: TMyAccount): boolean;
    end;
 
 implementation
@@ -36,17 +42,15 @@ type
 
 { TAccountsData }
 
-class function TAccountsData.GetAccounts: TStringList;
+function TAccountsData.GetAccounts: TStringList;
 var
   Dataset: TFDMemTable;
   JsonObj: TJsonObject;
-  UtilsObj: TAccountsDataUtils;
 begin
  Result := TStringList.Create;
- UtilsObj := TAccountsDataUtils.Create;
+ Dataset := self.DoCreateDataset;
 
  try
-    Dataset := UtilsObj.CreateDataset;
 
     while not Dataset.Eof do
      begin
@@ -63,7 +67,6 @@ begin
      end;
 
  finally
-  if Assigned(UtilsObj) then FreeAndNil(UtilsObj);
   if Assigned(Dataset) then
    begin
     Dataset.Close;
@@ -73,15 +76,21 @@ begin
 
 end;
 
-class function TAccountsData.DropAccount(const value: TMyAccount): boolean;
- var
-  Dataset: TFDMemTable;
+function TAccountsData.DoCreateDataset: TFDMemTable;
+var
   UtilsObj: TAccountsDataUtils;
 begin
- UtilsObj := TAccountsDataUtils.Create;
+  UtilsObj := TAccountsDataUtils.Create;
+  Result := UtilsObj.CreateDataset;
+end;
+
+function TAccountsData.DropAccount(const value: TMyAccount): boolean;
+ var
+  Dataset: TFDMemTable;
+begin
+ Dataset := self.DoCreateDataset;
 
  try
-   Dataset := UtilsObj.CreateDataset;
    Result := Dataset.Locate(TAccountsFields.AccountId, value.AccountId, []);
 
    if Result then
@@ -93,7 +102,6 @@ begin
 
 
  finally
-  if Assigned(UtilsObj) then FreeAndNil(UtilsObj);
   if Assigned(Dataset) then
     begin
      Dataset.Close;
@@ -103,19 +111,16 @@ begin
 
 end;
 
-class procedure TAccountsData.GetAccounts(Stream: TMemoryStream);
+procedure TAccountsData.GetAccounts(Stream: TMemoryStream);
  var
   Dataset: TFDMemTable;
-  UtilsObj: TAccountsDataUtils;
 begin
- UtilsObj := TAccountsDataUtils.Create;
- Dataset := UtilsObj.CreateDataset;
+ Dataset := self.DoCreateDataset;
 
  try
     Dataset.SaveToStream(Stream, sfJson);
 
  finally
-  if Assigned(UtilsObj) then FreeAndNil(UtilsObj);
   if Assigned(Dataset) then
    begin
     Dataset.Close;
@@ -125,30 +130,33 @@ begin
 
 end;
 
-class function TAccountsData.NewAccount(const value: TMyAccount): TMyAccount;
+class function TAccountsData.New: TAccountsData;
+begin
+ Result := TAccountsData.Create;
+end;
+
+function TAccountsData.NewAccount(const value: TMyAccount): TMyAccount;
  var
   Dataset: TFDMemTable;
-  UtilsObj: TAccountsDataUtils;
 begin
  Result := Value;
- UtilsObj := TAccountsDataUtils.Create;
+ Dataset := self.DoCreateDataset;
 
  try
-   Dataset := UtilsObj.CreateDataset;
     with Dataset do
      begin
        Insert;
-       Fields.FieldByName(TAccountsFields.AccountId).Value  := Result.AccountId;
-       Fields.FieldByName(TAccountsFields.AccountName).Value  := Result.AccountName;
-       Fields.FieldByName(TAccountsFields.MyName).Value  := Result.MyName;
-       Fields.FieldByName(TAccountsFields.Enabled).Value  := Result.Enabled;
+       Fields.FieldByName(TAccountsFields.AccountId).Value  := value.AccountId;
+       Fields.FieldByName(TAccountsFields.AccountName).Value  := value.AccountName;
+       Fields.FieldByName(TAccountsFields.MyName).Value  := value.MyName;
+       Fields.FieldByName(TAccountsFields.Enabled).Value  := value.Enabled;
        Fields.FieldByName(TAccountsFields.CreatedAt).Value  := Now;
+       //Value.CreatedAt := Now;
        Post;
        SaveToFile(TDataFile.FileName, sfJson);
      end;
 
  finally
-  if Assigned(UtilsObj) then FreeAndNil(UtilsObj);
   if Assigned(Dataset) then
     begin
      Dataset.Close;
@@ -173,7 +181,6 @@ begin
   Result := TFDMemTable.Create(nil);
   Result.LoadFromFile(TDataFile.FileName, sfJson);
   Result.Active := True;
-
 end;
 
 destructor TAccountsDataUtils.Destroy;

@@ -26,8 +26,17 @@ implementation
 { TMercurioAccountsServer }
 
 function TMercurioAccountsServer.DropAccount(const value: TMyAccount): boolean;
+var
+ AccountsDataObj: TAccountsData;
 begin
-  Result := TAccountsData.DropAccount(value);
+  AccountsDataObj :=  TAccountsData.New;
+
+  try
+   Result := AccountsDataObj.DropAccount(value);
+
+  finally
+   if Assigned(AccountsDataObj) then FreeAndNil(AccountsDataObj);
+  end;
 end;
 
 function TMercurioAccountsServer.GetMyAccounts: UnicodeString;
@@ -35,12 +44,16 @@ var
  I: integer;
  JDocumment: TStringStream;
  StrData: TStringList;
+ AccountsDataObj: TAccountsData;
 begin
   JDocumment := TStringStream.Create(string.Empty, TEncoding.UTF8);
   JDocumment.WriteString(TJsonConsts.ArrayAccounts);
-  StrData := TAccountsData.GetAccounts;
+  AccountsDataObj := TAccountsData.New;
+
 
   try
+   StrData := AccountsDataObj.GetAccounts;
+
    if StrData.Count > 0 then
    begin
    for I := 0 to StrData.Count - 1 do
@@ -57,14 +70,24 @@ begin
 
   finally
    if Assigned(JDocumment) then FreeAndNil(JDocumment);
+   if Assigned(AccountsDataObj) then FreeAndNil(AccountsDataObj);
   end;
 
 end;
 
 function TMercurioAccountsServer.NewAccount(
   const Value: TMyAccount): TMyAccount;
+var
+ AccountsDataObj: TAccountsData;
 begin
-  Result := TAccountsData.NewAccount(value);
+  AccountsDataObj := TAccountsData.New;
+
+  try
+   Result := AccountsDataObj.NewAccount(value);
+
+  finally
+   if Assigned(AccountsDataObj) then FreeAndNil(AccountsDataObj);
+  end;
 end;
 
 

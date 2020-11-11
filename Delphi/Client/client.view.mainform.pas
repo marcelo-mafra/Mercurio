@@ -26,7 +26,9 @@ uses
   client.resources.contatos.dataobjects,
   //Permissões
   client.interfaces.permissions, client.model.permissions.factory,
-  classes.permissions.types, client.model.listapermissions;
+  classes.permissions.types, client.model.listapermissions,
+  //Accounts
+  client.interfaces.accounts, client.serverintf.accounts, client.model.accounts.factory;
 
 type
   TFrmMainForm = class(TForm, IChatApplication, IContactsService, IMercurioLogs)
@@ -69,6 +71,7 @@ type
     TabContatosListView: TTabItem;
     TabContatosListBox: TTabItem;
     BtnConnect: TSpeedButton;
+    ActSaveAccountData: TAction;
     procedure ActDisconnectServiceExecute(Sender: TObject);
     procedure ActDisconnectServiceUpdate(Sender: TObject);
     procedure ActConnectServiceUpdate(Sender: TObject);
@@ -92,6 +95,7 @@ type
     procedure ActDeleteContatoUpdate(Sender: TObject);
     procedure MultiView1StartShowing(Sender: TObject);
     procedure MultiView1StartHiding(Sender: TObject);
+    procedure ActSaveAccountDataExecute(Sender: TObject);
 
   strict private
     FAllowedFeaturesObj: TListaPermissions;
@@ -190,6 +194,7 @@ begin
     FObserversConnection.NotifyObjects(Sender, csConnected);
     //self.RegisterPermission(mfListaContatos, 'Novo contato', 'Marcelo');
     self.PermissionsService.GetMyPermissions(FAllowedFeaturesObj);
+    self.ActSaveAccountData.Execute;
   end;
 end;
 
@@ -293,6 +298,31 @@ end;
 procedure TFrmMainForm.ActServiceInfoUpdate(Sender: TObject);
 begin
  TAction(Sender).Enabled := Connected and self.HasPermission(mfServiceInfo)
+end;
+
+procedure TFrmMainForm.ActSaveAccountDataExecute(Sender: TObject);
+var
+ MyAccountObj: TMyAccount;
+ AccountService: IAccountsService;
+begin
+ if Connected then
+  begin
+    MyAccountObj := TMyAccount.Create;
+    AccountService := TFactoryAccounts.New;
+
+    try
+      MyAccountObj.AccountId := 144;
+      MyAccountObj.AccountName := 'Galaad';
+      MyAccountObj.MyName := 'Marcelo Mafra Sanches';
+      MyAccountObj.Enabled := True;
+
+      MyAccountObj := AccountService.IAccount.NewAccount(MyAccountObj);
+
+    finally
+     FreeAndNil(MyAccountObj);
+    end;
+  end;
+
 end;
 
 procedure TFrmMainForm.ActSaveContatoDataExecute(Sender: TObject);

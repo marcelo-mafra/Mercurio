@@ -2,26 +2,21 @@ unit client.interfaces.accounts;
 
 interface
 
-{Contém interfaces que abstraem entidades relacionadas ao permissionamento.}
+{Contém interfaces que abstraem entidades relacionadas a contas de acesso.}
 
 uses
- client.interfaces.common, client.interfaces.baseclasses, //classes.permissions.types,
+ client.interfaces.common, client.interfaces.baseclasses,
  client.serverintf.accounts;
 
 type
- //It abstracts the entity for a permission for feature.
+ //It abstracts the entity for an account.
  IAccountService = interface(IMercurioInterface)
   ['{319F5504-E6A3-48F5-8BCD-41E37A8A0AA5}']
-  //function GetEnabled: boolean;
-  //function GetFeatureName: string;
+
   function NewAccount(Value: TMyAccount): TMyAccount;
-
-  //property Enabled: boolean read GetEnabled;
-  //property FeatureName: string read GetFeatureName;
-
  end;
 
- //It abstracts the entity for a set of permissions.
+ //It abstracts the entity for a set of accounts.
  IAccountsService = interface(IMercurioInterface)
   ['{6F4581E4-C41F-4697-B196-1F85620AC146}']
 

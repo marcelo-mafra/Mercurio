@@ -8,17 +8,28 @@ uses
 
 type
   TFactoryAccounts = class
+   private
+    class function GetIAccountService: IAccountService;
+
+   public
     class function New: IAccountsService;
     class procedure RegisterAccount(Account: TMyAccount);
+
+    property IAccount: IAccountService read GetIAccountService;
   end;
 
 implementation
 
 { TFactoryAccounts }
 
+class function TFactoryAccounts.GetIAccountService: IAccountService;
+begin
+ Result := TFactoryAccounts.New.IAccount;
+end;
+
 class function TFactoryAccounts.New: IAccountsService;
 begin
-{Retorna uma interface que abstrai recursos de permissionamento do usuário.}
+{Retorna uma interface que abstrai recursos de contas de usuários.}
   Result := TAccountsModel.Create as IAccountsService;
 end;
 
@@ -28,13 +39,11 @@ var
  AccountsSvc: IAccountsService;
 begin
     AccountObj := TMyAccount.Create;
-    AccountsSvc := self.New;
+    AccountsSvc := TFactoryAccounts.New;
 
     try
-     { AccountObj.FeatureId := Integer(Feature);
-      AccountObj.FeatureName := FeatureName;
-      AccountObj.Usuario := Usuario;
-      AccountObj.Enabled := True; }
+      AccountObj.CreatedAt.AsDateTime := Now;
+      AccountObj.Enabled := True;
       AccountObj := AccountsSvc.IAccount.NewAccount(AccountObj);
 
     finally
