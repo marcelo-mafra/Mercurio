@@ -5,7 +5,7 @@ interface
 uses
   //RTL units
   System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants,
-  System.Rtti, System.Actions, System.Bindings.Outputs, System.ImageList,
+  System.Rtti, Soap.InvokeRegistry, System.Actions, System.Bindings.Outputs, System.ImageList,
   //FMX units
   FMX.Types, FMX.Controls, FMX.Forms, FMX.ActnList, FMX.ImgList, FMX.Controls.Presentation,
   FMX.StdCtrls, FMX.Objects, FMX.StdActns, FMX.ListBox, FMX.Layouts, FMX.MultiView,
@@ -26,7 +26,7 @@ uses
   client.resources.contatos.dataobjects,
   //Permissões
   client.interfaces.permissions, client.model.permissions.factory,
-  classes.permissions.types, client.model.listapermissions,
+  classes.permissions.types, client.model.listapermissions, client.serverintf.permissions,
   //Accounts
   client.interfaces.accounts, client.serverintf.accounts, client.model.accounts.factory;
 
@@ -187,6 +187,7 @@ end;
 procedure TFrmMainForm.ActConnectServiceExecute(Sender: TObject);
 var
  SessionId: string;
+ aObj: TMyPermissions;
 begin
  if ServiceConnection.ConnectService(SessionId) then
   begin
@@ -194,7 +195,8 @@ begin
     FObserversConnection.NotifyObjects(Sender, csConnected);
     //self.RegisterPermission(mfListaContatos, 'Novo contato', 'Marcelo');
     self.PermissionsService.GetMyPermissions(FAllowedFeaturesObj);
-    self.ActSaveAccountData.Execute;
+    aObj := self.PermissionsService.GetMyPermissions as TMyPermissions;
+    //self.ActSaveAccountData.Execute;
   end;
 end;
 

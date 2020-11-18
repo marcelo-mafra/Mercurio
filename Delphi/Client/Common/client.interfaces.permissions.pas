@@ -13,7 +13,7 @@ type
   ['{AC376710-F60A-4440-B2CB-23A34CC5D684}']
   function GetEnabled: boolean;
   function GetFeatureName: string;
-  function NewPermission(Value: TMyPermission): TMyPermission;
+  function NewPermission(value: TMyPermission): TMyPermission;
 
   property Enabled: boolean read GetEnabled;
   property FeatureName: string read GetFeatureName;
@@ -27,6 +27,7 @@ type
   function GetIPermission: IPermissionService;
   procedure GetMyPermissions(List: TListaObjetos); overload;
   procedure GetMyPermissions(var AllowedFeatures: TMercurioFeatures); overload;
+  function GetMyPermissions: TMyPermissions; overload;
 
   property IPermission: IPermissionService read GetIPermission;
  end;

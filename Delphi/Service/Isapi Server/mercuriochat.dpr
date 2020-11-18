@@ -19,7 +19,9 @@ uses
   server.permissions.impl in '..\server.permissions.impl.pas',
   server.permissions.intf in '..\server.permissions.intf.pas',
   server.serviceinfo.impl in '..\server.serviceinfo.impl.pas',
-  server.serviceinfo.intf in '..\server.serviceinfo.intf.pas';
+  server.serviceinfo.intf in '..\server.serviceinfo.intf.pas',
+  server.permissions.data.factory in '..\server.permissions.data.factory.pas',
+  server.json.consts in '..\server.json.consts.pas';
 
 {$R *.res}
 

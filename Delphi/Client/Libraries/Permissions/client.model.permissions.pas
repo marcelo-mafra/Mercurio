@@ -41,6 +41,8 @@ type
        //IPermissionsService
        procedure GetMyPermissions(List: TListaObjetos); overload;
        procedure GetMyPermissions(var AllowedFeatures: TMercurioFeatures); overload;
+       function GetMyPermissions: TMyPermissions; overload;
+
        property IPermission: IPermissionService read GetIPermission;
        property AllowedFeatures: TMercurioFeatures read GetAllowedFeatures;
 
@@ -175,6 +177,14 @@ end;
 function TPermissionsModel.GetIPermission: IPermissionService;
 begin
  Result := self as IPermissionService;
+end;
+
+function TPermissionsModel.GetMyPermissions: TMyPermissions;
+var
+ IService: IMercurioPermissionsServer;
+begin
+ IService := GetIMercurioPermissionsServer;
+ Result := IService.AsObjects;
 end;
 
 procedure TPermissionsModel.GetMyPermissions(

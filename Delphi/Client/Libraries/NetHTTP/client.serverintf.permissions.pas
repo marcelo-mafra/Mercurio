@@ -25,7 +25,23 @@ type
   // !:string          - "http://www.w3.org/2001/XMLSchema"[Gbl]
   // !:int             - "http://www.w3.org/2001/XMLSchema"[Gbl]
 
-  TMyPermission          = class;                 { "urn:server.permissions.intf"[GblCplx] }
+  TMyPermissions       = class;                 { "urn:server.permissions.intf"[GblCplx] }
+  TMyPermission        = class;                 { "urn:server.permissions.intf"[GblCplx] }
+
+  TPermissionsArray = array of TMyPermission;   { "urn:server.permissions.intf"[GblCplx] }
+
+  // ************************************************************************ //
+  // XML       : TMyPermissions, global, <complexType>
+  // Namespace : urn:server.permissions.intf
+  // ************************************************************************ //
+  TMyPermissions = class(TRemotable)
+  private
+    FPermissions: TPermissionsArray;
+  public
+    destructor Destroy; override;
+  published
+    property Permissions: TPermissionsArray  read FPermissions write FPermissions;
+  end;
 
   // ************************************************************************ //
   // Namespace : urn:server.permissions.intf-IMercurioPermissionsServer
@@ -58,11 +74,24 @@ type
     property Enabled: boolean read FEnabled write FEnabled;
   end;
 
+  // ************************************************************************ //
+  // Namespace : urn:server.permissions.intf-IMercurioPermissionsServer
+  // soapAction: urn:server.permissions.intf-IMercurioPermissionsServer#%operationName%
+  // transport : http://schemas.xmlsoap.org/soap/http
+  // style     : rpc
+  // use       : encoded
+  // binding   : IMercurioPermissionsServerbinding
+  // service   : IMercurioPermissionsServerservice
+  // port      : IMercurioPermissionsServerPort
+  // URL       : http://localhost:8080/soap/IMercurioPermissionsServer
+  // ************************************************************************ //
+
   IMercurioPermissionsServer = interface(IInvokable)
   ['{559A5105-920B-B09D-79E4-F6CADA52647B}']
 
-    function  NewPermission(const Value: TMyPermission): TMyPermission; stdcall;
+    function  NewPermission(const value: TMyPermission): TMyPermission; stdcall;
     function  GetMyPermissions: string; stdcall;
+    function  AsObjects: TMyPermissions; stdcall;
   end;
 
 function GetIMercurioPermissionsServer(UseWSDL: Boolean=System.False; Addr: string=''; HTTPRIO: THTTPRIO = nil): IMercurioPermissionsServer;
@@ -105,12 +134,25 @@ begin
   end;
 end;
 
+destructor TMyPermissions.Destroy;
+var
+  I: Integer;
+begin
+  for I := 0 to Pred(System.Length(FPermissions)) do
+   begin
+    System.SysUtils.FreeAndNil(FPermissions[I]);
+   end;
+
+  System.SetLength(FPermissions, 0);
+  inherited Destroy;
+end;
+
 
 initialization
   { IMercurioPermissionsServer }
   InvRegistry.RegisterInterface(TypeInfo(IMercurioPermissionsServer), 'urn:server.permissions.intf-IMercurioPermissionsServer', '');
-  InvRegistry.RegisterDefaultSOAPAction(TypeInfo(IMercurioPermissionsServer), 'urn:server.permissions.intf-IMercurioPermissionsServer#GetMyPermissions');
-  //-----------
+  InvRegistry.RegisterDefaultSOAPAction(TypeInfo(IMercurioPermissionsServer), 'urn:server.permissions.intf-IMercurioPermissionsServer#%operationName%');
+  RemClassRegistry.RegisterXSInfo(TypeInfo(TPermissionsArray), 'urn:server.permissions.intf', 'TPermissionsArray');
+  RemClassRegistry.RegisterXSClass(TMyPermissions, 'urn:server.permissions.intf', 'TMyPermissions');
   RemClassRegistry.RegisterXSClass(TMyPermission, 'urn:server.permissions.intf', 'TMyPermission');
-
 end.

@@ -19,7 +19,10 @@ uses
   server.permissions.data in '..\server.permissions.data.pas',
   server.accounts.intf in '..\server.accounts.intf.pas',
   server.accounts.data in '..\server.accounts.data.pas',
-  server.accounts.impl in '..\server.accounts.impl.pas';
+  server.accounts.impl in '..\server.accounts.impl.pas',
+  server.permissions.interfaces in '..\server.permissions.interfaces.pas',
+  server.permissions.data.factory in '..\server.permissions.data.factory.pas',
+  server.json.consts in '..\server.json.consts.pas';
 
 {$R *.res}
 
