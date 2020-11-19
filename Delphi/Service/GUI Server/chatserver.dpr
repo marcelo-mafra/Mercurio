@@ -22,7 +22,10 @@ uses
   server.accounts.impl in '..\server.accounts.impl.pas',
   server.permissions.interfaces in '..\server.permissions.interfaces.pas',
   server.permissions.data.factory in '..\server.permissions.data.factory.pas',
-  server.json.consts in '..\server.json.consts.pas';
+  server.json.consts in '..\server.json.consts.pas',
+  server.permissions.controller in '..\server.permissions.controller.pas',
+  server.contatos.controller in '..\server.contatos.controller.pas',
+  server.contatos.interfaces in '..\server.contatos.interfaces.pas';
 
 {$R *.res}
 

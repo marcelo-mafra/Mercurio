@@ -3,44 +3,44 @@ unit server.permissions.impl;
 interface
 
 uses Soap.InvokeRegistry, System.Types, Soap.XSBuiltIns, System.Classes,
- server.permissions.intf, server.permissions.interfaces,
- server.permissions.data.factory;
+ server.permissions.intf, server.permissions.interfaces, server.permissions.controller;
 
 type
   { TMercurioPermissionsServer }
   TMercurioPermissionsServer = class(TInvokableClass, IMercurioPermissionsServer)
   strict private
-    function GetPermissionsData: IPermissionsData;
+    function GetController: IPermissionsController;
+
   public
     function NewPermission(const value: TMyPermission): TMyPermission; stdcall;
     function GetMyPermissions: UnicodeString; stdcall;
     function AsObjects: TMyPermissions; stdcall;
 
-    property PermissionsData: IPermissionsData read GetPermissionsData;
+    property Controller: IPermissionsController read GetController;
   end;
 
 implementation
 
 { TMercurioPermissionsServer }
-function TMercurioPermissionsServer.GetPermissionsData: IPermissionsData;
+function TMercurioPermissionsServer.GetController: IPermissionsController;
 begin
- Result := TPermissionsDataFactory.New;
+ Result := TPermissionsController.New;
 end;
 
 function TMercurioPermissionsServer.NewPermission(
   const value: TMyPermission): TMyPermission;
 begin
- Result := self.PermissionsData.NewPermission(value);
+ Result := self.Controller.NewPermission(value);
 end;
 
 function TMercurioPermissionsServer.GetMyPermissions: UnicodeString;
 begin
- Result := self.PermissionsData.GetMyPermissions;
+ Result := self.Controller.GetMyPermissions;
 end;
 
 function TMercurioPermissionsServer.AsObjects: TMyPermissions;
 begin
- Result := self.PermissionsData.AsObjects;
+ Result := self.Controller.AsObjects;
 end;
 
 initialization

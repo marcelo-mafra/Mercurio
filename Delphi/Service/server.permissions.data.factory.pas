@@ -23,7 +23,7 @@ implementation
 
 class function TPermissionsDataFactory.New: IPermissionsData;
 begin
- Result := TPermissionsData.Create as IPermissionsData;
+ Result := TDAOPermissions.Create as IPermissionsData;
 end;
 
 end.

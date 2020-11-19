@@ -151,6 +151,9 @@
         <DCCReference Include="..\server.permissions.interfaces.pas"/>
         <DCCReference Include="..\server.permissions.data.factory.pas"/>
         <DCCReference Include="..\server.json.consts.pas"/>
+        <DCCReference Include="..\server.permissions.controller.pas"/>
+        <DCCReference Include="..\server.contatos.controller.pas"/>
+        <DCCReference Include="..\server.contatos.interfaces.pas"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>

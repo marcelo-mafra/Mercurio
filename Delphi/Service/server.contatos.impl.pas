@@ -5,7 +5,8 @@ unit server.contatos.impl;
 interface
 
 uses Soap.InvokeRegistry, System.Types, Soap.XSBuiltIns, server.contatos.intf,
- System.SysUtils, System.Json, System.Classes, server.contatos.data;
+ System.SysUtils, System.Json, System.Classes, server.contatos.interfaces,
+ server.contatos.controller;
 
 type
   TJsonConsts = class //do not localize!
@@ -17,10 +18,15 @@ type
 
   { TMercurioContatosServer }
   TMercurioContatosServer = class(TInvokableClass, IMercurioContatosServer)
+  strict private
+    function GetController: IContatosController;
+
   public
     function NewContato(const value: TMyContato): TMyContato; stdcall;
     function GetMyContatos: UnicodeString; stdcall;
     function ExcluirContato(const value: TMyContato): boolean; stdcall;
+
+    property Controller: IContatosController read GetController;
   end;
 
 implementation
@@ -28,7 +34,12 @@ implementation
 
 function TMercurioContatosServer.ExcluirContato(const value: TMyContato): boolean;
 begin
- Result := TContatosData.ExcluirContato(Value);
+ Result := Controller.ExcluirContato(Value);
+end;
+
+function TMercurioContatosServer.GetController: IContatosController;
+begin
+ REsult := TContatosController.New;
 end;
 
 function TMercurioContatosServer.GetMyContatos: UnicodeString;
@@ -39,7 +50,7 @@ var
 begin
   JDocumment := TStringStream.Create(string.Empty, TEncoding.UTF8);
   JDocumment.WriteString(TJsonConsts.ArrayContatos);
-  StrData := TContatosData.GetContatos;
+  StrData := Controller.GetMyContatos;
 
   try
    if StrData.Count > 0 then
@@ -64,7 +75,7 @@ end;
 function TMercurioContatosServer.NewContato(
   const value: TMyContato): TMyContato;
 begin
-  Result := TContatosData.NewContato(Value);
+  Result := Controller.NewContato(Value);
 end;
 
 

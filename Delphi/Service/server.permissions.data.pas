@@ -3,20 +3,21 @@ unit server.permissions.data;
 interface
 
  uses
-  System.Classes, System.SysUtils, Data.DB, Datasnap.DBClient, System.Json,
+  System.Classes, System.SysUtils, Data.DB, System.Json,
   FireDAC.Stan.Intf, FireDAC.Stan.Option, FireDAC.Stan.Param, FireDAC.Stan.Error,
   FireDAC.DatS, FireDAC.Phys.Intf, FireDAC.DApt.Intf, FireDAC.Comp.DataSet,
   FireDAC.Comp.Client, FireDAC.Stan.StorageJSON, FireDAC.Comp.BatchMove,
   FireDAC.Comp.BatchMove.JSON,
-  server.permissions.intf, server.permissions.interfaces, classes.permissions.types,
-  server.json.consts, client.resources.permissions.dataobjects;
+  server.permissions.intf, server.permissions.interfaces, server.json.consts,
+  client.resources.permissions.dataobjects;
 
  type
 
-   TPermissionsData = class(TInterfacedObject, IPermissionsData)
+   TDAOPermissions = class(TInterfacedObject, IPermissionsData)
     private
      function DoCreateObject(const Dataset: TDataset): TMyPermission;
      procedure GetPermissions(Stream: TMemoryStream);
+
     public
      class function New: IPermissionsData;
 
@@ -43,17 +44,16 @@ type
 
 
 { TPermissionsData }
-class function TPermissionsData.New: IPermissionsData;
+class function TDAOPermissions.New: IPermissionsData;
 begin
- Result := TPermissionsData.Create as IPermissionsData;
+ Result := TDAOPermissions.Create as IPermissionsData;
 end;
 
-function TPermissionsData.AsObjects: TMyPermissions;
+function TDAOPermissions.AsObjects: TMyPermissions;
  var
   ArrayPos: integer;
   Dataset: TFDMemTable;
   UtilsObj: TPermissionsDataUtils;
-  APermission: TMyPermission;
   PermissionSet: TPermissionsArray;
 begin
  Result := TMyPermissions.Create;
@@ -74,15 +74,11 @@ begin
 
  finally
   if Assigned(UtilsObj) then FreeAndNil(UtilsObj);
-  if Assigned(Dataset) then
-   begin
-    Dataset.Close;
-    FreeAndNil(Dataset);
-   end;
+  if Assigned(Dataset) then  FreeAndNil(Dataset);
  end;
 end;
 
-function TPermissionsData.DoCreateObject(
+function TDAOPermissions.DoCreateObject(
   const Dataset: TDataset): TMyPermission;
 begin
  Result := TMyPermission.Create;
@@ -95,7 +91,7 @@ begin
   end;
 end;
 
-function TPermissionsData.GetMyPermissions: UnicodeString;
+function TDAOPermissions.GetMyPermissions: UnicodeString;
 var
  I: integer;
  JDocumment: TStringStream;
@@ -127,7 +123,7 @@ begin
 
 end;
 
-procedure TPermissionsData.GetPermissions(Stream: TMemoryStream);
+procedure TDAOPermissions.GetPermissions(Stream: TMemoryStream);
  var
   Dataset: TFDMemTable;
   UtilsObj: TPermissionsDataUtils;
@@ -140,16 +136,12 @@ begin
 
  finally
   if Assigned(UtilsObj) then FreeAndNil(UtilsObj);
-  if Assigned(Dataset) then
-   begin
-    Dataset.Close;
-    FreeAndNil(Dataset);
-   end;
+  if Assigned(Dataset) then  FreeAndNil(Dataset);
  end;
 
 end;
 
-function TPermissionsData.NewPermission(
+function TDAOPermissions.NewPermission(
   const Value: TMyPermission): TMyPermission;
  var
   Dataset: TFDMemTable;
@@ -173,16 +165,12 @@ begin
 
  finally
   if Assigned(UtilsObj) then FreeAndNil(UtilsObj);
-  if Assigned(Dataset) then
-    begin
-     Dataset.Close;
-     FreeAndNil(Dataset);
-    end;
+  if Assigned(Dataset) then  FreeAndNil(Dataset);
  end;
 
 end;
 
-procedure TPermissionsData.GetMyPermissions(List: TStringList);
+procedure TDAOPermissions.GetMyPermissions(List: TStringList);
 var
   Dataset: TFDMemTable;
   JsonObj: TJsonObject;
@@ -208,11 +196,7 @@ begin
 
  finally
   if Assigned(UtilsObj) then FreeAndNil(UtilsObj);
-  if Assigned(Dataset) then
-   begin
-    Dataset.Close;
-    FreeAndNil(Dataset);
-   end;
+  if Assigned(Dataset) then  FreeAndNil(Dataset);
  end;
 
 end;

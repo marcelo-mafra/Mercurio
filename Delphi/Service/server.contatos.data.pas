@@ -8,15 +8,20 @@ interface
   FireDAC.DatS, FireDAC.Phys.Intf, FireDAC.DApt.Intf, FireDAC.Comp.DataSet,
   FireDAC.Comp.Client, FireDAC.Stan.StorageJSON, FireDAC.Comp.BatchMove,
   FireDAC.Comp.BatchMove.JSON, System.SysUtils, server.contatos.intf,
-  classes.contatos.types, client.resources.contatos.dataobjects;
+  classes.contatos.types, server.contatos.interfaces, client.resources.contatos.dataobjects;
 
  type
 
-   TContatosData = class
-     class function GetContatos: TStringList; overload;
-     class procedure GetContatos(Stream: TMemoryStream); overload;
-     class function NewContato(const Value: TMyContato): TMyContato;
-     class function ExcluirContato(value: TMyContato): boolean;
+   TContatosDAO = class(TInterfacedObject, IContatosData)
+     public
+      class function New: IContatosData;
+
+
+      procedure GetContatos(Stream: TMemoryStream);
+
+      function NewContato(const value: TMyContato): TMyContato;
+      function GetMyContatos: UnicodeString;
+      function ExcluirContato(const value: TMyContato): boolean;
    end;
 
 implementation
@@ -38,7 +43,7 @@ type
 
 { TContatosData }
 
-class function TContatosData.ExcluirContato(value: TMyContato): boolean;
+function TContatosDAO.ExcluirContato(const value: TMyContato): boolean;
  var
   Dataset: TFDMemTable;
   UtilsObj: TContatosDataUtils;
@@ -69,7 +74,7 @@ begin
  end;
 end;
 
-class procedure TContatosData.GetContatos(Stream: TMemoryStream);
+procedure TContatosDAO.GetContatos(Stream: TMemoryStream);
  var
   Dataset: TFDMemTable;
   UtilsObj: TContatosDataUtils;
@@ -95,14 +100,15 @@ begin
  end;
 end;
 
-class function TContatosData.GetContatos: TStringList;
+function TContatosDAO.GetMyContatos: UnicodeString;
  var
   Dataset: TFDMemTable;
   JsonObj: TJsonObject;
   UtilsObj: TContatosDataUtils;
-//  StreamObj: TStringStream;
+ JDocumment: TStringStream;
+ StrData: TStringList;
 begin
- Result := TStringList.Create;
+ //Result := TStringList.Create;
  UtilsObj := TContatosDataUtils.Create;
  //StreamObj := TStringStream.Create('', TEncoding.UTF8);
 
@@ -127,7 +133,7 @@ begin
           JsonObj.AddPair(TJsonPair.Create('FOTO', ''));
        JsonObj.AddPair(TJsonPair.Create('STATUS', Dataset.FieldByName('STATUS').AsString));
 
-       Result.Append(JsonObj.ToString);
+       //Result.Append(JsonObj.ToString);
        JsonObj.Free;
        Dataset.Next;
      end;
@@ -142,7 +148,12 @@ begin
  end;
 end;
 
-class function TContatosData.NewContato(const Value: TMyContato): TMyContato;
+class function TContatosDAO.New: IContatosData;
+begin
+ Result := TContatosDAO.Create as IContatosData;
+end;
+
+function TContatosDAO.NewContato(const value: TMyContato): TMyContato;
  var
   Dataset: TFDMemTable;
   UtilsObj: TContatosDataUtils;
