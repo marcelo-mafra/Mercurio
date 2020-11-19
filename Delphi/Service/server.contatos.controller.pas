@@ -4,7 +4,7 @@ interface
 
  uses
   System.Classes, System.SysUtils, System.Json,
-  server.contatos.intf, server.contatos.interfaces, server.contatos.data;
+  server.contatos.intf, server.contatos.interfaces, server.contatos.data.factory;
 
  type
 
@@ -25,6 +25,10 @@ interface
 implementation
 
 { TContatosController }
+class function TContatosController.New: IContatosController;
+begin
+ Result := TContatosController.Create as IContatosController;
+end;
 
 function TContatosController.ExcluirContato(const value: TMyContato): boolean;
 begin
@@ -33,17 +37,12 @@ end;
 
 function TContatosController.GetDAOInterface: IContatosData;
 begin
- Result := TContatosDAO.New;
+ Result := TContatosDAOFactory.New;
 end;
 
 function TContatosController.GetMyContatos: UnicodeString;
 begin
  Result := self.DAOInterface.GetMyContatos;
-end;
-
-class function TContatosController.New: IContatosController;
-begin
- Result := TContatosController.Create as IContatosController;
 end;
 
 function TContatosController.NewContato(const value: TMyContato): TMyContato;

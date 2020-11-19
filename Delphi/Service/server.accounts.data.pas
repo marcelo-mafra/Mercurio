@@ -3,26 +3,27 @@ unit server.accounts.data;
 interface
 
  uses
-  System.Classes, Data.DB, Datasnap.DBClient, System.Json,
-
+  System.Classes, Data.DB, Datasnap.DBClient, System.Json, System.SysUtils,
   FireDAC.Stan.Intf, FireDAC.Stan.Option, FireDAC.Stan.Param, FireDAC.Stan.Error,
   FireDAC.DatS, FireDAC.Phys.Intf, FireDAC.DApt.Intf, FireDAC.Comp.DataSet,
   FireDAC.Comp.Client, FireDAC.Stan.StorageJSON, FireDAC.Comp.BatchMove,
-  FireDAC.Comp.BatchMove.JSON, System.SysUtils, server.accounts.intf,
+  FireDAC.Comp.BatchMove.JSON,
+  server.accounts.intf, server.json.consts, server.accounts.interfaces,
   client.resources.accounts.dataobjects;
 
  type
 
-   TAccountsData = class
+   TAccountsDAO = class(TInterfacedObject, IAccountsData)
      strict private
       function DoCreateDataset: TFDMemTable;
 
      public
-      class function New: TAccountsData;
+      class function New: IAccountsData;
 
       function NewAccount(const value: TMyAccount): TMyAccount;
       function GetAccounts: TStringList; overload;
       procedure GetAccounts(Stream: TMemoryStream); overload;
+      function GetMyAccounts: UnicodeString;
       function DropAccount(const value: TMyAccount): boolean;
    end;
 
@@ -42,7 +43,7 @@ type
 
 { TAccountsData }
 
-function TAccountsData.GetAccounts: TStringList;
+function TAccountsDAO.GetAccounts: TStringList;
 var
   Dataset: TFDMemTable;
   JsonObj: TJsonObject;
@@ -76,7 +77,7 @@ begin
 
 end;
 
-function TAccountsData.DoCreateDataset: TFDMemTable;
+function TAccountsDAO.DoCreateDataset: TFDMemTable;
 var
   UtilsObj: TAccountsDataUtils;
 begin
@@ -84,7 +85,7 @@ begin
   Result := UtilsObj.CreateDataset;
 end;
 
-function TAccountsData.DropAccount(const value: TMyAccount): boolean;
+function TAccountsDAO.DropAccount(const value: TMyAccount): boolean;
  var
   Dataset: TFDMemTable;
 begin
@@ -111,7 +112,7 @@ begin
 
 end;
 
-procedure TAccountsData.GetAccounts(Stream: TMemoryStream);
+procedure TAccountsDAO.GetAccounts(Stream: TMemoryStream);
  var
   Dataset: TFDMemTable;
 begin
@@ -130,12 +131,43 @@ begin
 
 end;
 
-class function TAccountsData.New: TAccountsData;
+function TAccountsDAO.GetMyAccounts: UnicodeString;
+var
+ I: integer;
+ JDocumment: TStringStream;
+ StrData: TStringList;
 begin
- Result := TAccountsData.Create;
+  JDocumment := TStringStream.Create(string.Empty, TEncoding.UTF8);
+  JDocumment.WriteString(TJsonConsts.ArrayAccounts);
+
+  try
+   StrData := self.GetAccounts;
+
+   if StrData.Count > 0 then
+   begin
+   for I := 0 to Pred(StrData.Count) do
+    begin
+     if I < Pred(StrData.Count) then
+      JDocumment.WriteString(StrData.Strings[I] + TJsonConsts.JsonTerminator)
+     else
+      JDocumment.WriteString(StrData.Strings[I]);
+    end;
+    end;
+ //Escreve o símbolo de fim do conjunto no padrão json.
+  JDocumment.WriteString(TJsonConsts.ArrayTerminator);
+  Result := JDocumment.DataString;
+
+  finally
+   if Assigned(JDocumment) then FreeAndNil(JDocumment);
+  end;
 end;
 
-function TAccountsData.NewAccount(const value: TMyAccount): TMyAccount;
+class function TAccountsDAO.New: IAccountsData;
+begin
+ Result := TAccountsDAO.Create as IAccountsData;
+end;
+
+function TAccountsDAO.NewAccount(const value: TMyAccount): TMyAccount;
  var
   Dataset: TFDMemTable;
 begin

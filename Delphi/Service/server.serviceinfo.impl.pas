@@ -4,31 +4,33 @@ unit server.serviceinfo.impl;
 
 interface
 
-uses Soap.InvokeRegistry, System.Types, Soap.XSBuiltIns, server.serviceinfo.intf,
- System.SysUtils, client.resources.serviceparams, client.resources.servicelabels;
+uses Soap.InvokeRegistry, System.Types, Soap.XSBuiltIns, System.SysUtils,
+server.serviceinfo.intf, server.serviceinfo.interfaces,
+server.serviceinfo.controller;
 
 type
 
   { IMercurioServiceInfo }
   TMercurioServiceInfo = class(TInvokableClass, IMercurioServiceInfo)
+  strict private
+    function GetController: IServiceInfoController;
+
   public
     function ServiceInfo: TServiceInfo; stdcall;
+
+    property Controller: IServiceInfoController read GetController;
   end;
 
 implementation
 
+function TMercurioServiceInfo.GetController: IServiceInfoController;
+begin
+ Result := TServiceInfoController.New;
+end;
+
 function TMercurioServiceInfo.ServiceInfo: TServiceInfo;
 begin
-  Result := TServiceInfo.Create;
-
-  try
-   Result.ServiceName := TServiceLabels.ServiceName;
-   Result.Host := TServiceParams.ServiceHost;
-   Result.ServerTime := Now;
-
-  finally
-
-  end;
+  Result := self.Controller.ServiceInfo;
 end;
 
 

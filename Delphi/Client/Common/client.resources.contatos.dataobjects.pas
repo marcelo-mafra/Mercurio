@@ -6,6 +6,11 @@ uses
   System.SysUtils;
 
 type
+  TDataFile = class
+   const
+     FileName = 'data.json';
+  end;
+
 {  Field names}
   TContatosFieldsNames = class
     const

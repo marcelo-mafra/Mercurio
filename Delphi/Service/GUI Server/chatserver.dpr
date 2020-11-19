@@ -25,7 +25,22 @@ uses
   server.json.consts in '..\server.json.consts.pas',
   server.permissions.controller in '..\server.permissions.controller.pas',
   server.contatos.controller in '..\server.contatos.controller.pas',
-  server.contatos.interfaces in '..\server.contatos.interfaces.pas';
+  server.contatos.interfaces in '..\server.contatos.interfaces.pas',
+  server.common.interfaces in '..\server.common.interfaces.pas',
+  server.contatos.data.factory in '..\server.contatos.data.factory.pas',
+  server.contatos.controller.factory in '..\server.contatos.controller.factory.pas',
+  server.permissions.controller.factory in '..\server.permissions.controller.factory.pas',
+  server.accounts.data.factory in '..\server.accounts.data.factory.pas',
+  server.accounts.interfaces in '..\server.accounts.interfaces.pas',
+  server.accounts.controller in '..\server.accounts.controller.pas',
+  server.accounts.controller.factory in '..\server.accounts.controller.factory.pas',
+  server.chatserver.interfaces in '..\server.chatserver.interfaces.pas',
+  server.chatserver.controller.factory in '..\server.chatserver.controller.factory.pas',
+  server.chatserver.controller in '..\server.chatserver.controller.pas',
+  server.chatserver.data in '..\server.chatserver.data.pas',
+  server.chatserver.data.factory in '..\server.chatserver.data.factory.pas',
+  server.serviceinfo.controller in '..\server.serviceinfo.controller.pas',
+  server.serviceinfo.interfaces in '..\server.serviceinfo.interfaces.pas';
 
 {$R *.res}
 

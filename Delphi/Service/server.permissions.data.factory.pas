@@ -4,7 +4,7 @@ interface
 
  uses
   System.Classes, System.SysUtils,
-  server.permissions.data, server.permissions.interfaces;
+  server.permissions.interfaces, server.permissions.data;
 
  type
 
@@ -13,8 +13,6 @@ interface
 
     public
      class function New: IPermissionsData;
-
-
    end;
 
 implementation
@@ -23,7 +21,7 @@ implementation
 
 class function TPermissionsDataFactory.New: IPermissionsData;
 begin
- Result := TDAOPermissions.Create as IPermissionsData;
+ Result := TPermissionsDAO.Create as IPermissionsData;
 end;
 
 end.

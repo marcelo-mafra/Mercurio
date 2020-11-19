@@ -2,23 +2,22 @@ unit server.contatos.data;
 
 interface
  uses
-  System.Classes, Data.DB, Datasnap.DBClient, System.Json,
-
+  System.Classes, Data.DB, System.Json, System.SysUtils,
   FireDAC.Stan.Intf, FireDAC.Stan.Option, FireDAC.Stan.Param, FireDAC.Stan.Error,
   FireDAC.DatS, FireDAC.Phys.Intf, FireDAC.DApt.Intf, FireDAC.Comp.DataSet,
-  FireDAC.Comp.Client, FireDAC.Stan.StorageJSON, FireDAC.Comp.BatchMove,
-  FireDAC.Comp.BatchMove.JSON, System.SysUtils, server.contatos.intf,
-  classes.contatos.types, server.contatos.interfaces, client.resources.contatos.dataobjects;
+  FireDAC.Comp.Client, FireDAC.Stan.StorageJSON,
+  server.contatos.intf, classes.contatos.types, server.contatos.interfaces,
+  server.json.consts, client.resources.contatos.dataobjects;
 
  type
 
    TContatosDAO = class(TInterfacedObject, IContatosData)
-     public
-      class function New: IContatosData;
-
-
+     private
       procedure GetContatos(Stream: TMemoryStream);
 
+     public
+      class function New: IContatosData;
+      //IContatosData methods
       function NewContato(const value: TMyContato): TMyContato;
       function GetMyContatos: UnicodeString;
       function ExcluirContato(const value: TMyContato): boolean;
@@ -57,10 +56,10 @@ begin
 
  try
    Dataset := UtilsObj.CreateDataset;
-   if Dataset.Locate('CONTACTID', Value.ContatoId, []) then
+   if Dataset.Locate(TContatosFieldsNames.ContactId, Value.ContatoId, []) then
     begin
      Dataset.Delete;
-     Dataset.SaveToFile('data.json', sfJson);
+     Dataset.SaveToFile(TDataFile.FileName, sfJson);
      Result := True;
     end;
 
@@ -78,17 +77,12 @@ procedure TContatosDAO.GetContatos(Stream: TMemoryStream);
  var
   Dataset: TFDMemTable;
   UtilsObj: TContatosDataUtils;
-//  JsonObj: TJsonObject;
-//  BatchMoveObj: TFDBatchMoveJSONWriter;
 begin
  UtilsObj := TContatosDataUtils.Create;
  Dataset := UtilsObj.CreateDataset;
-// BatchMoveObj := TFDBatchMoveJSONWriter.Create(nil);
 
  try
     Dataset.SaveToStream(Stream, sfJson);
- // BatchMoveObj.Stream := Stream;
- // BatchMoveObj.Execute;
 
  finally
   if Assigned(UtilsObj) then FreeAndNil(UtilsObj);
@@ -105,24 +99,21 @@ function TContatosDAO.GetMyContatos: UnicodeString;
   Dataset: TFDMemTable;
   JsonObj: TJsonObject;
   UtilsObj: TContatosDataUtils;
- JDocumment: TStringStream;
- StrData: TStringList;
+  JDocumment: TStringStream;
 begin
- //Result := TStringList.Create;
- UtilsObj := TContatosDataUtils.Create;
- //StreamObj := TStringStream.Create('', TEncoding.UTF8);
+  UtilsObj := TContatosDataUtils.Create;
+  JDocumment := TStringStream.Create(string.Empty, TEncoding.UTF8);
+  JDocumment.WriteString(TJsonConsts.ArrayContatos);
 
  try
     Dataset := UtilsObj.CreateDataset;
-    //Dataset.SaveToStream(StreamObj, sfJson);
-    //Result.LoadFromStream(StreamObj, TEncoding.UTF8);
 
     while not Dataset.Eof do
      begin
        JsonObj := TJsonObject.Create;
-       JsonObj.AddPair(TJsonPair.Create('CONTACTID', Dataset.FieldByName('CONTACTID').AsString));
-       JsonObj.AddPair(TJsonPair.Create('NOME', Dataset.FieldByName('NOME').AsString));
-       JsonObj.AddPair(TJsonPair.Create('SOBRENOME', Dataset.FieldByName('SOBRENOME').AsString));
+       JsonObj.AddPair(TJsonPair.Create(TContatosJosonData.ContactId, Dataset.FieldByName(TContatosFieldsNames.ContactId).AsString));
+       JsonObj.AddPair(TJsonPair.Create(TContatosJosonData.Nome, Dataset.FieldByName(TContatosFieldsNames.Nome).AsString));
+       JsonObj.AddPair(TJsonPair.Create(TContatosJosonData.Sobrenome, Dataset.FieldByName(TContatosFieldsNames.Sobrenome).AsString));
       { if not Dataset.FieldByName('FOTO').IsNull then
         begin
           StreamObj.Clear;
@@ -130,13 +121,17 @@ begin
           JsonObj.AddPair(TJsonPair.Create('FOTO', StreamObj.DataString));
         end
         else }
-          JsonObj.AddPair(TJsonPair.Create('FOTO', ''));
-       JsonObj.AddPair(TJsonPair.Create('STATUS', Dataset.FieldByName('STATUS').AsString));
+          JsonObj.AddPair(TJsonPair.Create(TContatosJosonData.Foto, ''));
+       JsonObj.AddPair(TJsonPair.Create(TContatosJosonData.Status, Dataset.FieldByName(TContatosFieldsNames.Status).AsString));
 
-       //Result.Append(JsonObj.ToString);
+       JDocumment.WriteString(JsonObj.ToString);
        JsonObj.Free;
        Dataset.Next;
      end;
+
+    //Escreve o símbolo de fim do conjunto no padrão json.
+    JDocumment.WriteString(TJsonConsts.ArrayTerminator);
+    Result := JDocumment.DataString;
 
  finally
   if Assigned(UtilsObj) then FreeAndNil(UtilsObj);
@@ -174,7 +169,7 @@ begin
        //Fields.FieldByName(TContatosFieldsNames.Foto).Value  := to-do;
        Fields.FieldByName(TContatosFieldsNames.Status).Value  := Result.Status;
        Post;
-       SaveToFile('data.json', sfJson);
+       SaveToFile(TDataFile.FileName, sfJson);
      end;
 
  finally
@@ -218,7 +213,7 @@ var
 begin
   DataLink := TFDStanStorageJSONLink.Create(nil);
   Result := TFDMemTable.Create(nil);
-  Result.LoadFromFile('data.json', sfJson);
+  Result.LoadFromFile(TDataFile.FileName, sfJson);
   Result.Active := True;
 end;
 

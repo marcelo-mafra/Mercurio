@@ -14,6 +14,10 @@ type
 
       //Permissions consts
       ArrayPermissoes = '{"ArrayPermissoes":[';
+      //Accounts consts
+      ArrayAccounts = '{"ArrayAccounts":[';
+      //Contatos consts
+      ArrayContatos = '{"ArrayContatos":[';
   end;
 
 implementation

@@ -3,7 +3,8 @@ unit server.permissions.impl;
 interface
 
 uses Soap.InvokeRegistry, System.Types, Soap.XSBuiltIns, System.Classes,
- server.permissions.intf, server.permissions.interfaces, server.permissions.controller;
+ server.permissions.intf, server.permissions.interfaces,
+ server.permissions.controller.factory;
 
 type
   { TMercurioPermissionsServer }
@@ -24,7 +25,7 @@ implementation
 { TMercurioPermissionsServer }
 function TMercurioPermissionsServer.GetController: IPermissionsController;
 begin
- Result := TPermissionsController.New;
+ Result := TPermissionsControllerFactory.New;
 end;
 
 function TMercurioPermissionsServer.NewPermission(

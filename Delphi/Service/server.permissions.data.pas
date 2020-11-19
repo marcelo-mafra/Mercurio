@@ -13,7 +13,7 @@ interface
 
  type
 
-   TDAOPermissions = class(TInterfacedObject, IPermissionsData)
+   TPermissionsDAO = class(TInterfacedObject, IPermissionsData)
     private
      function DoCreateObject(const Dataset: TDataset): TMyPermission;
      procedure GetPermissions(Stream: TMemoryStream);
@@ -44,12 +44,12 @@ type
 
 
 { TPermissionsData }
-class function TDAOPermissions.New: IPermissionsData;
+class function TPermissionsDAO.New: IPermissionsData;
 begin
- Result := TDAOPermissions.Create as IPermissionsData;
+ Result := TPermissionsDAO.Create as IPermissionsData;
 end;
 
-function TDAOPermissions.AsObjects: TMyPermissions;
+function TPermissionsDAO.AsObjects: TMyPermissions;
  var
   ArrayPos: integer;
   Dataset: TFDMemTable;
@@ -78,7 +78,7 @@ begin
  end;
 end;
 
-function TDAOPermissions.DoCreateObject(
+function TPermissionsDAO.DoCreateObject(
   const Dataset: TDataset): TMyPermission;
 begin
  Result := TMyPermission.Create;
@@ -91,7 +91,7 @@ begin
   end;
 end;
 
-function TDAOPermissions.GetMyPermissions: UnicodeString;
+function TPermissionsDAO.GetMyPermissions: UnicodeString;
 var
  I: integer;
  JDocumment: TStringStream;
@@ -123,7 +123,7 @@ begin
 
 end;
 
-procedure TDAOPermissions.GetPermissions(Stream: TMemoryStream);
+procedure TPermissionsDAO.GetPermissions(Stream: TMemoryStream);
  var
   Dataset: TFDMemTable;
   UtilsObj: TPermissionsDataUtils;
@@ -141,7 +141,7 @@ begin
 
 end;
 
-function TDAOPermissions.NewPermission(
+function TPermissionsDAO.NewPermission(
   const Value: TMyPermission): TMyPermission;
  var
   Dataset: TFDMemTable;
@@ -170,7 +170,7 @@ begin
 
 end;
 
-procedure TDAOPermissions.GetMyPermissions(List: TStringList);
+procedure TPermissionsDAO.GetMyPermissions(List: TStringList);
 var
   Dataset: TFDMemTable;
   JsonObj: TJsonObject;

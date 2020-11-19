@@ -5,50 +5,33 @@ unit server.chatserver.impl;
 interface
 
 uses Soap.InvokeRegistry, System.Types, Soap.XSBuiltIns, server.chatserver.intf,
- System.SysUtils, System.Json;
+ System.SysUtils, System.Json,
+ server.chatserver.interfaces, server.chatserver.controller.factory;
 
 type
 
   { TMercurioChatServer }
   TMercurioChatServer = class(TInvokableClass, IMercurioChatServer)
+  strict private
+    function GetController: IChatServerController;
+
   public
-{
-    function ServiceInfo: UnicodeString; stdcall;    }
-    function NewChatMessage(const Value: TChatMessage): TChatMessage; stdcall;
+    function NewChatMessage(const value: TChatMessage): TChatMessage; stdcall;
+    property Controller: IChatServerController read GetController;
   end;
 
 implementation
 
+function TMercurioChatServer.GetController: IChatServerController;
+begin
+ Result := TChatServerControllerFactory.New;
+end;
+
 function TMercurioChatServer.NewChatMessage(
-  const Value: TChatMessage): TChatMessage;
+  const value: TChatMessage): TChatMessage;
 begin
-  Result := Value;
-  Result.MessageId := Result.MessageId * 2;
-  Result.StatusMsg := msRegistered;
-  Result.RegisteredTime := Now;
+  Result := self.Controller.NewChatMessage(value);
 end;
-{
-function TMercurioChatServer.ServiceInfo: UnicodeString;
-var
- JsonObj: TJsonObject;
-begin
-  JSonObj := TJsonObject.Create;
-
-  try
-   with JsonObj do
-    begin
-     AddPair('ServerHost', TChatServiceConst.ServiceHost);
-     AddPair('ServerName', TChatServiceLabels.ServiceName);
-     AddPair('ServerTime', DateTimeToStr(Now));
-    end;
-
-   Result := JsonObj.ToString;
-
-  finally
-   if Assigned(JsonObj) then FreeAndNil(JsonObj);
-  end;
-end;
-}
 
 
 initialization
