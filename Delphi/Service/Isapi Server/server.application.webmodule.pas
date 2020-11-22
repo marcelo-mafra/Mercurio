@@ -1,4 +1,4 @@
-unit server.webmodule;
+unit server.application.webmodule;
 
 interface
 

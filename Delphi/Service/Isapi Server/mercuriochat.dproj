@@ -106,7 +106,7 @@
         <DelphiCompile Include="$(MainSource)">
             <MainSource>MainSource</MainSource>
         </DelphiCompile>
-        <DCCReference Include="server.webmodule.pas">
+        <DCCReference Include="server.application.webmodule.pas">
             <Form>WebModuleMercurio</Form>
             <FormType>dfm</FormType>
             <DesignClass>TWebModule</DesignClass>
@@ -126,6 +126,25 @@
         <DCCReference Include="..\server.serviceinfo.intf.pas"/>
         <DCCReference Include="..\server.permissions.data.factory.pas"/>
         <DCCReference Include="..\server.json.consts.pas"/>
+        <DCCReference Include="..\server.accounts.controller.factory.pas"/>
+        <DCCReference Include="..\server.accounts.controller.pas"/>
+        <DCCReference Include="..\server.accounts.data.factory.pas"/>
+        <DCCReference Include="..\server.accounts.interfaces.pas"/>
+        <DCCReference Include="..\server.chatserver.controller.factory.pas"/>
+        <DCCReference Include="..\server.chatserver.controller.pas"/>
+        <DCCReference Include="..\server.chatserver.data.factory.pas"/>
+        <DCCReference Include="..\server.chatserver.data.pas"/>
+        <DCCReference Include="..\server.chatserver.interfaces.pas"/>
+        <DCCReference Include="..\server.common.interfaces.pas"/>
+        <DCCReference Include="..\server.contatos.controller.factory.pas"/>
+        <DCCReference Include="..\server.contatos.controller.pas"/>
+        <DCCReference Include="..\server.contatos.data.factory.pas"/>
+        <DCCReference Include="..\server.contatos.interfaces.pas"/>
+        <DCCReference Include="..\server.permissions.controller.factory.pas"/>
+        <DCCReference Include="..\server.permissions.controller.pas"/>
+        <DCCReference Include="..\server.permissions.interfaces.pas"/>
+        <DCCReference Include="..\server.serviceinfo.controller.pas"/>
+        <DCCReference Include="..\server.serviceinfo.interfaces.pas"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>

@@ -14,6 +14,7 @@ interface
    TContatosDAO = class(TInterfacedObject, IContatosData)
      private
       procedure GetContatos(Stream: TMemoryStream);
+      function DoCreateObject(const Dataset: TDataset): TMyContato;
 
      public
       class function New: IContatosData;
@@ -21,6 +22,7 @@ interface
       function NewContato(const value: TMyContato): TMyContato;
       function GetMyContatos: UnicodeString;
       function ExcluirContato(const value: TMyContato): boolean;
+      function AsObjects: TMyContatos;
    end;
 
 implementation
@@ -41,6 +43,48 @@ type
  end;
 
 { TContatosData }
+
+function TContatosDAO.AsObjects: TMyContatos;
+ var
+  ArrayPos: integer;
+  Dataset: TFDMemTable;
+  UtilsObj: TContatosDataUtils;
+  ContatosSet: TContatosArray;
+begin
+ Result := TMyContatos.Create;
+ UtilsObj := TContatosDataUtils.Create;
+ Dataset := UtilsObj.CreateDataset;
+ ArrayPos := 0;
+ SetLength(ContatosSet, Dataset.RecordCount);
+
+ try
+    while not Dataset.Eof do
+     begin
+      ContatosSet[ArrayPos] := self.DoCreateObject(Dataset);
+      Inc(ArrayPos);
+      Dataset.Next;
+     end;
+
+ Result.Contatos := ContatosSet;
+
+ finally
+  if Assigned(UtilsObj) then FreeAndNil(UtilsObj);
+  if Assigned(Dataset) then  FreeAndNil(Dataset);
+ end;
+
+end;
+
+function TContatosDAO.DoCreateObject(const Dataset: TDataset): TMyContato;
+begin
+ Result := TMyContato.Create;
+ with Dataset.Fields do
+  begin
+   Result.ContatoId   := FieldByName(TContatosFieldsNames.ContactId).Value;
+   Result.LastName    := FieldByName(TContatosFieldsNames.Sobrenome).Value;
+   Result.FirstName   := FieldByName(TContatosFieldsNames.Nome).Value;
+   Result.Status      := FieldByName(TContatosFieldsNames.Status).Value;
+  end;
+end;
 
 function TContatosDAO.ExcluirContato(const value: TMyContato): boolean;
  var

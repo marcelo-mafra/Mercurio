@@ -7,6 +7,9 @@ interface
 uses Soap.InvokeRegistry, System.Types, Soap.XSBuiltIns;
 
 type
+  TMyContato = class; //forward declaration
+
+  TContatosArray = array of TMyContato;
 
   TMyContato = class(TRemotable)
   private
@@ -27,12 +30,15 @@ type
     FContentText, FSenderUser: UnicodeString;
     FMessageId: double;
     FRegisteredTime: TDateTime;
+    FContatos: TContatosArray;
 
   published
     property ContentText: UnicodeString read FContentText write FContentText;
     property MessageId: double read FMessageId write FMessageId;
     property RegisteredTime: TDateTime read FRegisteredTime write FRegisteredTime;
     property SenderUser: UnicodeString read FSenderUser write FSenderUser;
+
+    property Contatos: TContatosArray read FContatos write FContatos;
 
   end;
 
@@ -45,6 +51,7 @@ type
     function NewContato(const Value: TMyContato): TMyContato; stdcall;
     function GetMyContatos: UnicodeString; stdcall;
     function ExcluirContato(const value: TMyContato): boolean; stdcall;
+    function AsObjects: TMyContatos; stdcall;
   end;
 
 implementation

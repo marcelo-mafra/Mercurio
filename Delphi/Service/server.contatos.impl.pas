@@ -18,12 +18,18 @@ type
     function NewContato(const value: TMyContato): TMyContato; stdcall;
     function GetMyContatos: UnicodeString; stdcall;
     function ExcluirContato(const value: TMyContato): boolean; stdcall;
+    function AsObjects: TMyContatos; stdcall;
 
     property Controller: IContatosController read GetController;
   end;
 
 implementation
 
+
+function TMercurioContatosServer.AsObjects: TMyContatos;
+begin
+ Result := self.Controller.AsObjects;
+end;
 
 function TMercurioContatosServer.ExcluirContato(const value: TMyContato): boolean;
 begin

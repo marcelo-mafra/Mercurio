@@ -1,4 +1,4 @@
-unit server.classes.mainform;
+unit server.application.view.mainform;
 
 interface
 
@@ -21,12 +21,12 @@ type
     procedure ButtonStopClick(Sender: TObject);
     procedure ButtonOpenBrowserClick(Sender: TObject);
   private
-    FServer: TIdHTTPWebBrokerBridge;
+    FHTTPServer: TIdHTTPWebBrokerBridge;
     procedure StartServer;
     { Private declarations }
   public
     { Public declarations }
-    property HTTPServer: TIdHTTPWebBrokerBridge read FServer;
+    property HTTPServer: TIdHTTPWebBrokerBridge read FHTTPServer;
   end;
 
 var
@@ -47,14 +47,14 @@ begin
 end;
 
 procedure TForm1.ButtonOpenBrowserClick(Sender: TObject);
+const
+ BaseUrl = 'http://localhost:%s';
 var
   LURL: string;
 begin
   StartServer;
-  LURL := Format('http://localhost:%s', [EditPort.Text]);
-  ShellExecute(0,
-        nil,
-        PChar(LURL), nil, nil, SW_SHOWNOACTIVATE);
+  LURL := Format(BaseUrl, [EditPort.Text]);
+  ShellExecute(0, nil, PChar(LURL), nil, nil, SW_SHOWNOACTIVATE);
 end;
 
 procedure TForm1.ButtonStartClick(Sender: TObject);
@@ -70,7 +70,7 @@ end;
 
 procedure TForm1.FormCreate(Sender: TObject);
 begin
-  FServer := TIdHTTPWebBrokerBridge.Create(Self);
+  FHTTPServer := TIdHTTPWebBrokerBridge.Create(Self);
 end;
 
 procedure TForm1.StartServer;

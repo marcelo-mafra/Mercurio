@@ -128,10 +128,10 @@
         <DelphiCompile Include="$(MainSource)">
             <MainSource>MainSource</MainSource>
         </DelphiCompile>
-        <DCCReference Include="server.classes.mainform.pas">
+        <DCCReference Include="server.application.view.mainform.pas">
             <Form>Form1</Form>
         </DCCReference>
-        <DCCReference Include="server.webmodule.pas">
+        <DCCReference Include="server.application.webmodule.pas">
             <Form>WebModuleMercurio</Form>
             <DesignClass>TWebModule</DesignClass>
         </DCCReference>

@@ -18,6 +18,7 @@ interface
      function NewContato(const value: TMyContato): TMyContato;
      function GetMyContatos: UnicodeString;
      function ExcluirContato(const value: TMyContato): boolean;
+     function AsObjects: TMyContatos;
 
      property DAOInterface: IContatosData read GetDAOInterface;
    end;
@@ -28,6 +29,11 @@ implementation
 class function TContatosController.New: IContatosController;
 begin
  Result := TContatosController.Create as IContatosController;
+end;
+
+function TContatosController.AsObjects: TMyContatos;
+begin
+ Result := DAOInterface.AsObjects;
 end;
 
 function TContatosController.ExcluirContato(const value: TMyContato): boolean;

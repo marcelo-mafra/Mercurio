@@ -23,6 +23,7 @@ object WebModuleMercurio: TWebModuleMercurio
   object WSDLHTMLPublish1: TWSDLHTMLPublish
     WebDispatch.MethodType = mtAny
     WebDispatch.PathInfo = 'wsdl*'
+    TargetNamespace = 'http://tempuri.org/'
     PublishOptions = [poUTF8ContentType]
     Left = 60
     Top = 123

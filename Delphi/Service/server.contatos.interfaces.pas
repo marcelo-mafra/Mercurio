@@ -11,6 +11,7 @@ interface
      function NewContato(const value: TMyContato): TMyContato;
      function GetMyContatos: UnicodeString;
      function ExcluirContato(const value: TMyContato): boolean;
+     function AsObjects: TMyContatos;
    end;
 
  type
@@ -19,6 +20,7 @@ interface
      function NewContato(const value: TMyContato): TMyContato;
      function GetMyContatos: UnicodeString;
      function ExcluirContato(const value: TMyContato): boolean;
+     function AsObjects: TMyContatos;
    end;
 
 implementation
