@@ -4,9 +4,9 @@ unit server.contatos.impl;
 
 interface
 
-uses Soap.InvokeRegistry, System.Types, Soap.XSBuiltIns, server.contatos.intf,
- System.SysUtils, System.Json, System.Classes,
- server.contatos.interfaces, server.contatos.controller.factory;
+uses Soap.InvokeRegistry, System.Types, Soap.XSBuiltIns, System.SysUtils,
+ System.Json, System.Classes,
+ server.contatos.intf, server.contatos.interfaces, server.contatos.controller.factory;
 
 type
   { TMercurioContatosServer }

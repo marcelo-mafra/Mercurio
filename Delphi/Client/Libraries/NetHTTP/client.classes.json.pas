@@ -115,14 +115,14 @@ end;
 class function TNetJsonUtils.GetObjectCount(const JsonString: string;
    ArrayName: string): integer;
 var
- jsValueObj   : TJsonValue;
+ jsValueObj: TJsonValue;
  jsObject : TJsonObject;
  jsPairObj : TJsonPair;
  jsArrayObj : TJsonArray;
 
 begin
  //parse json string
- jsValueObj := TJSONObject.ParseJSONValue(UnicodeString(JsonString));
+ jsValueObj := TJSONObject.ParseJSONValue(UnicodeString(JsonString), False, True);
 
  try
    //value as object

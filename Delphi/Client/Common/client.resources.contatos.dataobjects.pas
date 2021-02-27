@@ -8,7 +8,7 @@ uses
 type
   TDataFile = class
    const
-     FileName = 'data.json';
+     FileName = 'contatos.json';
   end;
 
 {  Field names}

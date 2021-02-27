@@ -109,9 +109,7 @@ var
  HTTPClientObj: TNetHTTPClient;
 begin
  {O método "Execute" aciona um webmétodo do serviço remoto.}
- if ServiceUrl.IsEmpty then
-  raise EInvalidURL.Create;
-
+ if ServiceUrl.IsEmpty then  raise EInvalidURL.Create;
  HTTPClientObj :=  TNetHTTPClient.Create(nil);
 
  try

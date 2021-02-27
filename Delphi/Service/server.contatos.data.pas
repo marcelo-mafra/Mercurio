@@ -210,7 +210,7 @@ begin
        Fields.FieldByName(TContatosFieldsNames.ContactId).Value  := Result.ContatoId;
        Fields.FieldByName(TContatosFieldsNames.Nome).Value  := Result.FirstName;
        Fields.FieldByName(TContatosFieldsNames.Sobrenome).Value  := Result.LastName;
-       //Fields.FieldByName(TContatosFieldsNames.Foto).Value  := to-do;
+       Fields.FieldByName(TContatosFieldsNames.Foto).Clear; //to-do
        Fields.FieldByName(TContatosFieldsNames.Status).Value  := Result.Status;
        Post;
        SaveToFile(TDataFile.FileName, sfJson);

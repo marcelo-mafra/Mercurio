@@ -15,12 +15,14 @@ type
     FOnStatus: TStatusEvent;
     procedure DoStatus(const Value: TConnectionStatus);
 
-   public
+   protected
     constructor Create(OnStatus: TStatusEvent);
-    destructor Destroy; override;
-    class function New(OnStatus: TStatusEvent): IObserverConnection;
+    //IObserverConnection
     procedure ChangedStatus(Sender: TObject; Status: TConnectionStatus);
 
+   public
+    destructor Destroy; override;
+    class function New(OnStatus: TStatusEvent): IObserverConnection;
 
     property Connected: boolean read FConnected;
   end;
@@ -28,14 +30,17 @@ type
   TObserversConnection = class(TInterfacedObject, IObserversConnection)
   private
     FList: IInterfaceList;
-  public
+
+  protected
     constructor Create;
-    class function New: IObserversConnection;
+    //IObserversConnection
     function Add(Observer: IObserverConnection): IObserversConnection;
     function Get(const Index: Integer): IObserverConnection;
     function Count: integer;
     procedure NotifyObjects(Sender: TObject; Status: TConnectionStatus);
 
+  public
+    class function New: IObserversConnection;
   end;
 
 implementation
@@ -96,10 +101,12 @@ procedure TObserversConnection.NotifyObjects(Sender: TObject;
   Status: TConnectionStatus);
 var
   I: Integer;
+  IObserver:  IObserverConnection;
 begin
   for I := 0 to Count -1 do
    begin
-    Get(I).ChangedStatus(Sender, Status);
+    IObserver := self.Get(I);
+    IObserver.ChangedStatus(Sender, Status);
    end;
 end;
 

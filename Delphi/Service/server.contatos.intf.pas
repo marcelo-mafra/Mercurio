@@ -59,5 +59,6 @@ implementation
 initialization
   { Invokable interfaces must be registered }
   InvRegistry.RegisterInterface(TypeInfo(IMercurioContatosServer));
+  RemClassRegistry.RegisterXSInfo(TypeInfo(TContatosArray));
 
 end.

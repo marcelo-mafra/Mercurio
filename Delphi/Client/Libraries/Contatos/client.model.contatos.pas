@@ -176,8 +176,7 @@ begin
  if Dataset = nil then Exit;
 
  JsonData := DoGetMyContatos;
- if not (JsonData.IsEmpty) then
-    DoJsonToObject(JsonData, Dataset, tmDataset);
+ if not (JsonData.IsEmpty) then DoJsonToObject(JsonData, Dataset, tmDataset);
 end;
 
 procedure TContatosModel.GetMyContatos(List: TListaObjetos);
@@ -187,8 +186,7 @@ begin
  if List = nil then Exit;
 
  JsonData := DoGetMyContatos;
- if not (JsonData.IsEmpty) then
-   DoJsonToObject(JsonData, List, tmListObject);
+ if not (JsonData.IsEmpty) then DoJsonToObject(JsonData, List, tmListObject);
 end;
 
 function TContatosModel.NewContato(value: TMyContato): TMyContato;

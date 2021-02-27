@@ -3,7 +3,7 @@ unit classes.exceptions.connection;
 interface
 
 uses System.SysUtils, classes.exceptions, client.resources.connection,
- client.resources.httpstatus;
+ client.resources.security, client.resources.httpstatus;
 
 type
  //Valors inválidos de url
@@ -76,7 +76,7 @@ end;
 constructor EAuthenticationError.Create;
 begin
   inherited;
-  Message := 'Usuário ou senha incorretos!';
+  Message := TSecurityConst.AuthenticateFailure;
 end;
 
 end.
