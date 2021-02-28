@@ -44,6 +44,7 @@ contains
   client.serverintf.soaputils in 'client.serverintf.soaputils.pas',
   client.serverintf.serviceinfo in 'client.serverintf.serviceinfo.pas',
   client.serverintf.permissions in 'client.serverintf.permissions.pas',
-  client.serverintf.accounts in 'client.serverintf.accounts.pas';
+  client.serverintf.accounts in 'client.serverintf.accounts.pas',
+  client.interfaces.json in 'client.interfaces.json.pas';
 
 end.

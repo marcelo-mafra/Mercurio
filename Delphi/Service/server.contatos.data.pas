@@ -143,48 +143,70 @@ function TContatosDAO.GetMyContatos: UnicodeString;
   Dataset: TFDMemTable;
   JsonObj: TJsonObject;
   UtilsObj: TContatosDataUtils;
-  JDocumment: TStringStream;
+  StreamObj: TStream;
+//  JDocumment: TStringStream;
+
+  //-----
+
+jsobj, jso : TJsonObject;
+    jsa : TJsonArray;
+    jsp : TJsonPair;
 begin
+  //UtilsObj := TContatosDataUtils.Create;
+  //JDocumment := TStringStream.Create(string.Empty, TEncoding.UTF8);
+  //JDocumment.WriteString(TJsonConsts.ArrayContatos);
+
   UtilsObj := TContatosDataUtils.Create;
-  JDocumment := TStringStream.Create(string.Empty, TEncoding.UTF8);
-  JDocumment.WriteString(TJsonConsts.ArrayContatos);
+  //JDocumment := TStringStream.Create(string.Empty, TEncoding.UTF8);
+  //JDocumment.WriteString(TJsonConsts.ArrayContatos);
 
  try
-    Dataset := UtilsObj.CreateDataset;
+     //create top-level object
+    jsObj := TJsonObject.Create();
+    //create an json-array
+    jsa := TJsonArray.Create();
+    //add array to object
+    jsp := TJSONPair.Create(TJsonConsts.ArrayContatos, jsa);
+    jsObj.AddPair(jsp);
 
+    Dataset := UtilsObj.CreateDataset;
     while not Dataset.Eof do
      begin
        JsonObj := TJsonObject.Create;
        JsonObj.AddPair(TJsonPair.Create(TContatosJosonData.ContactId, Dataset.FieldByName(TContatosFieldsNames.ContactId).AsString));
        JsonObj.AddPair(TJsonPair.Create(TContatosJosonData.Nome, Dataset.FieldByName(TContatosFieldsNames.Nome).AsString));
        JsonObj.AddPair(TJsonPair.Create(TContatosJosonData.Sobrenome, Dataset.FieldByName(TContatosFieldsNames.Sobrenome).AsString));
-      { if not Dataset.FieldByName('FOTO').IsNull then
+       if not Dataset.FieldByName('FOTO').IsNull then
         begin
-          StreamObj.Clear;
-          TGraphicField(Dataset.FieldByName('FOTO')).SaveToStream(StreamObj);
-          JsonObj.AddPair(TJsonPair.Create('FOTO', StreamObj.DataString));
-        end
-        else }
+          if not Assigned(StreamObj) then StreamObj := TStream.Create;
+          //StreamObj.Clear;
+          TGraphicField(Dataset.FieldByName(TContatosJosonData.Foto)).SaveToStream(StreamObj);
           JsonObj.AddPair(TJsonPair.Create(TContatosJosonData.Foto, ''));
+        end
+        else
+           JsonObj.AddPair(TJsonPair.Create(TContatosJosonData.Foto, ''));
        JsonObj.AddPair(TJsonPair.Create(TContatosJosonData.Status, Dataset.FieldByName(TContatosFieldsNames.Status).AsString));
+       //JDocumment.WriteString(JsonObj.ToString);
+       jsa.AddElement(JsonObj);
 
-       JDocumment.WriteString(JsonObj.ToString);
-       JsonObj.Free;
+       //JsonObj.Free;
        Dataset.Next;
      end;
 
     //Escreve o símbolo de fim do conjunto no padrão json.
-    JDocumment.WriteString(TJsonConsts.ArrayTerminator);
-    Result := JDocumment.DataString;
-
+    //JDocumment.WriteString(TJsonConsts.ArrayTerminator);
  finally
   if Assigned(UtilsObj) then FreeAndNil(UtilsObj);
   if Assigned(Dataset) then
    begin
+    //Result := JDocumment.DataString;
+    Result := Jsa.ToString;
+
     Dataset.Close;
     FreeAndNil(Dataset);
    end;
  end;
+
 end;
 
 class function TContatosDAO.New: IContatosData;

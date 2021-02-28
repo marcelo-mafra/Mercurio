@@ -30,6 +30,11 @@ uses
        function GetSecurityService: ISecurityService;
        function GetServiceInfo: IServiceInfo;
 
+     protected
+       //IServiceConnection
+       function ConnectService(var SessionId: string): boolean;
+       procedure DisconnectService;
+
      public
        constructor Create(const SessionObj: TConnectionSession); overload;
        constructor Create(const SessionObj: TConnectionSession; OnConnectEvent: TOnConnectEvent;
@@ -38,9 +43,6 @@ uses
        destructor Destroy; override;
 
        //IServiceConnection
-       function ConnectService(var SessionId: string): boolean;
-       procedure DisconnectService;
-
        property Connected: boolean read GetConnected ;
        property Security: ISecurityService read GetSecurityService;
        property ServiceHost: string read FServiceHost;

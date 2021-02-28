@@ -96,6 +96,7 @@ type
     procedure MultiView1StartShowing(Sender: TObject);
     procedure MultiView1StartHiding(Sender: TObject);
     procedure ActSaveAccountDataExecute(Sender: TObject);
+    procedure TabNewContactClick(Sender: TObject);
 
   strict private
     FAllowedFeaturesObj: TListaPermissions;
@@ -172,6 +173,7 @@ begin
 cria um novo contato no serviço remoto. Os dados do novo contato estão no parâmetro
 "value".}
  //implementar mecanismo de notificação de bandeja ou push
+ self.Tag := value.Status;
 end;
 
 procedure TFrmMainForm.ActBackExecute(Sender: TObject);
@@ -193,10 +195,8 @@ begin
   begin
     FSessionObj := TConnectionSession.Create(SessionId);
     FObserversConnection.NotifyObjects(Sender, csConnected);
-    //self.RegisterPermission(mfListaContatos, 'Novo contato', 'Marcelo');
     self.PermissionsService.GetMyPermissions(FAllowedFeaturesObj);
     aObj := self.PermissionsService.GetMyPermissions as TMyPermissions;
-    //self.ActSaveAccountData.Execute;
   end;
 end;
 
@@ -244,10 +244,10 @@ end;
 
 procedure TFrmMainForm.ActServiceInfoExecute(Sender: TObject);
 var
- //Counter: integer;
+ Counter: integer;
  ListObj: TStringList;
- //ItemObj: TListBoxItem;
-// HeaderObj: TListBoxGroupHeader;
+ ItemObj: TListBoxItem;
+ HeaderObj: TListBoxGroupHeader;
 begin
  if Connected then
   begin
@@ -256,13 +256,11 @@ begin
     try
       //Busca informações sobre o serviço remoto.
       ServiceConnection.ServiceInfo.GetServiceInfo(ListObj);
-
     finally
       if ListObj.Count > 0 then
        begin
-        { LstServiceInfo.BeginUpdate;
+         LstServiceInfo.BeginUpdate;
          LstServiceInfo.Items.Clear;
-
          HeaderObj :=  TListBoxGroupHeader.Create(LstServiceInfo);
          HeaderObj.Text := 'Header service';
          LstServiceInfo.AddObject(HeaderObj);
@@ -275,19 +273,16 @@ begin
               begin
                  Text :=  ListObj.Names[Counter];
                  Height := 35;
-
                  ItemData.Detail:= ListObj.ValueFromIndex[Counter];
                  StyleLookup := TMercurioUI.ListBoxItemStyle;
                  ItemData.Accessory := TlistBoxItemData.TAccessory(1);
                  WordWrap := True;
                  Hint := ItemObj.ItemData.Detail;
               end;
-
              LstServiceInfo.AddObject(ItemObj);
           end;
 
-         LstServiceInfo.EndUpdate; }
-
+         LstServiceInfo.EndUpdate;
          NavegateTo(viServiceInfo);
          ActServiceInfoView.Execute;
        end;
@@ -317,7 +312,6 @@ begin
       MyAccountObj.AccountName := 'Galaad';
       MyAccountObj.MyName := 'Marcelo Mafra Sanches';
       MyAccountObj.Enabled := True;
-
       MyAccountObj := AccountService.IAccount.NewAccount(MyAccountObj);
 
     finally
@@ -360,8 +354,7 @@ end;
 
 procedure TFrmMainForm.ActTabContactsUpdate(Sender: TObject);
 begin
- TAction(Sender).Enabled := (Connected) //and (TabMain.ActiveTab <> TabContatos)
-   and (self.HasPermission(mfListaContatos));
+ TAction(Sender).Enabled := (Connected) and (self.HasPermission(mfListaContatos));
 end;
 
 procedure TFrmMainForm.ActTabNewContactExecute(Sender: TObject);
@@ -426,7 +419,7 @@ begin
 
  PnlServiceInfo.Visible := False;
  ConfigureElements(False);
- //NavegateTo(viContatos);
+ NavegateTo(viContatos);
 end;
 
 procedure TFrmMainForm.FormDestroy(Sender: TObject);
@@ -477,6 +470,7 @@ end;
 
 function TFrmMainForm.GetSelectedContact: TMyContato;
 begin
+//Retorna o contato selecionado
  case ContatosStyle of
    ltSample: Result := (FContatosSample as IContatosFrame).SelectedContact;
    ltDetailed: Result := (FContatosDetailed as IContatosFrame).SelectedContact;
@@ -507,6 +501,7 @@ procedure TFrmMainForm.NavegateTo(Item: TViewItem; const Added: boolean);
 var
  NewItem: TTabItem;
 begin
+//Navega entre as páginas de dados e registra o histórico de navegação
  case Item of
    viContatos:    NewItem := TabContatos;
    viNovoContato: NewItem := TabNewContact;
@@ -527,6 +522,11 @@ begin
 end;
 
 
+
+procedure TFrmMainForm.TabNewContactClick(Sender: TObject);
+begin
+
+end;
 
 {initialization
 RegisterFmxClasses([TFrmMainForm]);}

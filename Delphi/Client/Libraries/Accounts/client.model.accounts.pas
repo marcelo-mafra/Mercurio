@@ -3,7 +3,7 @@ unit client.model.accounts;
 interface
 
 uses
-  System.SysUtils, System.Classes, Soap.InvokeRegistry, client.classes.json,
+  System.SysUtils, System.Classes, Soap.InvokeRegistry, client.classes.json, client.interfaces.json,
   client.interfaces.common, client.interfaces.baseclasses, client.interfaces.accounts,
   client.serverintf.accounts, classes.exceptions, Data.DB, System.Variants,
   client.model.listaaccounts, client.resources.accounts.dataobjects, client.resources.accounts,
@@ -18,10 +18,13 @@ type
 
       //IAccountsService
        function GetIAccount: IAccountService;
+       //INetJsonUtils
+       function GetIJsonUtils: INetJsonUtils;
 
      public
        constructor Create;
        destructor Destroy; override;
+       property IJsonUtils: INetJsonUtils read GetIJsonUtils;
 
        //IAccountService
        function NewAccount(value: TMyAccount): TMyAccount;
@@ -81,12 +84,12 @@ begin
      //Não pode executar esse método interno sem um objeto definido.
      if Obj = nil then raise EInvalidObjectList.Create;
 
-     Counter := TNetJsonUtils.GetObjectCount(JsonData, TAccountsJosonData.ArrayName);
+     Counter := IJsonUtils.GetObjectCount(JsonData, TAccountsJosonData.ArrayName);
      SetLength(DataValues, 5);
 
      for I := 0 to Counter - 1 do
        begin
-        TNetJsonUtils.FindValue(JsonData, TAccountsJosonData.ArrayName, DataValues, I);
+        IJsonUtils.FindValues(JsonData, TAccountsJosonData.ArrayName, DataValues, I);
 
         vAccountId := DataValues[TJsonFields.AccountId];
         vAccountName   := DataValues[TJsonFields.AccountName];
@@ -141,6 +144,11 @@ end;
 function TAccountsModel.GetIAccount: IAccountService;
 begin
  Result := self as IAccountService;
+end;
+
+function TAccountsModel.GetIJsonUtils: INetJsonUtils;
+begin
+ Result := TNetJsonUtils.New;
 end;
 
 procedure TAccountsModel.GetMyAccounts(List: TListaObjetos);

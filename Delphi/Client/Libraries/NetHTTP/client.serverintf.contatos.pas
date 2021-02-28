@@ -1,10 +1,10 @@
 // ************************************************************************ //
 // The types declared in this file were generated from data read from the
 // WSDL File described below:
-// WSDL     : http://localhost:8080/wsdl/IMercurioChatServer
-//  >Import : http://localhost:8080/wsdl/IMercurioChatServer>0
+// WSDL     : http://localhost:8080/wsdl/IMercurioContatosServer
+//  >Import : http://localhost:8080/wsdl/IMercurioContatosServer>0
 // Version  : 1.0
-// (26/06/2020 16:07:39 - - $Rev: 96726 $)
+// (27/02/2021 15:55:01 - - $Rev: 96726 $)
 // ************************************************************************ //
 
 unit client.serverintf.contatos;
@@ -12,7 +12,7 @@ unit client.serverintf.contatos;
 interface
 
 uses Soap.InvokeRegistry, Soap.SOAPHTTPClient, System.Types, Soap.XSBuiltIns,
-client.serverintf.soaputils;
+     client.serverintf.soaputils;
 
 type
 
@@ -20,14 +20,19 @@ type
   // The following types, referred to in the WSDL document are not being represented
   // in this file. They are either aliases[@] of other types represented or were referred
   // to but never[!] declared in the document. The types from the latter category
-  // typically map to predefined/known XML or Embarcadero types; however, they could also 
+  // typically map to predefined/known XML or Embarcadero types; however, they could also
   // indicate incorrect WSDL documents that failed to declare or import a schema type.
   // ************************************************************************ //
-  // !:string          - "http://www.w3.org/2001/XMLSchema"[Gbl]
   // !:double          - "http://www.w3.org/2001/XMLSchema"[Gbl]
+  // !:dateTime        - "http://www.w3.org/2001/XMLSchema"[Gbl]
+  // !:boolean         - "http://www.w3.org/2001/XMLSchema"[]
+  // !:string          - "http://www.w3.org/2001/XMLSchema"[Gbl]
+  // !:int             - "http://www.w3.org/2001/XMLSchema"[Gbl]
 
   TMyContato          = class;                 { "urn:server.contatos.intf"[GblCplx] }
   TMyContatos         = class;                 { "urn:server.contatos.intf"[GblCplx] }
+
+  TContatosArray = array of TMyContato;         { "urn:server.contatos.intf"[GblCplx] }
 
   // ************************************************************************ //
   // XML       : TMyContato, global, <complexType>
@@ -35,17 +40,15 @@ type
   // ************************************************************************ //
   TMyContato = class(TRemotable)
   private
-    FContatoId: UnicodeString;
-    FLastName: UnicodeString;
-    FFirstName: UnicodeString;
-    FStatus: integer;
-
+    FContatoId: string;
+    FLastName: string;
+    FFirstName: string;
+    FStatus: Integer;
   published
-    property ContatoId: UnicodeString read FContatoId write FContatoId;
-    property LastName:  UnicodeString  read FLastName write FLastName;
-    property FirstName: UnicodeString  read FFirstName write FFirstName;
-    property Status: integer read FStatus write FStatus;
-
+    property ContatoId: string   read FContatoId write FContatoId;
+    property LastName:  string   read FLastName write FLastName;
+    property FirstName: string   read FFirstName write FFirstName;
+    property Status:    Integer  read FStatus write FStatus;
   end;
 
   // ************************************************************************ //
@@ -54,18 +57,22 @@ type
   // ************************************************************************ //
   TMyContatos = class(TRemotable)
   private
-    FContentText, FSenderUser: UnicodeString;
-    FMessageId: double;
-    FRegisteredTime: TDateTime;
-
+    FContentText: string;
+    FMessageId: Double;
+    FRegisteredTime: TXSDateTime;
+    FSenderUser: string;
+    FContatos: TContatosArray;
+  public
+    destructor Destroy; override;
   published
-    property ContentText: UnicodeString read FContentText write FContentText;
-    property MessageId: double read FMessageId write FMessageId;
-    property SenderUser: UnicodeString read FSenderUser write FSenderUser;
-    property RegisteredTime: TDateTime read FRegisteredTime write FRegisteredTime;
+    property ContentText:    string          read FContentText write FContentText;
+    property MessageId:      Double          read FMessageId write FMessageId;
+    property RegisteredTime: TXSDateTime     read FRegisteredTime write FRegisteredTime;
+    property SenderUser:     string          read FSenderUser write FSenderUser;
+    property Contatos:       TContatosArray  read FContatos write FContatos;
   end;
 
-  TDoubleArray = array of Double;               { "urn:server.contatos.intf"[GblCplx] }
+ // TDoubleArray = array of Double;               { "urn:server.contatos.intf"[GblCplx] }
 
   // ************************************************************************ //
   // Namespace : urn:server.contatos.intf-IMercurioContatosServer
@@ -79,16 +86,15 @@ type
   // URL       : http://localhost:8080/soap/IMercurioContatosServer
   // ************************************************************************ //
   IMercurioContatosServer = interface(IInvokable)
-  ['{AE65F833-C137-487E-96F9-037DA184BD4F}']
-
+  ['{1F1A5787-1252-DA26-30CB-517FCD59E6B9}']
     function  NewContato(const Value: TMyContato): TMyContato; stdcall;
-    function  GetMyContatos: UnicodeString; stdcall;
-    function  ExcluirContato(value: TMyContato): boolean; stdcall;
-
+    function  GetMyContatos: string; stdcall;
+    function  ExcluirContato(const value: TMyContato): Boolean; stdcall;
+    function  AsObjects: TMyContatos; stdcall;
   end;
 
-  function GetIMercurioContatosServer(UseWSDL: Boolean = System.False; Addr: string = '';
-             HTTPRIO: THTTPRIO = nil): IMercurioContatosServer;
+function GetIMercurioContatosServer(UseWSDL: Boolean=System.False;
+   Addr: string = ''; HTTPRIO: THTTPRIO = nil): IMercurioContatosServer;
 
 
 implementation
@@ -139,13 +145,23 @@ begin
   end;
 end;
 
+destructor TMyContatos.Destroy;
+var
+  I: Integer;
+begin
+  for I := 0 to System.Length(FContatos)-1 do
+    System.SysUtils.FreeAndNil(FContatos[I]);
+  System.SetLength(FContatos, 0);
+  System.SysUtils.FreeAndNil(FRegisteredTime);
+  inherited Destroy;
+end;
+
 
 initialization
-  { IMercurioChatServer }
+  { IMercurioContatosServer }
   InvRegistry.RegisterInterface(TypeInfo(IMercurioContatosServer), 'urn:server.contatos.intf-IMercurioContatosServer', '');
   InvRegistry.RegisterDefaultSOAPAction(TypeInfo(IMercurioContatosServer), 'urn:server.contatos.intf-IMercurioContatosServer#%operationName%');
-  RemClassRegistry.RegisterXSInfo(TypeInfo(TDoubleArray), 'urn:server.contatos.intf', 'TDoubleArray');
-  //-----------
+  RemClassRegistry.RegisterXSInfo(TypeInfo(TContatosArray), 'urn:server.contatos.intf', 'TContatosArray');
   RemClassRegistry.RegisterXSClass(TMyContato, 'urn:server.contatos.intf', 'TMyContato');
   RemClassRegistry.RegisterXSClass(TMyContatos, 'urn:server.contatos.intf', 'TMyContatos');
 

@@ -3,7 +3,7 @@ unit client.model.contatos;
 interface
 
 uses
-  System.SysUtils, System.Classes, Soap.InvokeRegistry, client.classes.json,
+  System.SysUtils, System.Classes, Soap.InvokeRegistry, client.classes.json, client.interfaces.json,
   client.interfaces.common, client.interfaces.baseclasses, client.interfaces.contatos,
   client.serverintf.contatos, client.interfaces.application, client.resources.contatos,
   client.model.listacontatos, Data.DB, System.Variants,
@@ -20,6 +20,8 @@ type
        procedure DoJsonToObject(JsonData: string; Obj: TObject; Model: TTransformModel);
        //IContactService
        function GetIContact: IContactService;
+       //INetJsonUtils
+       function GetIJsonUtils: INetJsonUtils;
 
      public
        constructor Create(OnNewContato: TNewContatoNotifyEvent;
@@ -34,7 +36,7 @@ type
        procedure GetMyContatos(List: TListaObjetos); overload;
        procedure GetMyContatos(Dataset: TDataset); overload;
        property IContact: IContactService read GetIContact;
-
+       property IJsonUtils: INetJsonUtils read GetIJsonUtils;
 
    end;
 
@@ -88,13 +90,12 @@ begin
  try
    if not (JsonData.IsEmpty) then
     begin
-     Counter := TNetJsonUtils.GetObjectCount(JsonData, TContatosJosonData.ArrayName);
+     Counter := IJsonUtils.GetObjectCount(JsonData);
+     SetLength(DataValues, 5);
 
-     SetLength(DataValues, 7);
-
-     for I := 0 to Counter - 1 do
+     for I := 0 to Pred(Counter) do
        begin
-        TNetJsonUtils.FindValue(JsonData, TContatosJosonData.ArrayName, DataValues, I);
+        IJsonUtils.FindValues(JsonData, string.Empty, DataValues, I);
         vContactId := DataValues[0];
         vFirstName := DataValues[1];
         vLastName  := DataValues[2];
@@ -167,6 +168,11 @@ end;
 function TContatosModel.GetIContact: IContactService;
 begin
  Result := self as IContactService;
+end;
+
+function TContatosModel.GetIJsonUtils: INetJsonUtils;
+begin
+ Result := TNetJsonUtils.New;
 end;
 
 procedure TContatosModel.GetMyContatos(Dataset: TDataset);

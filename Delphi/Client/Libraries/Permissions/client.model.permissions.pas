@@ -3,7 +3,7 @@ unit client.model.permissions;
 interface
 
 uses
-  System.SysUtils, System.Classes, Soap.InvokeRegistry, client.classes.json,
+  System.SysUtils, System.Classes, Soap.InvokeRegistry, client.classes.json, client.interfaces.json,
   client.interfaces.common, client.interfaces.baseclasses, client.interfaces.permissions,
   client.serverintf.permissions, client.interfaces.application, classes.exceptions,
   Data.DB, System.Variants, client.model.listapermissions, classes.permissions.types,
@@ -20,11 +20,13 @@ type
        procedure Reset;
        function DoGetMyPermissions: string;
        procedure DoJsonToObject(JsonData: string; Obj: TObject; Model: TTransformModel);
+       //INetJsonUtils
+       function GetIJsonUtils: INetJsonUtils;
 
        //IPermissionService
        function GetEnabled: boolean;
        function GetFeatureName: string;
-       function NewPermission(Value: TMyPermission): TMyPermission;
+       function NewPermission(value: TMyPermission): TMyPermission;
 
        //IPermissionsService
        function GetAllowedFeatures: TMercurioFeatures;
@@ -33,6 +35,7 @@ type
      public
        constructor Create;
        destructor Destroy; override;
+       property IJsonUtils: INetJsonUtils read GetIJsonUtils;
 
        //IPermissionService
        property Enabled: boolean read GetEnabled;
@@ -103,12 +106,12 @@ begin
      if Obj = nil then raise EInvalidObjectList.Create;
 
      self.Reset; //Limpa o set de features permitidas
-     Counter := TNetJsonUtils.GetObjectCount(JsonData, TPermissionsJosonData.ArrayName);
+     Counter := IJsonUtils.GetObjectCount(JsonData, TPermissionsJosonData.ArrayName);
      SetLength(DataValues, 4);
 
      for I := 0 to Counter - 1 do
        begin
-        TNetJsonUtils.FindValue(JsonData, TPermissionsJosonData.ArrayName, DataValues, I);
+        IJsonUtils.FindValues(JsonData, TPermissionsJosonData.ArrayName, DataValues, I);
         vFeatureId := DataValues[TJsonFields.FeatureId];
         vFeature   := DataValues[TJsonFields.Feature];
         vUsuario   := DataValues[TJsonFields.Usuario];
@@ -174,6 +177,11 @@ begin
  Result := FFeatureName;
 end;
 
+function TPermissionsModel.GetIJsonUtils: INetJsonUtils;
+begin
+ Result := TNetJsonUtils.New;
+end;
+
 function TPermissionsModel.GetIPermission: IPermissionService;
 begin
  Result := self as IPermissionService;
@@ -218,7 +226,7 @@ begin
    DoJsonToObject(JsonData, List, tmListObject);
 end;
 
-function TPermissionsModel.NewPermission(Value: TMyPermission): TMyPermission;
+function TPermissionsModel.NewPermission(value: TMyPermission): TMyPermission;
 var
  IService: IMercurioPermissionsServer;
 begin

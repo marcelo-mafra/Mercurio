@@ -6,7 +6,7 @@ uses
   System.SysUtils, System.Classes, System.Net.URLClient, System.Net.HttpClient,
   System.Net.HttpClientComponent, Winapi.Windows, System.NetEncoding, classes.exceptions,
   classes.exceptions.connection, client.resources.httpstatus, client.resources.serviceparams,
-  System.Json, client.classes.json, client.serverintf.soaputils;
+  System.Json, client.classes.json, client.interfaces.json, client.serverintf.soaputils;
 
  type
    //Methods of http protocol.
@@ -17,13 +17,15 @@ uses
      private
        procedure LoadServiceParams(ClientObj: TNetHTTPClient); inline;
        procedure SetEvents(ClientObj: TNetHTTPClient); inline;
-
+       //INetJsonUtils
+       function GetIJsonUtils: INetJsonUtils;
      public
        constructor Create;
        destructor Destroy; override;
 
        function Execute(const ServiceUrl: string; Stream: TStream; RequestMethod: TNetMethods = nmGET): IHTTPResponse; overload;
        function Execute(const ServiceUrl: string; RequestMethod: TNetMethods = nmGET): TJsonObject; overload;
+       property IJsonUtils: INetJsonUtils read GetIJsonUtils;
    end;
 
 implementation
@@ -79,7 +81,7 @@ begin
      raise ENoServiceResponse.Create;
 
    //Isso está errado. O ContentAsString nunca retorna um JSON, mas um HTML.
-   Result := TNetJsonUtils.AsJsonObject(IResponse.ContentAsString);
+   Result := IJsonUtils.AsJsonObject(IResponse.ContentAsString);
 
  except
    on E: ENoServiceResponse do //Não houve resposta do serviço remoto.
@@ -101,6 +103,11 @@ begin
       TSOAPEvents.DoOnSOAPError(ServiceUrl, nil, nil);
     end;
  end;
+end;
+
+function TNetHTTPService.GetIJsonUtils: INetJsonUtils;
+begin
+ Result := TNetJsonUtils.New;
 end;
 
 function TNetHTTPService.Execute(const ServiceUrl: string;
