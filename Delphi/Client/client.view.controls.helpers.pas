@@ -6,6 +6,7 @@ uses
  System.SysUtils, FMX.Edit;
 
 type
+   //Edit helper for edit's controls
    TEditHelper = class helper for TEdit
 
      function IsEmpty: boolean;
